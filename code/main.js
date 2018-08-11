@@ -1,4 +1,3 @@
-"use strict";
 require("process-title");
 
 let server;

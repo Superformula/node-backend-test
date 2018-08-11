@@ -1,7 +1,5 @@
-"use strict";
-const config = require("./config-validate");
 const hapi = require("hapi");
-const path = require("path");
+const config = require("./config-validate");
 
 async function setup({
   host = config.SBT_HOST,

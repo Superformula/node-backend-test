@@ -1,4 +1,3 @@
-"use strict";
 const config = require("config3");
 const joi = require("joi");
 const summarize = require("joi-summarize");

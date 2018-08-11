@@ -2,14 +2,16 @@ const config = require("config3");
 const joi = require("joi");
 const summarize = require("joi-summarize");
 
-const port = joi
-  .number()
-  .min(1025)
-  .max(65535);
+const port = joi.number().port();
 const schema = joi.object().keys({
   SBT_VERSION: joi.string().regex(/\d+\.\d+\.\d+/),
   SBT_HOST: joi.string().hostname(),
-  SBT_PORT: port
+  SBT_PORT: port,
+  SBT_MONGO_HOST: joi
+    .string()
+    .hostname()
+    .default("mongo"),
+  SBT_MONGO_PORT: port.default(2017)
 });
 
 const result = schema.validate(config, { abortEarly: false });

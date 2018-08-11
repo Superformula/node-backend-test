@@ -16,7 +16,7 @@ Build a RESTful API that can `create/read/update/delete` user data from a persis
   "address": "",                // user address
   "description": "",            // user description
   "createdAt": ""               // user created date
-  "UpdatedAt": ""               // user updated date
+  "updatedAt": ""               // user updated date
 }
 ```
 

@@ -7,11 +7,9 @@ const schema = joi.object().keys({
   SBT_VERSION: joi.string().regex(/\d+\.\d+\.\d+/),
   SBT_HOST: joi.string().hostname(),
   SBT_PORT: port,
-  SBT_MONGO_HOST: joi
-    .string()
-    .hostname()
-    .default("mongo"),
-  SBT_MONGO_PORT: port.default(2017)
+  SBT_MONGO_HOST: joi.string().hostname(),
+  SBT_MONGO_PORT: port.default(2017),
+  SBT_MONGO_DB_NAME: joi.string().max(100)
 });
 
 const result = schema.validate(config, { abortEarly: false });

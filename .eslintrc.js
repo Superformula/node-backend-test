@@ -14,6 +14,7 @@ module.exports = {
       "error",
       {devDependencies: ["code/**/*-tap.js", "code/**/*-test*"]}
     ],
+    "import/order": "off",
     "lines-around-directive": "off",
     "max-len": [
       "warn",

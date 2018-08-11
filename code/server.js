@@ -20,7 +20,10 @@ async function setup({
     `Superformula Test server version ${config.SBT_VERSION} starting`
   );
 
-  // await server.register([require("./errors-plugin")]);
+  await server.register({
+    plugin: require("./health-plugin"),
+    options: { version: config.SBT_VERSION }
+  });
   return server;
 }
 

@@ -1,0 +1,30 @@
+{
+  "name": "superformula-backend-test",
+  "version": "1.0.0",
+  "description": "API with CRUD endpoints for user records",
+  "main": "code/main.js",
+  "dependencies": {
+    "config3": "1.0.3",
+    "hapi": "17.5.3",
+    "hapi-pino": "5.0.1",
+    "joi": "13.6.0",
+    "joi-summarize": "1.1.0",
+    "process-title": "1.0.0"
+  },
+  "devDependencies": {
+    "supertest": "3.1.0",
+    "tap": "12.0.1"
+  },
+  "scripts": {
+    "test": "tap 'code/**/*-tap.js'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/focusaurus/node-backend-test.git"
+  },
+  "author": "Peter Lyons <pete@peterlyons.com> (http://peterlyons.com/)",
+  "bugs": {
+    "url": "https://github.com/focusaurus/node-backend-test/issues"
+  },
+  "homepage": "https://github.com/focusaurus/node-backend-test#readme"
+}

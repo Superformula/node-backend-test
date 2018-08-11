@@ -1,6 +1,7 @@
 const hapi = require("hapi");
 const config = require("./config-validate");
 
+const V1_PREFIX = "/api/v1";
 async function setup({
   host = config.SBT_HOST,
   port = config.SBT_PORT,
@@ -22,6 +23,15 @@ async function setup({
     plugin: require("./health-plugin"),
     options: { version: config.SBT_VERSION }
   });
+  await server.register(
+    {
+      plugin: require("./users/plugin"),
+      options: { hey: 42 }
+    },
+    {
+      routes: { prefix: `${V1_PREFIX}/users` }
+    }
+  );
   return server;
 }
 

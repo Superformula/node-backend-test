@@ -41,7 +41,7 @@ Build a RESTful API that can `create/read/update/delete` user data from a persis
 - Add a read only endpoint to fetch location information based off the user's address (use [NASA](https://api.nasa.gov/api.html) or [Mapbox](https://www.mapbox.com/api-documentation/) APIs)
 - Use Docker containers.
 - Utilize Docker Compose.
-- Setep a CircleCI config to build/test/deploy the service.
+- Setup a CircleCI config to build/test/deploy the service.
 - Write concise and clear commit messages.
 - Leverage Terraform or other infrastructure management tooling to spin up needed resources.
 - Providing an online demo is welcomed, but not required.

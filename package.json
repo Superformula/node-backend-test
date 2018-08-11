@@ -12,11 +12,22 @@
     "process-title": "1.0.0"
   },
   "devDependencies": {
+    "eslint": "5.3.0",
+    "eslint-config-airbnb-base": "13.0.0",
+    "eslint-config-prettier": "2.9.0",
+    "eslint-formatter-comment": "2.0.0",
+    "eslint-plugin-import": "2.13.0",
+    "eslint-plugin-promise": "3.8.0",
+    "eslint-tap": "2.0.1",
+    "prettier": "1.14.2",
+    "prettier-eslint-cli": "4.7.1",
     "supertest": "3.1.0",
     "tap": "12.0.1"
   },
   "scripts": {
-    "test": "tap 'code/**/*-tap.js'"
+    "test": "tap 'code/**/*-tap.js'",
+    "format": "prettier-eslint --write 'code/**/*.js'",
+    "lint": "eslint --format ./node_modules/eslint-tap code"
   },
   "repository": {
     "type": "git",

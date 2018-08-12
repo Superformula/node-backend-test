@@ -37,6 +37,7 @@ async function setup({
     plugin: require("./health-plugin"),
     options: { version: config.SBT_VERSION }
   });
+  await server.register(require("./openapi/plugin"));
   await server.register(
     {
       plugin: require("./users/plugin"),

@@ -1,4 +1,6 @@
 const boom = require("boom");
+const { fromMongo, toMongo, stamp } = require("../model-utils");
+const schema = require("./schema");
 
 module.exports = {
   name: "users",
@@ -8,21 +10,22 @@ module.exports = {
       method: "POST",
       path: "/",
       options: {
+        tags: ["api"],
+        response: { schema: schema.get },
         validate: {
-          payload: require("./create-schema")
+          payload: schema.create
         }
       },
       handler: async (request, h) => {
         const users = request.mongo.db.collection("users");
         request.log("users", `Creating a user with id ${request.payload.id}`);
-        const inUser = { _id: request.payload.id, ...request.payload };
-        delete inUser.id;
+
+        let inUser = toMongo(request.payload);
+        inUser = stamp(inUser);
         try {
           await users.insertOne(inUser);
           const user = await users.findOne({ _id: inUser._id });
-          user.id = user._id;
-          delete user._id;
-          return h.response(user).created();
+          return h.response(fromMongo(user)).created();
         } catch (error) {
           if (error.code === 11000) {
             throw boom.conflict();
@@ -34,10 +37,14 @@ module.exports = {
     server.route({
       method: "GET",
       path: "/{userId}",
+      options: {
+        tags: ["api"],
+        response: { schema: schema.get }
+      },
       handler: async (request, h) => {
         const users = request.mongo.db.collection("users");
         const user = await users.findOne({ _id: request.params.userId });
-        return h.response(user);
+        return h.response(fromMongo(user));
       }
     });
   }

@@ -32,6 +32,8 @@ All commands below are run from a shell inside the docker container, not directl
 - Run all the unit tests: `npm test`
 - Run a single unit test file: `tap code/some-test-tap.js`
 - Run a group of unit test files: `tap 'code/some-glob-*-tap.js'`
+- Read the API docs
+  - Start the server then browse to [http://localhost:3000/documentation]()
 - Copy some data out of the running mongodb container to your dev machine
   - `docker-compose exec mongo bash`
   - `cp /path/to/some/file.txt /host`

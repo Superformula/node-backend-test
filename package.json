@@ -10,10 +10,12 @@
     "hapi-mongodb": "7.1.0",
     "hapi-pino": "5.0.1",
     "hapi-swagger": "^9.1.1",
+    "inert": "^5.1.0",
     "joi": "13.6.0",
     "joi-summarize": "1.1.0",
     "process-title": "1.0.0",
-    "uuid": "3.3.2"
+    "uuid": "3.3.2",
+    "vision": "^5.3.3"
   },
   "devDependencies": {
     "eslint": "5.3.0",

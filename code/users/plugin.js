@@ -20,6 +20,8 @@ module.exports = {
         try {
           await users.insertOne(inUser);
           const user = await users.findOne({ _id: inUser._id });
+          user.id = user._id;
+          delete user._id;
           return h.response(user).created();
         } catch (error) {
           if (error.code === 11000) {

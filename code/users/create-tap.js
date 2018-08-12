@@ -1,5 +1,6 @@
 const request = require("supertest");
 const tap = require("tap");
+const uuid = require("uuid/v4");
 
 let uri;
 
@@ -9,8 +10,8 @@ tap.beforeEach(async () => {
 
 tap.test("create user", test => {
   const user = {
-    id: "f47ac10b-58cc-4372-a567-0e02b2c3d479",
-    name: "Pat Patterson"
+    id: uuid(),
+    name: "Test User Name"
   };
   request(uri)
     .post("/api/v1/users")
@@ -23,13 +24,28 @@ tap.test("create user", test => {
     });
 });
 
-const invalids = [
-  {},
-  { id: "00000000-0000-0000-0000-00000000", name: "Pat Patterson" },
-  { id: "00000000-0000-0000-0000-00000000", nameNope: "Pat Patterson" },
-  { id: "nope", name: "Pat Patterson" },
-  { idNope: "00000000-0000-0000-0000-00000000", name: "Pat Patterson" }
-];
+function validUser() {
+  return { id: uuid(), name: "Test User Name" };
+}
+
+const requiredProperties = ["id", "name"];
+const invalids = [{}, [], "this is not JSON"];
+requiredProperties.forEach(property => {
+  const user = validUser();
+  delete user[property];
+  invalids.push(user);
+});
+
+// the zero "all balls" uuid is invalid
+let user = validUser();
+user.id = "00000000-0000-0000-0000-00000000";
+invalids.push(user);
+
+// name too  long
+user = validUser();
+user.name = "A".repeat(101);
+invalids.push(user);
+
 invalids.forEach(body => {
   tap.test("create user invalid payload", test => {
     request(uri)

@@ -1,5 +1,10 @@
 const joi = require("joi");
 
+// toMongo/fromMongo handle conversion to use "id" and a standard uuid-v4
+// in our API responses
+// instead of the weird mongoism "_id" and custom MongoID type.
+// It's a hassle but it's probably important if we ever need to change
+// databases
 function toMongo(doc) {
   const newDoc = { _id: doc.id, ...doc };
   delete newDoc.id;
@@ -12,11 +17,8 @@ function fromMongo(doc) {
   return newDoc;
 }
 
-function stamp(doc) {
+function created(doc) {
   const now = new Date().toISOString();
-  if (doc.createdAt) {
-    return { updatedAt: now, ...doc };
-  }
   return { createdAt: now, ...doc };
 }
 
@@ -35,4 +37,4 @@ function timestampSchema(keys) {
   });
 }
 
-module.exports = { timestampSchema, toMongo, fromMongo, stamp, updated };
+module.exports = { timestampSchema, toMongo, fromMongo, created, updated };

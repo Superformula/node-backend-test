@@ -21,7 +21,7 @@ module.exports = {
         request.log("users", `Creating a user with id ${request.payload.id}`);
 
         let inUser = modelUtils.toMongo(request.payload);
-        inUser = modelUtils.stamp(inUser);
+        inUser = modelUtils.created(inUser);
         try {
           await users.insertOne(inUser);
           const user = await users.findOne({ _id: inUser._id });

@@ -8,8 +8,14 @@ tap.beforeEach(async () => {
   uri = await require("../get-test-uri")(require("../server"));
 });
 
-tap.test("get user base case", async test => {
-  const user = { id: uuid(), name: "Test User Name" };
+tap.test("get user dense base case", async test => {
+  const user = {
+    id: uuid(),
+    name: "unit-test-name",
+    address: "unit-test-address",
+    dob: new Date().toISOString(),
+    description: "unit-test-description"
+  };
   await request(uri)
     .post("/api/v1/users")
     .send(user);

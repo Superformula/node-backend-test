@@ -8,10 +8,29 @@ tap.beforeEach(async () => {
   uri = await require("../get-test-uri")(require("../server"));
 });
 
-tap.test("create user success case", test => {
+tap.test("create user dense success case", test => {
   const user = {
     id: uuid(),
-    name: "Test User Name"
+    name: "unit-test-name",
+    dob: new Date().toISOString(),
+    address: "unit-test-address",
+    description: "unit-test-description"
+  };
+  request(uri)
+    .post("/api/v1/users")
+    .send(user)
+    .expect(201)
+    .end((error, res) => {
+      test.error(error);
+      test.match(res.body, user);
+      test.end();
+    });
+});
+
+tap.test("create user sparse success case", test => {
+  const user = {
+    id: uuid(),
+    name: "unit-test-name"
   };
   request(uri)
     .post("/api/v1/users")
@@ -42,7 +61,13 @@ tap.test("create user duplicate ID", async test => {
 });
 
 function validUser() {
-  return { id: uuid(), name: "Test User Name" };
+  return {
+    id: uuid(),
+    name: "unit-test-name",
+    address: "unit-test-address",
+    description: "unit-test-description",
+    dob: new Date().toISOString()
+  };
 }
 
 const requiredProperties = ["id", "name"];
@@ -61,6 +86,21 @@ invalids.push(user);
 // name too  long
 user = validUser();
 user.name = "A".repeat(101);
+invalids.push(user);
+
+// address too  long
+user = validUser();
+user.address = "A".repeat(501);
+invalids.push(user);
+
+// description too  long
+user = validUser();
+user.description = "A".repeat(5001);
+invalids.push(user);
+
+// dob invalid
+user = validUser();
+user.dob = "NOPE";
 invalids.push(user);
 
 invalids.forEach(body => {

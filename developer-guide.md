@@ -40,6 +40,10 @@ All commands below are run from a shell inside the docker container, not directl
   - `docker-compose exec mongo bash`
   - `cp /path/to/some/file.txt /host`
   - The file will be at `datat/host/file.txt` under this repo's working directory
+- Get a mongo shell (from your main dev computer shell)
+  - `docker-compose exec mongo bash`
+  - `mongo`
+  - `use sbt`
 
 ## API Documentation
 

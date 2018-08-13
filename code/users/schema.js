@@ -13,3 +13,4 @@ const createKeys = { id, name };
 exports.create = joi.object().keys({ id, name });
 exports.delete = joi.object().keys({ userId: id });
 exports.get = modelUtils.timestampSchema(createKeys);
+exports.update = joi.object().keys({ id: id.optional(), name });

@@ -20,6 +20,10 @@ function stamp(doc) {
   return { createdAt: now, ...doc };
 }
 
+function updated(doc) {
+  return { updatedAt: new Date().toISOString(), ...toMongo(doc) };
+}
+
 function timestampSchema(keys) {
   return joi.object().keys({
     createdAt: joi
@@ -31,4 +35,4 @@ function timestampSchema(keys) {
   });
 }
 
-module.exports = { timestampSchema, toMongo, fromMongo, stamp };
+module.exports = { timestampSchema, toMongo, fromMongo, stamp, updated };

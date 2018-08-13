@@ -8,7 +8,7 @@ tap.beforeEach(async () => {
   uri = await require("../get-test-uri")(require("../server"));
 });
 
-tap.test("create user dense success case", test => {
+tap.test("create user dense success case", async test => {
   const user = {
     id: uuid(),
     name: "unit-test-name",
@@ -16,31 +16,23 @@ tap.test("create user dense success case", test => {
     address: "unit-test-address",
     description: "unit-test-description"
   };
-  request(uri)
+  const res = await request(uri)
     .post("/api/v1/users")
     .send(user)
-    .expect(201)
-    .end((error, res) => {
-      test.error(error);
-      test.match(res.body, user);
-      test.end();
-    });
+    .expect(201);
+  test.match(res.body, user);
 });
 
-tap.test("create user sparse success case", test => {
+tap.test("create user sparse success case", async test => {
   const user = {
     id: uuid(),
     name: "unit-test-name"
   };
-  request(uri)
+  const res = await request(uri)
     .post("/api/v1/users")
     .send(user)
-    .expect(201)
-    .end((error, res) => {
-      test.error(error);
-      test.match(res.body, user);
-      test.end();
-    });
+    .expect(201);
+  test.match(res.body, user);
 });
 
 tap.test("create user duplicate ID", async test => {
@@ -57,7 +49,6 @@ tap.test("create user duplicate ID", async test => {
     error: "Conflict",
     message: "A user with that id already exists"
   });
-  test.end();
 });
 
 function validUser() {
@@ -104,19 +95,15 @@ user.dob = "NOPE";
 invalids.push(user);
 
 invalids.forEach(body => {
-  tap.test("create user invalid payload", test => {
-    request(uri)
+  tap.test("create user invalid payload", async test => {
+    const res = await request(uri)
       .post("/api/v1/users")
       .send(body)
-      .expect(400)
-      .end((error, res) => {
-        test.error(error);
-        test.match(res.body, {
-          statusCode: 400,
-          error: "Bad Request",
-          message: "Invalid request payload input"
-        });
-        test.end();
-      });
+      .expect(400);
+    test.match(res.body, {
+      statusCode: 400,
+      error: "Bad Request",
+      message: "Invalid request payload input"
+    });
   });
 });

@@ -34,6 +34,8 @@ All commands below are run from a shell inside the docker container, not directl
 - Run a single test within unit test file: `tap -g some-pattern code/some-test-tap.js`
   - Will only run tests with description matching `some-pattern`
 - Run a group of unit test files: `tap 'code/some-glob-*-tap.js'`
+- Run the tests against a remote server
+  - `URI=http://localhost:3000 npm test`
 - Run code coverage: `npm run coverage` then open `coverage/lcov-report/index.html`
 - Copy some data out of the running mongodb container to your dev machine
   - `docker-compose exec mongo bash`

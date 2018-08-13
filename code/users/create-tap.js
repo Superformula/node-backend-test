@@ -8,7 +8,7 @@ tap.beforeEach(async () => {
   uri = await require("../get-test-uri")(require("../server"));
 });
 
-tap.test("create user", test => {
+tap.test("create user success case", test => {
   const user = {
     id: uuid(),
     name: "Test User Name"
@@ -22,6 +22,23 @@ tap.test("create user", test => {
       test.match(res.body, user);
       test.end();
     });
+});
+
+tap.test("create user duplicate ID", async test => {
+  const user = { id: uuid(), name: "Test Duplicate" };
+  await request(uri)
+    .post("/api/v1/users")
+    .send(user)
+    .expect(201);
+  const res = await request(uri)
+    .post("/api/v1/users")
+    .send(user)
+    .expect(409);
+  test.match(res.body, {
+    error: "Conflict",
+    message: "A user with that id already exists"
+  });
+  test.end();
 });
 
 function validUser() {

@@ -28,7 +28,7 @@ module.exports = {
           return h.response(fromMongo(user)).created();
         } catch (error) {
           if (error.code === 11000) {
-            throw boom.conflict();
+            throw boom.conflict("A user with that id already exists");
           }
           throw error;
         }

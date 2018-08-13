@@ -18,7 +18,6 @@ This project is a web API server with a REST style interface.
   - `./bin/docker-run.sh`
 - Install the dependencies: `npm install`
 - Check if the tests are passing: `npm test`
-- Optionally install [the nodejs v8 inspector](https://chrome.google.com/webstore/detail/nodejs-v8-inspector/lfnddfpljnhbneopljflpombpnkfhggl?hl=en-US) chrome extension for devtools debugging
 
 ## How to do normal day-to-day development tasks
 
@@ -28,7 +27,7 @@ All commands below are run from a shell inside the docker container, not directl
 - Start the server with debugging
   - `node --inspect=0.0.0.0:9229 .`
   - or if you need an immediate breakpoint: `node --inspect-brk=0.0.0.0:9229 .`
-  - Then in chrome browser, browse to `chrome://inspect`
+  - Then in chrome browser, browse to `chrome://inspect` and click on the "inspect" link you should see under the "Remote Target" header
 - Run all the unit tests: `npm test`
 - Run a single unit test file: `tap code/some-test-tap.js`
 - Enable logging during test code: `SBT_LOG_LEVEL=debug tap code/some-test-tap.js`

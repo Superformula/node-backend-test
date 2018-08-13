@@ -37,6 +37,15 @@
     "format": "prettier-eslint --write 'code/**/*.js'",
     "lint": "eslint --format ./node_modules/eslint-tap code"
   },
+  "nyc": {
+    "exclude": ["**/*-tap.js"],
+    "watermarks": {
+      "branches": [90, 100],
+      "functions": [80, 100],
+      "lines": [80, 100],
+      "statements": [80, 100]
+    }
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/focusaurus/node-backend-test.git"

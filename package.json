@@ -33,6 +33,7 @@
   },
   "scripts": {
     "test": "tap 'code/**/*-tap.js'",
+    "coverage": "tap --jobs-auto --coverage-report=html 'code/**/*-tap.js'",
     "format": "prettier-eslint --write 'code/**/*.js'",
     "lint": "eslint --format ./node_modules/eslint-tap code"
   },

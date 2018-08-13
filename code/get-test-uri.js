@@ -21,7 +21,10 @@ async function getServer(serverMod) {
   if (server) {
     return server.info.uri;
   }
-  server = await serverMod.setup({ port: 0, logLevel: "silent" });
+  server = await serverMod.setup({
+    port: 0,
+    logLevel: process.env.SBT_LOG_LEVEL || "silent"
+  });
   await server.start();
   return server.info.uri;
 }

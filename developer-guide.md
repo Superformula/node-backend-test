@@ -31,6 +31,7 @@ All commands below are run from a shell inside the docker container, not directl
   - Then in chrome browser, browse to `chrome://inspect`
 - Run all the unit tests: `npm test`
 - Run a single unit test file: `tap code/some-test-tap.js`
+- Enable logging during test code: `SBT_LOG_LEVEL=debug tap code/some-test-tap.js`
 - Run a single test within unit test file: `tap -g some-pattern code/some-test-tap.js`
   - Will only run tests with description matching `some-pattern`
 - Run a group of unit test files: `tap 'code/some-glob-*-tap.js'`

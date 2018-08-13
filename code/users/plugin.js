@@ -39,12 +39,37 @@ module.exports = {
       path: "/{userId}",
       options: {
         tags: ["api"],
+        validate: {
+          params: schema.delete
+        },
         response: { schema: schema.get }
       },
       handler: async (request, h) => {
         const users = request.mongo.db.collection("users");
         const user = await users.findOne({ _id: request.params.userId });
+        if (!user) {
+          throw boom.notFound();
+        }
         return h.response(fromMongo(user));
+      }
+    });
+    server.route({
+      method: "DELETE",
+      path: "/{userId}",
+      options: {
+        tags: ["api"],
+        validate: {
+          params: schema.delete
+        }
+      },
+      handler: async (request, h) => {
+        const users = request.mongo.db.collection("users");
+        request.log("users", `Deleting user with id ${request.params.userId}`);
+        const {result} = await users.deleteOne({ _id: request.params.userId });
+        if (result.n < 1) {
+          throw boom.notFound();
+        }
+        return h.response();
       }
     });
   }

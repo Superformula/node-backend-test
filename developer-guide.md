@@ -15,6 +15,7 @@ This project is a web API server with a REST style interface.
 
 - Install docker and docker-compose
 - Get a shell inside the hapi container
+  - `./bin/docker-build.sh`
   - `./bin/docker-run.sh`
 - Install the dependencies: `npm install`
 - Check if the tests are passing: `npm test`

@@ -54,7 +54,8 @@ const updateUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
   try {
-    res.status(200).send();
+    const deleted = await deleteUserHelper(req.params);
+    res.status(200).send(deleted);
   }
   catch (err) {
     res.status(400).send({error: 'Could not delete User'});

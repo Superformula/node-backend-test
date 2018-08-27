@@ -32,7 +32,20 @@ const fetchSingleUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
-    res.status(201).send();
+    if (Object.keys(req.body) === 4) {
+      const updated = await updateUserHelper(req.params, req.body);
+      res.status(201).send(updated);
+    } else {
+      const singleUser = await fetchSingleUserHelper(req.params);
+      const filledBody = {
+        name: req.body.name ? req.body.name : singleUser.name,
+        dob: req.body.dob ? req.body.dob: singleUser.dob,
+        address: req.body.address ? req.body.address : singleUser.address,
+        description: req.body.description ? req.body.description : singleUser.description
+      };
+      const updated = await updateUserHelper(req.params, filledBody);
+      res.status(201).send(updated);
+    }
   }
   catch (err) {
     res.status(400).send({error: 'Could not update User'});

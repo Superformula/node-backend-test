@@ -7,3 +7,5 @@ const envBuild = {
     'AWS_DATABASE='
   ]
 }
+
+module.exports = envBuild;

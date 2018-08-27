@@ -1,21 +1,48 @@
-const addUser = (req, res) => {
-  res.status(201).send();
+import { addUserHelper, fetchAllUserHelper, fetchSingleUserHelper, updateUserHelper, deleteUserHelper } from './userHelpers';
+
+const addUser = async (req, res) => {
+  try {
+    res.status(201).send();
+  }
+  catch (err) {
+    res.status(400).send({error: 'Could not create User'});
+  }
 };
 
-const fetchAllUser = (req, res) => {
-  res.status(200).send();
+const fetchAllUser = async (req, res) => {
+  try {
+    res.status(200).send();
+  }
+  catch (err) {
+    res.status(400).send({error: 'Could not find Users'});
+  }
 };
 
-const fetchSingleUser = (req, res) => {
-  res.status(200).send();
+const fetchSingleUser = async (req, res) => {
+  try{
+    res.status(200).send();
+  }
+  catch (err) {
+    res.status(400).send({error: 'Could not find User'});
+  }
 };
 
-const updateUser = (req, res) => {
-  res.status(201).send();
+const updateUser = async (req, res) => {
+  try {
+    res.status(201).send();
+  }
+  catch (err) {
+    res.status(400).send({error: 'Could not update User'});
+  }
 };
 
-const deleteUser = (req, res) => {
-  res.status(200).send();
+const deleteUser = async (req, res) => {
+  try {
+    res.status(200).send();
+  }
+  catch (err) {
+    res.status(400).send({error: 'Could not delete User'});
+  }
 };
 
 export { addUser, fetchAllUser, fetchSingleUser, updateUser, deleteUser };

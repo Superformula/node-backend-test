@@ -70,6 +70,7 @@ describe('Users', () => {
           res.should.be.json;
           res.should.be.a('object');
           res.should.have.property('error');
+          res.body.error.should.equal('Could not find User');
           done();
         });
     });
@@ -120,6 +121,7 @@ describe('Users', () => {
           res.should.be.json;
           res.body.should.be.a('object');
           res.body.should.have.property('error');
+          res.body.error.should.equal('Could not create User');
           done();
         });
     });
@@ -150,6 +152,8 @@ describe('Users', () => {
             res.should.have.status(201);
             res.should.be.json;
             res.body.should.be.a('object');
+            res.body.should.have.property('nModified');
+            res.body.nModified.should.equal(1);
             done();
           });
       });
@@ -174,6 +178,8 @@ describe('Users', () => {
             res.should.have.status(201);
             res.should.be.json;
             res.body.should.be.a('object');
+            res.body.should.have.property('nModified');
+            res.body.nModified.should.equal(1);
             done();
           });
       });
@@ -220,6 +226,8 @@ describe('Users', () => {
             res.should.have.status(200);
             res.should.be.json;
             res.body.should.be.a('object');
+            res.body.should.have.property('n');
+            res.body.n.should.equal(1);
             done();
           });
       });
@@ -240,6 +248,7 @@ describe('Users', () => {
             res.should.be.json;
             res.body.should.be.a('object');
             res.body.should.have.property('error');
+            res.body.error.should.equal('Could not delete User');
             done();
           });
       });

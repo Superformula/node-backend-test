@@ -1,14 +1,15 @@
 import express from 'express';
+import { addUser, fetchAllUser, fetchSingleUser, updateUser, deleteUser } from './userControllers';
 
 const router = express.Router();
 
 router.route('/:_id')
-  .get()
-  .put()
-  .delete();
+  .get(fetchSingleUser)
+  .put(updateUser)
+  .delete(deleteUser);
 
 router.route('/')
-  .get()
-  .post();
+  .get(fetchAllUser)
+  .post(addUser);
 
 export default router;

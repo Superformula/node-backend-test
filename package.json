@@ -6,6 +6,7 @@
   "scripts": {
     "start": "cd rest-server && npm start",
     "build": "node bin/buildEnv.js",
+    "test-rest-server": "cd rest-server && npm run test",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

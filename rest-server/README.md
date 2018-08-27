@@ -25,7 +25,8 @@ List of all API endpoints and what to expect:
   - FAILURE: returns 400 status code with error message
 
 '/user/:id'
-* GET: response - { reuslt: obj }
+PARAM: USER ID
+* GET: response - { result: obj }
   - SUCCESS: returns single User obj
   - FAILURE: returns 400 status code with error message
 * PUT: accepts - { name, dob, address, description } | response - { result: obj }
@@ -33,4 +34,10 @@ List of all API endpoints and what to expect:
   - FAILURE: returns 400 status code with error message
 * DELETE: response - { result: obj }
   - SUCCESS: returns status code 200
+  - FAILURE: returns 400 status code with error message
+
+'/mapbox/:id'
+PARAM: USER ID
+* GET: response - { result: obj }
+  - SUCCESS: returns obj with latitude & longitude properties
   - FAILURE: returns 400 status code with error message

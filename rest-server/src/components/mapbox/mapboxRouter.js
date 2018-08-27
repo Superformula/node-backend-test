@@ -1,9 +1,9 @@
 import express from 'express';
-import { fetchLocationCoordinates } from './mapboxControllers';
+import { fetchUserLocationCoordinates } from './mapboxControllers';
 
 const router = express.Router();
 
-router.route('/:location')
-  .get(fetchLocationCoordinates);
+router.route('/:_id')
+  .get(fetchUserLocationCoordinates);
 
 export default router;

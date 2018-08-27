@@ -26,6 +26,7 @@
     "nodemon": "^1.18.3"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "chalk": "^2.4.1",
     "dotenv": "^6.0.0",
     "mongoose": "^5.2.9"

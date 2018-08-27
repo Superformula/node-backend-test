@@ -22,7 +22,8 @@ const fetchAllUser = async (req, res) => {
 
 const fetchSingleUser = async (req, res) => {
   try{
-    res.status(200).send();
+    const singleUser = await fetchSingleUserHelper(req.params);
+    res.status(200).send(singleUser);
   }
   catch (err) {
     res.status(400).send({error: 'Could not find User'});

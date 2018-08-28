@@ -4,7 +4,9 @@ const envBuild = {
     'NODE_ENV=test',
     'PORT=3396',
     'LOCAL_DATABASE=superformulabackendtest',
-    'AWS_DATABASE='
+    'AWS_DATABASE=',
+    'mapboxAPIKey=',
+    'DOCKER=FALSE'
   ]
 }
 

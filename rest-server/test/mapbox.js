@@ -20,7 +20,7 @@ describe('Mapbox API', () => {
   * /GET
   */
   describe('/GET mapbox', () => {
-    it('should grab coordinates for a single user on /mapbox/:id GET', done => {
+    xit('should grab coordinates for a single user on /mapbox/:id GET', done => {
       const newUser = new User({
         id: 123,
         name: 'Test User',

@@ -4,10 +4,9 @@
   "description": "Be sure to read **all** of this document carefully, and follow the guidelines within.",
   "main": "index.js",
   "scripts": {
-    "start": "cd rest-server && npm start",
-    "setup": "cd rest-server && npm install",
+    "start": "cd rest-server && node bin/entry.js",
     "build": "node bin/buildEnv.js",
-    "test-rest-server": "cd rest-server && npm run test",
+    "test-rest-server": "cd rest-server && mocha --timeout 10000",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -21,7 +20,23 @@
     "url": "https://github.com/pkwu/node-backend-test/issues"
   },
   "homepage": "https://github.com/pkwu/node-backend-test#readme",
+  "devDependencies": {
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-register": "^6.26.0",
+    "chai": "^4.1.2",
+    "chai-http": "^4.0.0",
+    "cors": "^2.8.4",
+    "express": "^4.16.3",
+    "helmet": "^3.13.0",
+    "mocha": "^5.2.0",
+    "nodemon": "^1.18.3"
+  },
   "dependencies": {
-    "lodash": "^4.17.10"
+    "axios": "^0.18.0",
+    "chalk": "^2.4.1",
+    "dotenv": "^6.0.0",
+    "lodash": "^4.17.10",
+    "mongoose": "^5.2.9"
   }
 }

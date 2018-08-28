@@ -7,7 +7,7 @@ mongoose.connect(database, { useNewUrlParser: true });
 const db = mongoose.connection;
 
 const retryConnect = () => {
-  console.log('Retrying...');
+  error('Retrying...');
   return mongoose.connect(database, { useNewUrlParser: true });
 }
 

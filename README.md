@@ -18,6 +18,7 @@ From node-backend-test root, run the following command:
 ## TO RUN DOCKER COMPOSE
 
 Toggle .env DOCKER value to TRUE
+
 From node-backend-test root, run the following commands: 
 * docker-compose build
 * docker-compose up

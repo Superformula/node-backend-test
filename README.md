@@ -1,38 +1,3 @@
-## TO SET UP THE ENVIRONMENT & DEPENDENCIES
-
-From node-backend-test root directory, run the following commands:
-* npm install
-* npm run build
-
-
-## TO RUN THE CODE
-
-From node-backend-test root directory, run the following commands:
-* mongod (in a separate tab/terminal)
-* npm start
-
-Server is now running. Please check the README.md provided in the rest-server folder for further details on the endpoints.
-
-## TO TEST THE CODE
-
-From node-backend-test root directory, run the following commands:
-* mongod (in a separate tab/terminal)
-* npm run test-rest-server
-* Optionally, delete the 'x' on line 23 of /rest-server/test/mapbox.js and paste a valid API key in /rest-server/src/components/mapbox/mapboxControllers.js to enable mapbox external API feature test
-
-
-## TO RUN DOCKER COMPOSE
-
-Instructions assume Docker is already installed on machine.
-
-Toggle .env DOCKER value to TRUE
-
-From node-backend-test root directory, run the following commands: 
-* docker-compose build
-* docker-compose up
-
-***
-
 # Superformula Back-end Developer Test
 
 Be sure to read **all** of this document carefully, and follow the guidelines within.

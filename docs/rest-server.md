@@ -38,6 +38,7 @@ PARAM: USER ID
 
 '/mapbox/:id'
 PARAM: USER ID
+REQUIRES: API KEY
 * GET: response - { result: obj }
   - SUCCESS: returns obj with user latitude & longitude properties
   - FAILURE: returns 400 status code with error message

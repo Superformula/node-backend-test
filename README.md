@@ -2,7 +2,6 @@
 
 From node-backend-test root, run the following commands:
 * npm install
-* npm run setup
 * npm run build
 * npm start
 
@@ -16,6 +15,8 @@ From node-backend-test root, run the following command:
 
 
 ## TO RUN DOCKER COMPOSE
+
+Instructions assume Docker is already installed on machine.
 
 Toggle .env DOCKER value to TRUE
 

@@ -1,12 +1,12 @@
 require('babel-register');
 require('babel-polyfill');
 
-let { User } = require('../src/config/database/collections/userCollections');
-let chai = require('chai');
-let chaiHttp = require('chai-http');
-let server = require('../src/');
-let should = chai.should();
-let expect = chai.expect;
+const { User } = require('../src/config/database/collections/userCollections');
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+const server = require('../src/');
+const should = chai.should();
+const expect = chai.expect;
 
 chai.use(chaiHttp);
 
@@ -34,7 +34,7 @@ describe('Users', () => {
     });
     
     it('should list a SINGLE user on /users/:id GET', done => {
-      let newUser = new User({
+      const newUser = new User({
         name: 'Test User',
         dob: '08/27/2018',
         address: 'Los Angeles',
@@ -81,7 +81,7 @@ describe('Users', () => {
   */
   describe('/POST user', () => {
     it('should add a user on /users POST when name, dob, address, description provided', done => {
-      let user = {
+      const user = {
         name: 'Test User',
         dob: '08/27/2018',
         address: 'Los Angeles',
@@ -108,7 +108,7 @@ describe('Users', () => {
     });
 
     it('should NOT add a user on /users POST while missing one or more fields', done => {
-      let user = {
+      const user = {
         name: 'Test User',
         dob: '08/27/2018',
         address: 'Los Angeles'
@@ -132,13 +132,13 @@ describe('Users', () => {
   */
   describe('/PUT user', () => {
     it('should update a user on /users/:id PUT with name, dob, address, description provided', done => {
-      let updatedUser = {
+      const updatedUser = {
         name: 'Updated User',
         dob: '01/01/2000',
         address: 'Hacienda Heights',
         description: 'This is an update'
       };
-      let newUser = new User({
+      const newUser = new User({
         name: 'Test User',
         dob: '08/27/2018',
         address: 'Los Angeles',
@@ -160,11 +160,11 @@ describe('Users', () => {
     });
 
     it('should update a user on /users/:id PUT with one or more fields missing', done => {
-      let updatedUser = {
+      const updatedUser = {
         name: 'Updated Name',
         description: 'This is an update'
       };
-      let newUser = new User({
+      const newUser = new User({
         name: 'Test User',
         dob: '08/27/2018',
         address: 'Los Angeles',
@@ -186,11 +186,11 @@ describe('Users', () => {
     });
 
     it('should NOT update any users on /users/ PUT without specified param', done => {
-      let updatedUser = {
+      const updatedUser = {
         name: 'Updated Name',
         description: 'This is an update'
       };
-      let newUser = new User({
+      const newUser = new User({
         name: 'Test User',
         dob: '08/27/2018',
         address: 'Los Angeles',
@@ -213,7 +213,7 @@ describe('Users', () => {
   */
   describe('/DELETE user', () => {
     it('should delete a user on /users/:id DELETE with id provided', done => {
-      let newUser = new User({
+      const newUser = new User({
         name: 'Test User',
         dob: '08/27/2018',
         address: 'Los Angeles',
@@ -234,7 +234,7 @@ describe('Users', () => {
     });
 
     it('should NOT delete a user on /users/:id DELETE with invalid id provided', done => {
-      let newUser = new User ({
+      const newUser = new User ({
         name: 'Test User',
         dob: '08/27/2018',
         address: 'Los Angeles',

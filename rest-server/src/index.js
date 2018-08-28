@@ -9,6 +9,10 @@ const app = App.express;
 const server = http.createServer(app);
 const PORT = process.env.PORT;
 
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
+
 server.listen(PORT, err => {
   if (err) throw new Error;
   success(`Successfully connected to PORT: ${PORT}`);

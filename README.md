@@ -1,4 +1,4 @@
-# TO RUN THE CODE
+## TO RUN THE CODE
 
 From node-backend-test root, run the following commands:
 - npm install
@@ -6,19 +6,15 @@ From node-backend-test root, run the following commands:
 - npm run build
 - npm start
 
+Server is now running. Please check the README.md provided in the rest-server folder for further details on the endpoints.
+
 ## TO TEST THE CODE
 
 From node-backend-test root, run the following command:
 - npm run test-rest-server
 
 
-
-
-
-
-
-
-#######################################
+***
 
 # Superformula Back-end Developer Test
 

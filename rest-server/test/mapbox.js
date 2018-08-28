@@ -1,11 +1,11 @@
 require('babel-register');
 require('babel-polyfill');
 
-let { User } = require('../src/config/database/collections/userCollections');
-let chai = require('chai');
-let chaiHttp = require('chai-http');
-let server = require('../src/');
-let should = chai.should();
+const { User } = require('../src/config/database/collections/userCollections');
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+const server = require('../src/');
+const should = chai.should();
 
 chai.use(chaiHttp);
 
@@ -21,7 +21,7 @@ describe('Mapbox API', () => {
   */
   describe('/GET mapbox', () => {
     it('should grab coordinates for a single user on /mapbox/:id GET', done => {
-      let newUser = new User({
+      const newUser = new User({
         id: 123,
         name: 'Test User',
         dob: '08/27/2018',

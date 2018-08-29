@@ -10,8 +10,20 @@ if (!fs.readFileSync(path.resolve(__dirname, '../.env'))) {
   process.exit();
 }
 
-env.config({
+const myEnv = env.config({
   path: path.resolve(__dirname, '../.env'),
 });
+
+if (myEnv.parsed) {
+  let flag = false;
+  flag = myEnv.parsed.hasOwnProperty('DEBUG') ? flag : true;
+  flag = myEnv.parsed.hasOwnProperty('NODE_ENV') ? flag : true;
+  flag = myEnv.parsed.hasOwnProperty('PORT') ? flag : true;
+  flag = myEnv.parsed.hasOwnProperty('LOCAL_DATABASE') ? flag : true;
+  flag = myEnv.parsed.hasOwnProperty('AWS_DATABASE') ? flag : true;
+  flag = myEnv.parsed.hasOwnProperty('mapboxAPIKey') ? flag : true;
+  flag = myEnv.parsed.hasOwnProperty('DOCKER') ? flag : true;
+  flag && (console.log('.env configuration file is not complete'), process.exit());
+}
 
 require('../src');

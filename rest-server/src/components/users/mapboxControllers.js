@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { fetchSingleUserHelper } from '../users/userHelpers';
+import { fetchSingleUserHelper } from './userHelpers';
 
 const mapboxAPIKey = process.env.mapboxAPIKey || 'MUST-REPLACE-WITH-APIKEY-TO-PASS-TEST';
 

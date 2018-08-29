@@ -11,7 +11,7 @@ chai.use(chaiHttp);
 
 describe('Mapbox API', () => {
   beforeEach(done => {
-    User.remove({}, err => {
+    User.deleteMany({}, err => {
       done();
     });
   });
@@ -29,7 +29,7 @@ describe('Mapbox API', () => {
       });
       newUser.save((err, data) => {
         chai.request(server)
-          .get(`/api/mapbox/${data.id}`)
+          .get(`/api/users/mapbox/${data.id}`)
           .end((err, res) => {
             res.should.have.status(200);
             res.should.be.json;

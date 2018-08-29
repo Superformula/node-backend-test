@@ -12,7 +12,7 @@ chai.use(chaiHttp);
 
 describe('Users', () => {
   beforeEach( done => {
-    User.remove({}, err => {
+    User.deleteMany({}, err => {
       done();
     });
   });

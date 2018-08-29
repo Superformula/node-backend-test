@@ -36,6 +36,7 @@
     "express": "^4.16.3",
     "helmet": "^3.13.0",
     "lodash": "^4.17.10",
-    "mongoose": "^5.2.9"
+    "mongoose": "^5.2.9",
+    "swagger-ui-express": "^4.0.0"
   }
 }

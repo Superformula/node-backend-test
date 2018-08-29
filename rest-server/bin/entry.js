@@ -14,7 +14,7 @@ const myEnv = env.config({
   path: path.resolve(__dirname, '../.env'),
 });
 
-if (myEnv.parsed) {
+if (myEnv && myEnv.parsed) {
   let flag = false;
   flag = myEnv.parsed.hasOwnProperty('DEBUG') ? flag : true;
   flag = myEnv.parsed.hasOwnProperty('NODE_ENV') ? flag : true;

@@ -22,7 +22,6 @@ describe('Mapbox API', () => {
   describe('/GET mapbox', () => {
     xit('should grab coordinates for a single user on /mapbox/:id GET', done => {
       const newUser = new User({
-        id: 123,
         name: 'Test User',
         dob: '08/27/2018',
         address: 'Los Angeles',

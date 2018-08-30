@@ -1,4 +1,5 @@
 import { addUserHelper, fetchAllUserHelper, fetchSingleUserHelper, updateUserHelper, deleteUserHelper } from './userHelpers';
+import { userSchema } from '../../config/database/collections/userCollections';
 
 const addUser = async (req, res) => {
   try {
@@ -32,7 +33,7 @@ const fetchSingleUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
-    if (Object.keys(req.body) === 4) {
+    if (Object.keys(req.body) === Object.entries(userSchema.obj).length) {
       const updated = await updateUserHelper(req.params, req.body);
       res.status(201).send(updated);
     } else {

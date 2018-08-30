@@ -1,14 +1,11 @@
 import axios from 'axios';
 import { fetchSingleUserHelper } from './userHelpers';
-import { encode } from 'punycode';
-
-const mapboxAPIKey = process.env.mapboxAPIKey || '';
 
 const fetchUserLocationCoordinates = async (req, res) => {
   try {
     const singleUser = await fetchSingleUserHelper(req.params);
     const loc = encodeURI(singleUser.address);
-    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${loc}.json?access_token=${mapboxAPIKey}`;
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${loc}.json?access_token=${process.env.mapboxAPIKey}`;
     const coords = await axios.get(url);
     if (coords && coords.data) {
       const [longitude, latitude] = coords.data.features[0].center;

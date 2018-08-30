@@ -1,5 +1,4 @@
 import { addUserHelper, fetchAllUserHelper, fetchSingleUserHelper, updateUserHelper, deleteUserHelper } from './userHelpers';
-// import { userSchema } from '../../config/database/collections/userCollections';
 
 const addUser = async (req, res) => {
   try {

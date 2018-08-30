@@ -107,7 +107,7 @@ describe('Users', () => {
         });
     });
 
-    it('should NOT add a user on /users POST while missing one or more fields', done => {
+    it('should add a user on /users POST while missing one or more fields', done => {
       const user = {
         name: 'Test User',
         dob: '08/27/2018',
@@ -117,11 +117,9 @@ describe('Users', () => {
         .post('/api/users')
         .send(user)
         .end( (err, res) => {
-          res.should.have.status(400);
+          res.should.have.status(201);
           res.should.be.json;
           res.body.should.be.a('object');
-          res.body.should.have.property('error');
-          res.body.error.should.equal('Could not create User');
           done();
         });
     });
@@ -136,32 +134,6 @@ describe('Users', () => {
         name: 'Updated User',
         dob: '01/01/2000',
         address: 'Hacienda Heights',
-        description: 'This is an update'
-      };
-      const newUser = new User({
-        name: 'Test User',
-        dob: '08/27/2018',
-        address: 'Los Angeles',
-        description: 'This is a test'
-      });
-      newUser.save( (err, data) => {
-        chai.request(server)
-          .put(`/api/users/${data.id}`)
-          .send(updatedUser)
-          .end( (err, res) => {
-            res.should.have.status(201);
-            res.should.be.json;
-            res.body.should.be.a('object');
-            res.body.should.have.property('nModified');
-            res.body.nModified.should.equal(1);
-            done();
-          });
-      });
-    });
-
-    it('should update a user on /users/:id PUT with one or more fields missing', done => {
-      const updatedUser = {
-        name: 'Updated Name',
         description: 'This is an update'
       };
       const newUser = new User({
@@ -202,6 +174,37 @@ describe('Users', () => {
           .send(updatedUser)
           .end( (err, res) => {
             res.should.have.status(404);
+            done();
+          });
+      });
+    });
+  });
+
+  /*
+  * /PATCH
+  */
+  describe('/PATCH user', () => {
+    it('should patch a user on /users/:id PATCH with one or more fields missing', done => {
+      const updatedUser = {
+        name: 'Updated Name',
+        description: 'This is an update'
+      };
+      const newUser = new User({
+        name: 'Test User',
+        dob: '08/27/2018',
+        address: 'Los Angeles',
+        description: 'This is a test'
+      });
+      newUser.save( (err, data) => {
+        chai.request(server)
+          .patch(`/api/users/${data.id}`)
+          .send(updatedUser)
+          .end( (err, res) => {
+            res.should.have.status(201);
+            res.should.be.json;
+            res.body.should.be.a('object');
+            res.body.should.have.property('nModified');
+            res.body.nModified.should.equal(1);
             done();
           });
       });

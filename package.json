@@ -26,6 +26,7 @@
     "babel-register": "^6.26.0",
     "chai": "^4.1.2",
     "chai-http": "^4.0.0",
+    "deep-eql": "^3.0.1",
     "mocha": "^5.2.0"
   },
   "dependencies": {

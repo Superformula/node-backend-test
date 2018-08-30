@@ -7,6 +7,7 @@ const chaiHttp = require('chai-http');
 const server = require('../src/');
 const should = chai.should();
 const expect = chai.expect;
+const deepEql = require('deep-eql');
 
 chai.use(chaiHttp);
 
@@ -46,17 +47,17 @@ describe('Users', () => {
           .end( (err, res) => {
             res.should.have.status(200);
             res.should.be.json;
-            res.body.should.be.a('object');
-            res.body.should.have.property('_id');
-            res.body.should.have.property('name');
-            res.body.should.have.property('dob');
-            res.body.should.have.property('address');
-            res.body.should.have.property('description');
-            res.body.name.should.equal('Test User');
-            res.body.dob.should.equal('08/27/2018');
-            res.body.address.should.equal('Los Angeles');
-            res.body.description.should.equal('This is a test');
-            res.body._id.should.equal(data.id);
+            const deepEval = {
+              flag: deepEql(res.body, { 
+                _id: data.id, 
+                name: data.name, 
+                dob: data.dob, 
+                address: data.address, 
+                description: data.description, 
+                createdAt: JSON.stringify(data.createdAt).slice(1, -1), 
+                updatedAt: JSON.stringify(data.updatedAt).slice(1, -1), 
+                __v: data.__v })};
+            deepEval.flag.should.equal(true);
             done();
           });
       });
@@ -94,15 +95,17 @@ describe('Users', () => {
           res.should.have.status(201);
           res.should.be.json;
           res.body.should.be.a('object');
-          res.body.should.have.property('_id');
-          res.body.should.have.property('name');
-          res.body.should.have.property('dob');
-          res.body.should.have.property('address');
-          res.body.should.have.property('description');
-          res.body.name.should.equal('Test User');
-          res.body.dob.should.equal('08/27/2018');
-          res.body.address.should.equal('Los Angeles');
-          res.body.description.should.equal('This is a test');
+          const deepEval = {
+            flag: deepEql(res.body, { 
+              _id: res.body._id, 
+              name: user.name, 
+              dob: user.dob, 
+              address: user.address, 
+              description: user.description, 
+              createdAt: res.body.createdAt, 
+              updatedAt: res.body.updatedAt, 
+              __v: res.body.__v })};
+          deepEval.flag.should.equal(true);
           done();
         });
     });
@@ -120,6 +123,16 @@ describe('Users', () => {
           res.should.have.status(201);
           res.should.be.json;
           res.body.should.be.a('object');
+          const deepEval = {
+            flag: deepEql(res.body, { 
+              _id: res.body._id, 
+              name: user.name, 
+              dob: user.dob, 
+              address: user.address, 
+              createdAt: res.body.createdAt, 
+              updatedAt: res.body.updatedAt, 
+              __v: res.body.__v })};
+          deepEval.flag.should.equal(true);
           done();
         });
     });

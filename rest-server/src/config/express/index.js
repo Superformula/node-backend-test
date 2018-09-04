@@ -2,6 +2,7 @@ import express from 'express';
 import parser from 'body-parser';
 import cors from 'cors';
 import helmet from 'helmet';
+import morgan from 'morgan';
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from '../../../swagger.json';
 
@@ -11,6 +12,7 @@ const middleWare = [
   helmet(),
   parser.json(),
   parser.urlencoded({ extended: true }),
+  morgan('tiny'),
   cors({
     allowedHeaders: 'Content-Type, authorization',
     methods: ['GET, POST, PUT, DELETE', 'OPTIONS'],

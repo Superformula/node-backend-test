@@ -6,7 +6,7 @@ const server            = Hapi.server({
   host: process.env.USERS_API_HOST, 
   port: process.env.USERS_API_PORT
 })
-const userServicePlugin = require('./users-plugin/')
+const userServicePlugin = require('./users-plugin')
 
 /**
  * @description Handles injecting routes and starting the server and any initial failure logging

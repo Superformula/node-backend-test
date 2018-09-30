@@ -5,6 +5,7 @@
   "env": {
     "PORT": "5001",
     "INTERFACE": "localhost",
+    "MONGODB_DSN": "mongodb://localhost/sfNodeTest",
     "NODE_ENV": "LOCAL"
   },
   "watch": ["./**/*.js"],

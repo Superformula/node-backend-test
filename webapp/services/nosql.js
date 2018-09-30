@@ -1,13 +1,21 @@
 const path = require('path');
 const mongoose = require('mongoose');
+const autoIncrement = require('mongoose-auto-increment');
 const app = global.__app;
 
 module.exports = {
+
+  connect: null,
+
+  autoIncrement: null,
 
   models: {},
 
   init: function(){
     mongoose.connect( process.env.MONGODB_DSN, { useNewUrlParser: true } );
+
+    this.autoIncrement = autoIncrement;
+    this.autoIncrement.initialize( mongoose.connection );
 
     if( app.appModules )
       this.loadAppModules( app.appModules );    
@@ -15,13 +23,11 @@ module.exports = {
 
   loadAppModules: function( appModules ){
 
-    var models = {};
+    var self = this;
 
     appModules.forEach(function( appModule ){
-      models[ appModule.name ] = require( path.join( appModule.path , 'models' ))( this );
+      self.models[ appModule.name ] = require( path.join( appModule.path , 'models' ))( self );
     });
-
-    this.models = models;
   }
 };
     

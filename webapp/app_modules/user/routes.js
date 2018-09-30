@@ -35,6 +35,7 @@ module.exports = function( app ){
 
     } catch( ValidationError ) {
 
+      console.error( ValidationError );
       res.apiResponse.errors = [];
 
       Object.keys(ValidationError.errors).forEach(function( fieldName ){
@@ -68,7 +69,19 @@ module.exports = function( app ){
 
   app.delete('/api/users/:userId([0-9]+)', async function(req,res){
 
+    var userModels = app.service.nosql.models.user;
+    let doc;
 
-    res.sendStatus(204);
+    try {
+
+      doc = await userModels.User.findOneAndDelete({ id: req.params.userId });
+
+    } catch ( Error ) {
+
+      console.error( Error );
+      return res.sendStatus(400);
+    }
+
+    res.sendStatus( ( doc ? 204 : 404 ));    
   });  
 };

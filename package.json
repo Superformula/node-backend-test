@@ -1,0 +1,22 @@
+{
+  "name": "backend-test",
+  "version": "1.0.0",
+  "description": "Be sure to read **all** of this document carefully, and follow the guidelines within.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samples-afaq-tariq/node-backend-test.git"
+  },
+  "author": "Afaq Tariq <afaq.tariq@inmar.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/samples-afaq-tariq/node-backend-test/issues"
+  },
+  "homepage": "https://github.com/samples-afaq-tariq/node-backend-test#readme",
+  "dependencies": {
+    "hapi": "^17.6.0"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "script": "./index.js",
+  "name": "sf-nodetest-local",
+  "args": "--update-env",
+  "env": {
+    "PORT": "5001",
+    "INTERFACE": "localhost",
+    "NODE_ENV": "LOCAL"
+  },
+  "watch": ["./**/*.js"],
+  "ignore_watch" : ["./webapp/node_modules"]
+}
+

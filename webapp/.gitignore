@@ -1,2 +1,2 @@
 node_modules/
-.env
+pm2.local.json

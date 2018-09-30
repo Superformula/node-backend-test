@@ -3,8 +3,10 @@
  * @description defines the routes available on the users resource
  * @type {Hapi Plugin Object}
  */
-const joi       = require('joi')
-const userModel = require('./user-model')
+const joi                  = require('joi')
+const generateUUID         = require('uuid/v1')
+const userValidationSchema = require('./user-model')
+const pickProperties       = require('lodash/pick')
 
 module.exports = {
   name: 'userService',
@@ -20,16 +22,23 @@ module.exports = {
       path:'/',
       options: {
         validate: {
-          payload: {
-            name: joi.string().min(1).max(100).required()
-          }
+          payload: pickProperties(userValidationSchema, ['name', 'dob', 'address', 'description'])
         }
       },
       handler(request, h) {
-        // add guid
-        // add timestamps
-        // return new user
-        return request.payload
+        // add system generated properties
+        const systemGeneratedProperties = { 
+          id: generateUUID(), 
+          createdAt: new Date().toISOString(),
+        }
+
+        // assure updatedAt is exactly the same as createdAt at this point.
+        systemGeneratedProperties.updatedAt = systemGeneratedProperties.createdAt
+
+        const newUser = Object.assign(request.payload, systemGeneratedProperties)
+
+        
+        return newUser
       }
     })
 

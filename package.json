@@ -18,6 +18,8 @@
   "homepage": "https://github.com/samples-afaq-tariq/node-backend-test#readme",
   "dependencies": {
     "hapi": "^17.6.0",
-    "joi": "^13.7.0"
+    "joi": "^13.7.0",
+    "lodash": "^4.17.11",
+    "uuid": "^3.3.2"
   }
 }

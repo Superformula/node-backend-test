@@ -4,25 +4,15 @@
  * @type {Hapi Plugin Object}
  */
 const joi                  = require('joi')
-const generateUUID         = require('uuid/v1')
 const userValidationSchema = require('./user-model')
 const pickProperties       = require('lodash/pick')
-const sendApiResponse = (type, responseValue) => {
-  return {
-    type: type,
-    item: responseValue,
-  }
-}
+const addNewUserHandler    = require('./route-handlers/create-new-user')
 
 module.exports = {
   name: 'userService',
   version: '1.0.0',
   async register(server, options) {
 
-    /**
-     * @param  {name}
-     * @return {Object: User} New user object
-     */
     server.route({
       method:'POST',
       path:'/',
@@ -31,20 +21,7 @@ module.exports = {
           payload: pickProperties(userValidationSchema, ['name', 'dob', 'address', 'description'])
         }
       },
-      handler(request, responseHandler) {
-        // add system generated properties
-        const systemGeneratedProperties = { 
-          id: generateUUID(), 
-          createdAt: new Date().toISOString(),
-        }
-
-        // assure updatedAt is exactly the same as createdAt at this point.
-        systemGeneratedProperties.updatedAt = systemGeneratedProperties.createdAt
-
-        const newUser = Object.assign(request.payload, systemGeneratedProperties)
-
-        return sendApiResponse('User', newUser)
-      }
+      handler: addNewUserHandler,
     })
 
     // GET users

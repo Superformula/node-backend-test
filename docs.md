@@ -1,7 +1,26 @@
-# Developer Notes
+# README
 ---
 
-User Model
+Users API exposes the ability to view and manage users.
+
+## Developer Guide
+
+### First Time Setup
+To setup the app on your local development machine the first time:
+
+1. Clone the repo locally and navigate into the root directory of the project.
+2. 
+
+### Running the app
+
+With Docker:
+
+Without Docker:
+
+
+## Code Test Notes
+
+User Model:
   - Typically, I'd ask if this service is a core, unoppinionated CRUD service or whether there are additional business requirements that are always applicable to it such as `name` or `dob` being required.  
   - I've made `id` property an internal, system-generated guid to keep this API strict with private data ownership. Would be helpful to add an external system reference id as well. 
     - Can be as simple as a naive `source_system_reference_id` property

@@ -7,6 +7,12 @@ const joi                  = require('joi')
 const generateUUID         = require('uuid/v1')
 const userValidationSchema = require('./user-model')
 const pickProperties       = require('lodash/pick')
+const sendApiResponse = (type, responseValue) => {
+  return {
+    type: type,
+    item: responseValue,
+  }
+}
 
 module.exports = {
   name: 'userService',
@@ -25,7 +31,7 @@ module.exports = {
           payload: pickProperties(userValidationSchema, ['name', 'dob', 'address', 'description'])
         }
       },
-      handler(request, h) {
+      handler(request, responseHandler) {
         // add system generated properties
         const systemGeneratedProperties = { 
           id: generateUUID(), 
@@ -37,8 +43,7 @@ module.exports = {
 
         const newUser = Object.assign(request.payload, systemGeneratedProperties)
 
-        
-        return newUser
+        return sendApiResponse('User', newUser)
       }
     })
 
@@ -46,7 +51,7 @@ module.exports = {
     server.route({
       method:'GET',
       path:'/',
-      handler(request, h) {
+      handler(request, responseHandler) {
         return 'GET Users'
       }
     })
@@ -55,7 +60,7 @@ module.exports = {
     server.route({
       method:'GET',
       path:'/{userId}',
-      handler(request, h) {
+      handler(request, responseHandler) {
         return 'GET User ' + encodeURIComponent(request.params.userId)
       }
     })
@@ -64,7 +69,7 @@ module.exports = {
     server.route({
       method:'PUT',
       path:'/{userId}',
-      handler(request, h) {
+      handler(request, responseHandler) {
         return 'Create User' + JSON.stringify(request.payload)
       }
     })
@@ -73,7 +78,7 @@ module.exports = {
     server.route({
       method:'DELETE',
       path:'/{userId}',
-      handler(request, h) {
+      handler(request, responseHandler) {
         return 'Create User' + JSON.stringify(request.payload)
       }
     })

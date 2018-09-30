@@ -4,7 +4,8 @@
   "description": "Be sure to read **all** of this document carefully, and follow the guidelines within.",
   "main": "index.js",
   "scripts": {
-    "test": "lab --assert code --coverage"
+    "test": "lab --assert code --coverage",
+    "start": "node ./src/index.js"
   },
   "repository": {
     "type": "git",
@@ -17,7 +18,11 @@
   },
   "homepage": "https://github.com/samples-afaq-tariq/node-backend-test#readme",
   "dependencies": {
+    "good": "^8.1.1",
+    "good-console": "^7.1.0",
+    "good-squeeze": "^5.1.0",
     "hapi": "^17.6.0",
+    "hapi-mongodb": "^7.1.0",
     "joi": "^13.7.0",
     "lodash": "^4.17.11",
     "uuid": "^3.3.2"

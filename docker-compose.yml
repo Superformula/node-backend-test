@@ -7,6 +7,9 @@ services:
     environment:
       - USERS_API_HOST=0.0.0.0
       - USERS_API_PORT=8081
+      - USERS_MONGODB_HOST=mongo
+      - USERS_MONGODB_PORT=27017
+      - USERS_MONGODB_NAME=superformula-users
     ports:
       - "8081:8081"
     links:

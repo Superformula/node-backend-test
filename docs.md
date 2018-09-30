@@ -3,20 +3,38 @@
 
 Users API exposes the ability to view and manage users.
 
+## Design
+
+Hapi Server
+  - RESTful
+  - Error handling
+Datastore
+  - Mongo
+    - indexes
+Testing
+Runtime
+  - Docker
+  - Logging
+    - log level guidance
+    - request logging vs. error logging
+    - log aggregation and insights strategy
+      - everything to stdout and aggregated by runtime process
+      - removes burden from app; can have a centralized logging library and collection process
+      - smoother transition to cloud-native solutions such as FaaS
+
 ## Developer Guide
 
 ### First Time Setup
 To setup the app on your local development machine the first time:
 
 1. Clone the repo locally and navigate into the root directory of the project.
-2. 
+2. Run `npm install`
 
 ### Running the app
 
 With Docker:
 
 Without Docker:
-
 
 ## Code Test Notes
 

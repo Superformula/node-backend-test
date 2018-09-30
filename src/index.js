@@ -1,12 +1,21 @@
 /**
  * @description Entrypoint of this API
  */
-const Hapi   = require('hapi')
-const server = Hapi.server({ 
-  host: process.env.USERS_API_HOST || 'localhost', 
-  port: process.env.USERS_API_PORT || '8081'
-})
+const hapi              = require('hapi')
 const userServicePlugin = require('./users-plugin')
+const loggingPlugin     = require('./logging-plugin')
+const hapiMongodbPlugin = require('hapi-mongodb')
+const usersApi          = hapi.server({ 
+  host: process.env.USERS_API_HOST, 
+  port: process.env.USERS_API_PORT
+})
+const mongoDbPluginOptions = {
+  url: `mongodb://${process.env.USERS_MONGODB_HOST}:${process.env.USERS_MONGODB_PORT}/${process.env.USERS_MONGODB_NAME}`,
+  settings: {
+    poolSize: 10
+  },
+  decorate: true
+}
 
 /**
  * @description Handles injecting routes and starting the server and any initial failure logging
@@ -14,23 +23,30 @@ const userServicePlugin = require('./users-plugin')
  */
 async function startApi() {
   try {
+    // register logging plugin and config
+    await usersApi.register(loggingPlugin)
+
+    // register the mongodb plugin
+    await usersApi.register({
+      plugin: hapiMongodbPlugin,
+      options: mongoDbPluginOptions
+    })
+
     // register the user resource plugin
-    await server.register(userServicePlugin, {
+    await usersApi.register(userServicePlugin, {
       routes: {
         prefix: '/api/v1/users'
       }
     })
 
-    await server.start()
-    
-    console.log(`superformula-users-api started on ${process.env.USERS_API_HOST}:${process.env.USERS_API_PORT}`)
+    await usersApi.start()
+
+    usersApi.log('info', `Users Api started, ${usersApi.info.host}:${usersApi.info.port}`)
   }
-  catch (err) {
-    console.log(err)
-    console.log('Users API Server could not startup:', server.info.uri)
+  catch (startupError) {
+    usersApi.log('error', `Users API could not startup on ${usersApi.info.uri}`)
     process.exit(1)
   }
-
 }
 
 startApi()

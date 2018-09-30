@@ -1,10 +1,10 @@
 /**
  * @description Entrypoint of this API
  */
-const Hapi              = require('hapi')
-const server            = Hapi.server({ 
-  host: process.env.USERS_API_HOST, 
-  port: process.env.USERS_API_PORT
+const Hapi   = require('hapi')
+const server = Hapi.server({ 
+  host: process.env.USERS_API_HOST || 'localhost', 
+  port: process.env.USERS_API_PORT || '8081'
 })
 const userServicePlugin = require('./users-plugin')
 
@@ -22,13 +22,15 @@ async function startApi() {
     })
 
     await server.start()
+    
+    console.log(`superformula-users-api started on ${process.env.USERS_API_HOST}:${process.env.USERS_API_PORT}`)
   }
   catch (err) {
     console.log(err)
+    console.log('Users API Server could not startup:', server.info.uri)
     process.exit(1)
   }
 
-  console.log('Server running at:', server.info.uri)
 }
 
 startApi()

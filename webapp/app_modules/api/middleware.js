@@ -11,10 +11,14 @@ module.exports = {
     // request helper methods
     app.use(function( req , res , next ){
 
+      req.getFullUrl = function(){
+        return this.protocol + '://' + this.get('host');
+      };
+
       res.apiResponse = { 
         data: null, 
         links: {
-          self: req.protocol + '://' + req.get('host') + req.originalUrl
+          self: req.getFullUrl() + req.originalUrl
         }
       };
 

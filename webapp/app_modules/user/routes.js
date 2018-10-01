@@ -79,7 +79,6 @@ module.exports = function( app ){
     } catch( ValidationError ) {
 
       console.error( ValidationError );
-
       res.status(400);
       return res.json(restApi.getErrorResponse( ValidationError.errors ));
     }
@@ -97,11 +96,25 @@ module.exports = function( app ){
 
   app.patch('/api/users/:userId([0-9]+)', async function(req,res){
 
-    // @todo update updatedAt
-    // @todo updated document
+    var userModels = app.service.nosql.models.user;
+    var doc;
 
-    res.sendStatus(200);
-    res.json(res.getResponse(req));
+    try {
+
+      doc = await userModels.User.findOneAndUpdate( { id: req.params.userId }, req.body, { runValidators: true } );
+
+    } catch ( ValidationError ) {
+
+      console.error( Error );
+      res.status(400);
+      return res.json(restApi.getErrorResponse( ValidationError.errors ));
+    }
+
+    if(!doc)
+      return res.sendStatus(404);
+
+    res.status(204);
+    res.json( restApi.getResponse( doc.getApiObject() ) );
   });  
 
 

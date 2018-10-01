@@ -29,7 +29,7 @@ Next, create a local PM2 configuration file using the provided default file:
 $ cp pm2.json pm2.local.json
 ````
 
-Ensure that configuration values in `pm2.local.json` will work with you system, and then start the application:
+Ensure that configuration values in `pm2.local.json` will work with you system. The `MONGODB_DSN` is required for persistence, but the other defaults may work. In order to use the location endpoints you must provide valid API key values for both `GMAP_API_KEY` and `NASA_API_KEY` for the [Google Cloud Platform Geocoding API service](https://console.cloud.google.com/marketplace/details/google/geocoding-backend.googleapis.com) and [Nasa Open API](https://api.nasa.gov/api.htm) respectively. Once you're done, start the application:
 
 ````bash
 $ pm2 start pm2.local.json
@@ -41,6 +41,7 @@ You should now have the application running, with all revelant JS files being wa
 ## API Endpoints
 
 All API endpoint paths exposed by the application begin with the prefix `/api`, which is a simple namespacing of paths in the event that additional functionality outside the current scope of the API is added at a later point. All endpoints which accept a request body are expecting a JSON format, and all response bodies use JSON as well. No other data formats are currently supported.
+
 
 #### GET /users/:userId
 
@@ -88,6 +89,7 @@ GET http://localhost:3000/api/users/1
 * 200: The user was successfully retrieved
 * 404: A user with the given Id was not found
 * 400: Internal server error
+
 
 #### GET /users
 
@@ -153,6 +155,7 @@ GET http://localhost:3000/api/users?limit=3&offset=0
 * 200: The page of users was successfully retrieved
 * 400: Internal server error
 
+
 #### POST /users
 
 Create a new user object. 
@@ -205,6 +208,7 @@ POST http://localhost:3000/api/users
 * 201: The new user was successfully created
 * 400: The new user data did not pass validation and a new user was not created
 
+
 #### PATCH /users/:userId
 
 Patch a single user object using their unique Id. Please see the above documentation for POST /users for a list of available request data. Full updating is not currently supported.
@@ -243,6 +247,7 @@ PATCH http://localhost:3000/api/users/2
 * 400: The user data did not pass validation and a patch was not performed
 * 404: A user with the given Id was not found
 
+
 #### DELETE /users/:userId
 
 Permanently hard-delete a single user object using their unique Id.
@@ -260,3 +265,40 @@ DELETE http://localhost:3000/api/users/2
 
 * 204: The user was successfully deleted
 * 404: A user with the given Id was not found
+
+
+#### GET /users/:userId/location
+
+Retrieve the mosty recently available Landsat image for the given user's physical address using the NASA Imagery API. Note that this endpoint will attempt to convert a user's address to latitude and longitutde using Google's geocoding service.
+
+##### Example
+
+````
+## Request
+
+GET http://localhost:3000/api/users/1/location
+
+## Response
+
+{
+    "data": {
+        "address": "12705 NW 22nd CT, Vancouver, WA, 98685",
+        "latlong": {
+            "lat": 45.712866,
+            "lng": -122.693947
+        },
+        "image_date": "2013-12-26T18:57:29",
+        "image_url": "https://earthengine.googleapis.com/api/thumb?thumbid=7c1ff75a27bafaa7a367cf277c5f06f5&token=fe1b5448ca7592e8d6cadf2152432c51",
+        "image_id": "LC8_L1T_TOA/LC80460282013360LGN00"
+    },
+    "links": {
+        "self": "http://gonzo:5001/api/users/20/location"
+    }
+}
+````
+
+##### Response Codes
+
+* 200: The image was successfully retrieved
+* 404: A user with the given Id was not found
+* 400: Internal server error, the user's address was not found, the user's address could not be converted to latitude and longitude, no image was found

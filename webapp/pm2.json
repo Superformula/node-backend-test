@@ -6,6 +6,8 @@
     "PORT": "5001",
     "INTERFACE": "localhost",
     "MONGODB_DSN": "mongodb://localhost/sfNodeTest",
+    "GMAP_API_KEY": "",
+    "NASA_API_KEY": "",
     "NODE_ENV": "LOCAL"
   },
   "watch": ["./**/*.js"],

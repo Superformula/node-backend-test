@@ -61,10 +61,52 @@ module.exports = function( app ){
   // read only endpoint to fetch location information based off the user's address (use NASA or Mapbox APIs)
   app.get('/api/users/:userId([0-9]+)/location', async function(req,res){
 
+    var userModels = app.service.nosql.models.user;
+    var geoData = app.service.geoData;
+
+    try {
+
+      var doc = await userModels.User.findOne({ id: req.params.userId });
+
+    } catch( Error ){
+
+      console.error( Error );
+      return res.sendStatus(400);      
+    }
+
+    if(!doc)
+      return res.sendStatus(404);
+
+    if(!doc.address) {
+      res.status(400);
+      return res.json(restApi.getErrorResponse({ noaddress: { message: 'The user does not have an address' }}));      
+    }
+
+
+    var gcResponse = await geoData.geoCode( doc.address );
+
+    if(!gcResponse) {
+      res.status(400);
+      return res.json(restApi.getErrorResponse({ addressnotfound: { message: 'The address could not be found' }}));
+    }
+
+    var nasaResponse = await geoData.getNasaLandsatImages( gcResponse.lat, gcResponse.lng );
+
+    if( !nasaResponse ) {
+      res.status(400);
+      return res.json(restApi.getErrorResponse({ imagenotfound: { message: 'There was no image found for that location' }}));       
+    }
 
     res.status(200);
-    res.json(res.apiResponse);
+    res.json( restApi.getResponse({
+      address: doc.address,
+      latlong: gcResponse,
+      image_date: nasaResponse.date,
+      image_url: nasaResponse.url,
+      image_id: nasaResponse.id
+    }));
   });
+
 
 
   app.post('/api/users', async function(req,res){

@@ -57,7 +57,7 @@ glob.sync( path.join( app.appModulePath , '*/' ) ).forEach(function( modulePath 
 });
 
 // Load core services
-app.requireService(['nosql','restApi']);
+app.requireService(['nosql','restApi','geoData']);
 
 
 // App module middleware

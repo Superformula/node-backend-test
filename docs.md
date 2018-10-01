@@ -3,11 +3,23 @@
 
 Users API exposes the ability to view and manage users.
 
+## API
+
 ## Design
 
+Access
+  Authentication
+  Authorization
 Hapi Server
   - RESTful
+    - no PATCH or LIST. simpler behaviors
+      - has danger of being misused if there are single-property consuming downstream services for PUT.
   - Error handling
+  - infrastructural app integrity
+    - cutoff long responses with 50x
+  - Responses
+    - standard error resp (Boom)
+    - standard success responses
 Datastore
   - Mongo
     - indexes
@@ -16,6 +28,8 @@ Runtime
   - Docker
   - Logging
     - log level guidance
+      - typical info, warn, error, debug, etc. 
+      - don't log errors that are handled cases
     - request logging vs. error logging
     - log aggregation and insights strategy
       - everything to stdout and aggregated by runtime process
@@ -36,7 +50,13 @@ With Docker:
 
 Without Docker:
 
+### Contribution Guidelines
+
+
 ## Code Test Notes
+Design
+  - eventual consitency
+    - would not have immediately consistent responses; would respond with 202s and no body instead
 
 User Model:
   - Typically, I'd ask if this service is a core, unoppinionated CRUD service or whether there are additional business requirements that are always applicable to it such as `name` or `dob` being required.  

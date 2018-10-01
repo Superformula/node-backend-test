@@ -31,6 +31,17 @@ app.requireService = function( services ){
 // Small, globally available helper methods and functions (i.e. string pad)
 app.requireService('helpers');
 
+app.use(function( req, res, next ){
+
+  app.getFullUrl = function( path = '' ){
+    if(!path)
+      path = req.originalUrl;
+    return `${req.protocol}://${req.get('host')}${path}`;
+  };
+
+  next();
+});
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -46,7 +57,7 @@ glob.sync( path.join( app.appModulePath , '*/' ) ).forEach(function( modulePath 
 });
 
 // Load core services
-app.requireService(['nosql']);
+app.requireService(['nosql','restApi']);
 
 
 // App module middleware
@@ -88,11 +99,7 @@ app.use(function(req, res, next) {
 
 app.use(function(err, req, res, next) {
   console.error( err );
-  res.status(err.status || 500);
-  res.send({
-    message: err.message,
-    error: err
-  });
+  res.sendStatus(err.status || 500);
 });
 
 

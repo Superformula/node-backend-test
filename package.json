@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "lab --assert code --coverage",
-    "start": "node ./src/index.js"
+    "start": "SUPF_USERS_API_HOST=0.0.0.0 SUPF_USERS_API_PORT=8081 SUPF_USERS_MONGODB_HOST=0.0.0.0 SUPF_USERS_MONGODB_PORT=27017 SUPF_USERS_MONGODB_NAME=superformula-users nodemon ./src/index.js"
   },
   "repository": {
     "type": "git",
@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "code": "^5.2.0",
-    "lab": "^16.1.0"
+    "lab": "^16.1.0",
+    "nodemon": "^1.18.4"
   }
 }

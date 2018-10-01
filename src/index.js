@@ -9,11 +9,11 @@ const hapiSwaggerPlugin = require('hapi-swagger')
 const inert             = require('inert')
 const vision            = require('vision')
 const usersApi          = hapi.server({ 
-  host: process.env.USERS_API_HOST, 
-  port: process.env.USERS_API_PORT
+  host: process.env.SUPF_USERS_API_HOST, 
+  port: process.env.SUPF_USERS_API_PORT
 })
 const mongoDbPluginOptions = {
-  url: `mongodb://${process.env.USERS_MONGODB_HOST}:${process.env.USERS_MONGODB_PORT}/${process.env.USERS_MONGODB_NAME}`,
+  url: `mongodb://${process.env.SUPF_USERS_MONGODB_HOST}:${process.env.SUPF_USERS_MONGODB_PORT}/${process.env.SUPF_USERS_MONGODB_NAME}`,
   settings: {
     poolSize: 10
   },

@@ -18,14 +18,18 @@
   },
   "homepage": "https://github.com/samples-afaq-tariq/node-backend-test#readme",
   "dependencies": {
+    "boom": "^7.2.0",
     "good": "^8.1.1",
     "good-console": "^7.1.0",
     "good-squeeze": "^5.1.0",
     "hapi": "^17.6.0",
     "hapi-mongodb": "^7.1.0",
+    "hapi-swagger": "^9.1.1",
+    "inert": "^5.1.0",
     "joi": "^13.7.0",
     "lodash": "^4.17.11",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "vision": "^5.4.0"
   },
   "devDependencies": {
     "code": "^5.2.0",

@@ -111,7 +111,7 @@ app.use(function(err, req, res, next) {
 
 app.set('port', process.env.PORT || '3000' );
 app.set('interface', ( process.env.INTERFACE || '127.0.0.1' ) );
-app.disabled('x-powered-by');
+app.disable('x-powered-by');
 
 const server = http.createServer(app);
 

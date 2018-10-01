@@ -3,19 +3,21 @@
 
 This folder contains a JSON REST API designed as a response to the Superformula Node.js backend developer test. The API provides expected CRUD endpoints and conforms to the [JSON API Specification](http://jsonapi.org) in its structure and response formats. Currently there is no authentication required to access the API.
 
-The application expects Node.js LTS and is primarily built using the [Express](http://www.expressjs.com) module for HTTP request/response and the [Mongoose ODM](https://mongoosejs.com/) module for persistence via MongoDB. In order to structure and organize the application, an HMVC approach is taken to building out the Express implementation. The individual modules of the HMVC structure are named "app modules" and can be found in the `app_modules` subfolder. Each app module contains submodules for routes, middleware handlers and models, each of which are loaded by the Express application during the bootstrap process. Additional modules are placed in a `services` subfolder and are designed as an abstraction for common tasks and vendor-specific implementations, such as querying the database (i.e. `servivecs/nosql.js`) or ensuring consistent response formats to API requests (i.e. `services/restApi.js`).
+The application expects Node.js LTS and is primarily built using the [Express](http://www.expressjs.com) module for HTTP request/response and the [Mongoose ODM](https://mongoosejs.com/) module for persistence via MongoDB. In order to structure and organize the application, an HMVC approach is taken to building out the Express implementation. The individual modules of the HMVC structure are named "app modules" and can be found in the `app_modules` subfolder. Each app module contains submodules for routes, middleware handlers, and database models, each of which are loaded by the Express application during the bootstrap process. 
 
-This approach creates extensibility by logically organizing endpoints. For example, all `/api/users` endpoints are handled by the `user` app module, and new endpoint groups and functionality can be added by adding new app modules. Additionally, there is an `api` app module which provides uptime endpoints and could easily be expanded to include authentication, rate limiting and other system-wide features. Service modules can access app modules in a predictable way and create a single, consistent method for their own consumption.
+External service dependencies, common tasks and vendor-specific implmentations are placed in "service" modules in the `services` subfolder. Services should be designed as abstraction layers for tasks such as querying the database (i.e. `servivecs/nosql.js`) or ensuring consistent response formats to API requests (i.e. `services/restApi.js`). Rather than loading these modules or their dependencies by importing them, all importing should be done within the service module itself, and service modules should be loaded during applcation boostrap shortly after app modules.
+
+This approach creates extensibility by separating concerns and logically organizing endpoints. For example, all `/api/users` endpoints are handled by the `user` app module, and new endpoint groups and functionality can be added by adding new app modules. Additionally, there is an `api` app module which provides uptime endpoints and could easily be expanded to include authentication, rate limiting and other system-wide features. Service modules can be easily accessed via the globally available `app.service` reference, thereby creating a single, consistent method for their own consumption.
 
 ## Installation
 
-Start by installing application dependencies using NPM:
+Start in the expected way by installing application dependencies using NPM:
 
 ````bash
 $ npm i
 ````
 
-The application is designed to use [PM2](http://pm2.keymetrics.io/) in development for watching and hot-reloading. PM2 is not listed as a development dependency, and it is instead *highly* recommended that you install it globally in your development environment:
+Next, install and configure [PM2](http://pm2.keymetrics.io/) for process keep-alive, watching and hot-reloading. Please note that PM2 is not listed as a development dependency, and it is instead *highly* recommended that you install it globally in your development environment:
 
 ````bash
 $ npm i -g pm2
@@ -33,7 +35,7 @@ Ensure that configuration values in `pm2.local.json` will work with you system, 
 $ pm2 start pm2.local.json
 ````
 
-You should now have the application running, with all revelant JS files being watched.
+You should now have the application running, with all revelant JS files being watched. Examine the output of `pm2 list` and `pm2 show [app name]` for information about process health and log file locations.
 
 
 ## API Endpoints

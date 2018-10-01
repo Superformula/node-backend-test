@@ -3,61 +3,89 @@
  * @description defines the routes available on the users resource
  * @type {Hapi Plugin Object}
  */
-const joi                  = require('joi')
-const userValidationSchema = require('./user-model')
-const pickProperties       = require('lodash/pick')
-const addNewUserHandler    = require('./route-handlers/create-new-user')
+const joi                   = require('joi')
+const userValidationSchema  = require('./user-model')
+const pickProperties        = require('lodash/pick')
+const addNewUserHandler     = require('./route-handlers/create-new-user')
+const getUserByIdHandler    = require('./route-handlers/get-user-by-id')
+const listUsersHandler      = require('./route-handlers/list-users')
+const updateUserByIdHandler = require('./route-handlers/update-user-by-id')
+const deleteUserByIdHandler = require('./route-handlers/delete-user-by-id')
 
 module.exports = {
   name: 'userService',
   version: '1.0.0',
   async register(server, options) {
-
-    server.route({
-      method:'POST',
-      path:'/',
-      options: {
-        validate: {
-          payload: pickProperties(userValidationSchema, ['name', 'dob', 'address', 'description'])
-        }
+    const routes = [
+      {
+        path:'/',
+        method:'POST',
+        options: {
+          notes: 'Create a new user. An id (uuid v4) can be provided optionally. If not provided, it will be generated.',
+          tags: ['api', 'user'],
+          validate: {
+            payload: pickProperties(userValidationSchema, ['id', 'name', 'dob', 'address', 'description']),
+          }
+        },
+        handler: addNewUserHandler,
       },
-      handler: addNewUserHandler,
-    })
-
-    // GET users
-    server.route({
-      method:'GET',
-      path:'/',
-      handler(request, responseHandler) {
-        return 'GET Users'
+      {
+        path:'/',
+        method:'GET',
+        options: {
+          notes: 'Returns a list of available users.',
+          tags: ['api', 'users'],
+          validate: {
+            query: {
+              limit: joi.number().integer().min(0).max(100).default(10),
+              page: joi.number().integer().min(1).default(1),
+            }
+          }
+        },
+        handler: listUsersHandler
+      },
+      {
+        path:'/{userId}',
+        method:'GET',
+        options: {
+          tags: ['api', 'user'],
+          validate: {
+            params: {
+              userId: joi.string().guid()
+            }
+          }
+        },
+        handler: getUserByIdHandler
+      },
+      {
+        method:'PUT',
+        path:'/{userId}',
+        options: {
+          tags: ['api', 'user'],
+          validate: {
+            params: {
+              userId: joi.string().guid()
+            },
+            payload: pickProperties(userValidationSchema, ['name', 'dob', 'address', 'description'])
+          }
+        },
+        handler: updateUserByIdHandler
+      },
+      {
+        method:'DELETE',
+        path:'/{userId}',
+        options: {
+          tags: ['api', 'user'],
+          validate: {
+            params: {
+              userId: joi.string().guid()
+            }
+          }
+        },
+        handler: deleteUserByIdHandler
       }
-    })
+    ]
 
-    // GET user by id
-    server.route({
-      method:'GET',
-      path:'/{userId}',
-      handler(request, responseHandler) {
-        return 'GET User ' + encodeURIComponent(request.params.userId)
-      }
-    })
-
-    // PUT user
-    server.route({
-      method:'PUT',
-      path:'/{userId}',
-      handler(request, responseHandler) {
-        return 'Create User' + JSON.stringify(request.payload)
-      }
-    })
-
-    // DELETE user
-    server.route({
-      method:'DELETE',
-      path:'/{userId}',
-      handler(request, responseHandler) {
-        return 'Create User' + JSON.stringify(request.payload)
-      }
-    })
+    routes.map((route) => server.route(route))
   }
 }

@@ -11,7 +11,7 @@ module.exports = async function getUserById(request, responseHandler) {
   try {
     const fetchedUser = await request.mongo.db
       .collection('users')
-      .findOne({ _id: request.params.userId })
+      .findOne({ _id: request.params.userId, archived: false })
 
     if (!fetchedUser) {
       return boom.notFound('User with provided id was not found.')

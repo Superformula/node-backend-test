@@ -14,7 +14,7 @@ module.exports = async function listUsers(request, responseHandler) {
 
     const fetchedUsers = await request.mongo.db
       .collection('users')
-      .find({}, { name: true, id: true, updatedAt: true })
+      .find({ archived: false }, { name: true, id: true, updatedAt: true })
       .sort({ updatedAt: -1 })
       .limit(request.query.limit)
       .skip(itemsToSkip)
@@ -23,7 +23,7 @@ module.exports = async function listUsers(request, responseHandler) {
     const parsedUsers = fetchedUsers.map(user => cleanseUserForResponse(user))
 
     return { 
-      type: 'Users', 
+      type: 'UserList', 
       items: parsedUsers,
       count: fetchedUsers.length,
       // TODO: add next page link

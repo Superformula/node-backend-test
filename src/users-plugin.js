@@ -24,7 +24,7 @@ module.exports = {
           notes: 'Create a new user. An id (uuid v4) can be provided optionally. If not provided, it will be generated.',
           tags: ['api', 'user'],
           validate: {
-            payload: pickProperties(userValidationSchema, ['id', 'name', 'dob', 'address', 'description']),
+            payload: pickProperties(userValidationSchema, ['id', 'name', 'dob', 'address', 'description', 'archived']),
           }
         },
         handler: addNewUserHandler,
@@ -48,6 +48,7 @@ module.exports = {
         path:'/{userId}',
         method:'GET',
         options: {
+          notes: 'Fetches a specific user by their id (userId url param)',
           tags: ['api', 'user'],
           validate: {
             params: {
@@ -61,6 +62,7 @@ module.exports = {
         method:'PUT',
         path:'/{userId}',
         options: {
+          notes: 'Replaces a specific user by their id (userId url param)',
           tags: ['api', 'user'],
           validate: {
             params: {
@@ -75,6 +77,7 @@ module.exports = {
         method:'DELETE',
         path:'/{userId}',
         options: {
+          notes: 'Deletes a user record',
           tags: ['api', 'user'],
           validate: {
             params: {

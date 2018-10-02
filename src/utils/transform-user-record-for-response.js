@@ -8,5 +8,6 @@
 module.exports = function transformUserRecord(user){
   user.id = user._id
   delete user._id
+  delete user.archived
   return user
 }

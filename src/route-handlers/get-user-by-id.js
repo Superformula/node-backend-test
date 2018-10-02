@@ -9,9 +9,8 @@ const cleanseUserForResponse = require('../utils/transform-user-record-for-respo
  */
 module.exports = async function getUserById(request, responseHandler) {
   try {
-    const fetchedUser = await request.mongo.db
-      .collection('users')
-      .findOne({ _id: request.params.userId, archived: false })
+    const fetchedUser = await request.server.methods
+      .getUserById(request.params.userId)
 
     if (!fetchedUser) {
       return boom.notFound('User with provided id was not found.')

@@ -11,15 +11,7 @@ module.exports = async function listUsers(request, responseHandler) {
 
   try {
     const itemsToSkip = (request.query.page - 1) * request.query.limit
-
-    const fetchedUsers = await request.mongo.db
-      .collection('users')
-      .find({ archived: false }, { name: true, id: true, updatedAt: true })
-      .sort({ updatedAt: -1 })
-      .limit(request.query.limit)
-      .skip(itemsToSkip)
-      .toArray()
-
+    const fetchedUsers = await request.server.methods.getAllUsers(request.query.limit, itemsToSkip)
     const parsedUsers = fetchedUsers.map(user => cleanseUserForResponse(user))
 
     return { 

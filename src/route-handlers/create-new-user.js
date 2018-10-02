@@ -22,14 +22,13 @@ module.exports = async function createNewUser(request, responseHandler) {
   delete newUser.id
 
   try {
-    const usersCollection = request.mongo.db.collection('users')
-    const existingUser = usersCollection.findOne({ _id: newUser._id })
+    const existingUser = await request.server.methods.getUserById(newUser._id)
 
     if (existingUser && Object.keys(existingUser).length > 0) {
       return boom.conflict(`User with provided id already exists.`)
     } else {
-      await usersCollection.insertOne(newUser)
-      const createdUser = await usersCollection.findOne({ _id: newUser._id })
+      await request.server.methods.insertUser(newUser)
+      const createdUser = await request.server.methods.getUserById(newUser._id)
       const cleansedUser = cleanseUserForResponse(createdUser)
       
       return { 

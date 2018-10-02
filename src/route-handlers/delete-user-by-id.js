@@ -9,19 +9,13 @@ const boom = require('boom')
 module.exports = async function deleteUserById(request, responseHandler) {
   
   try {
-    const userRecord = await request.mongo.db
-      .collection('users')
-      .findOne({ _id: request.params.userId, archived: false })
+    const userRecord = await request.server.methods.getUserById(request.params.userId)
 
     if (!userRecord) {
       return boom.notFound()
     } else {
       userRecord.archived = true
-
-      await request.mongo.db
-        .collection('users')
-        .updateOne({ _id: request.params.userId }, userRecord)
-      
+      await request.server.methods.updateUser(request.params.userId, userRecord)
       return {}
     }
 

@@ -8,8 +8,7 @@ const cleanseUserForResponse = require('../utils/transform-user-record-for-respo
  */
 module.exports = async function updateUserById(request, responseHandler) {
   try {
-    const userCollection = request.mongo.db.collection('users')
-    const fetchedUser    = await userCollection.findOne({ _id: request.params.userId })
+    const fetchedUser = await request.server.methods.getUserById(request.params.userId)
 
     if (!fetchedUser) {
       return boom.notFound('User with provided id was not found.')
@@ -20,7 +19,7 @@ module.exports = async function updateUserById(request, responseHandler) {
         createdAt: fetchedUser.createdAt
       })
 
-      await userCollection.updateOne({ _id: request.params.userId }, updatedUserRecord)
+      await request.server.methods.updateUser(request.params.userId, updatedUserRecord)
       const cleansedUser = cleanseUserForResponse(updatedUserRecord)
       
       return {

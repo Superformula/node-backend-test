@@ -57,6 +57,18 @@ async function startApi() {
       }
     })
 
+    const mongoUserCollection = usersApi.mongo.db.collection('users')
+    usersApi.method('getUserById', userId => mongoUserCollection.findOne({ _id: userId, archived: false }))
+    usersApi.method('insertUser', newUser => mongoUserCollection.insertOne(newUser))
+    usersApi.method('updateUser', (userId, user) => mongoUserCollection.updateOne({ _id: userId }, user))
+    usersApi.method('getAllUsers', (limit, skip) => {
+      return mongoUserCollection.find({ archived: false }, { name: true, id: true, updatedAt: true })
+        .sort({ updatedAt: -1 })
+        .limit(limit)
+        .skip(skip)
+        .toArray()
+    })
+
     await usersApi.start()
 
     usersApi.log(['info'], `Users Api started, ${usersApi.info.host}:${usersApi.info.port}`)

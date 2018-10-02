@@ -1,6 +1,5 @@
 const boom = require('boom')
 const cleanseUserForResponse = require('../utils/transform-user-record-for-response')
-
 /**
  * handler for fetching user by ID 
  * @param  {Hapi: Request} request        
@@ -16,14 +15,13 @@ module.exports = async function updateUserById(request, responseHandler) {
       return boom.notFound('User with provided id was not found.')
     } else {
 
-      const updatedUserRecord = Object.assign(request.payload, {
-        createdAt: fetchedUser.createdAt,
+      const updatedUserRecord = Object.assign(fetchedUser, request.payload, {
         updatedAt: new Date().toISOString(),
+        createdAt: fetchedUser.createdAt
       })
 
       await userCollection.updateOne({ _id: request.params.userId }, updatedUserRecord)
       const cleansedUser = cleanseUserForResponse(updatedUserRecord)
-      cleansedUser.id = fetchedUser._id
       
       return {
         type: 'User', 

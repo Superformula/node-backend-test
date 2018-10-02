@@ -1,0 +1,25 @@
+version: "3"
+services:
+  api:
+    container_name: superformula-users-api
+    restart: always
+    build: .
+    environment:
+      - SUPF_USERS_API_HOST=0.0.0.0
+      - SUPF_USERS_API_PORT=8081
+      - SUPF_USERS_MONGODB_HOST=mongo
+      - SUPF_USERS_MONGODB_PORT=27017
+      - SUPF_USERS_MONGODB_NAME=superformula-users
+    ports:
+      - "8081:8081"
+    links:
+      - mongo
+    depends_on:
+        - "mongo"
+  mongo:
+    container_name: mongo
+    image: mongo
+    volumes:
+      - ./data:/data/db
+    ports:
+      - "27017:27017"

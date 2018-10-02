@@ -11,6 +11,7 @@ module.exports = async function deleteUserById(request, responseHandler) {
   try {
     const userRecord = await request.server.methods.getUserById(request.params.userId)
 
+
     if (!userRecord) {
       return boom.notFound()
     } else {

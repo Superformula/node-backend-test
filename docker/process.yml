@@ -1,0 +1,14 @@
+apps:
+  - script   : ./index.js
+    name     : sf-nodetest-local
+    exec_mode: cluster
+    instances: 1
+    env:
+      PORT: 5005,
+      INTERFACE: 0.0.0.0
+      MONGODB_DSN: mongodb://mongodb:27018/sfNodeTest
+      GMAP_API_KEY: AIzaSyBgwoZpXSxMj8JK4JwHQ3_HAwE37l8Y1MU
+      NASA_API_KEY: KJ1MaUci5dZoZgbmSHXjAXBSAfXqwshtjCD99UrO
+      NODE_ENV: LOCAL
+    watch: ['./**/*.js']
+    ignore_watch: ['./node_modules']

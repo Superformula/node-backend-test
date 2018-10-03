@@ -1,0 +1,19 @@
+version: '3.7'
+services:
+  web:
+    image: sf-nodejs-test:latest
+    links:
+      - mongodb
+    ports:
+      - 5005:5005
+  mongodb:
+    image: mongo:latest
+    command: mongod --port 27018
+    environment:
+      - MONGO_DATA_DIR=/mongodb/data
+      - MONGO_LOG_DIR=/mongodb/logs
+    volumes:
+      - ./volumes/mongodb/data:/mongodb/data
+      - ./volumes/mongodb/logs:/mongodb/logs
+    ports:
+      - 27018:27018

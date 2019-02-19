@@ -1,0 +1,7 @@
+1. improve tests on metrics, checks args being passed
+2. user delete should probably be soft deletes... check with codin.
+3. implement elastic search.
+4. remove root request handler and create a
+   somewhat obfuscated heath endpoint
+   (all other paths should be authorized and include user/client information);
+

@@ -29,9 +29,12 @@ class User {
 			o = JSON.parse(o);
 		}
 		for (let k of Object.keys(this)) {
-			if (k in o && typeof o[k] !== 'undefined') {
-				this[k] = JSON.parse(JSON.stringify(o[k]));
+			if (o[k] === undefined) {
+				this[k] = undefined;
+				continue;
 			}
+
+			this[k] = JSON.parse(JSON.stringify(o[k]));
 		}
 	}
 
@@ -48,7 +51,7 @@ class User {
 		if (!user.id) {
 			errors.push('missing id');
 		}
-		if (!uuidPattern.test(user.id)) {
+		if (user.id && !uuidPattern.test(user.id)) {
 			errors.push('invalid id');
 		}
 		if (!user.name) {
@@ -60,7 +63,7 @@ class User {
 		if (!iso8601Pattern.test(user.dob)) {
 			errors.push('invalid dob date format');
 		}
-		if (!user.dob.includes('Z')) {
+		if (user.dob && !user.dob.includes('Z')) {
 			errors.push('invalid timezone for dob');
 		}
 		if (user.dob <= lowerBound) {
@@ -109,7 +112,14 @@ class User {
 			Key: {id}
 		};
 
-		return await models.dynamoRead(params);
+		let resp = await models.dynamoRead(params);
+		if (resp instanceof Error) {
+			return resp;
+		}
+		if (!resp.Item) {
+			return new Error('record does not exist');
+		}
+		return new User(resp.Item);
 	}
 
 	/**
@@ -128,7 +138,7 @@ class User {
 	/**
 	 * @return {Promise<User[]|Error>}
 	 */
-	static async all() {
+	static async getAll() {
 		let resp = await models.dynamoScan('users');
 		if (resp instanceof Error) {
 			return resp;

@@ -1,0 +1,38 @@
+beginnings of an api...
+
+the main focus here has been around testing...
+
+the api endpoints:
+GET     /
+GET     /v1/users
+GET     /v1/users/:id
+POST    /v1/users
+PUT     /v1/users/:id
+DELETE  /v1/users/:id
+
+Options to start the app:
+1. run dynamo locally and just:
+    > npm i && node.app
+2. docker-compose up
+
+Options to test the app
+1. if running dynamo and the app locally:
+    > npm run test ./models/*spec* ./*spec*
+2. if looking to run them through docker:
+    > ./test.sh
+3. if you want to run some curl tests when the app is up, you can:
+    > ./test_with_curl
+
+Some highlights:
+    - the user model tests against a local dynamo instance
+    - each test starts with a clean db to help isolate each test case
+    - a coverage report is available using nyc
+    - some ideas for how metrics and logging might work are included in comments
+    - a basic circle ci config is present but not tested
+
+A few ideas that sprang up while coding have been jotted down in todo/
+
+Some of the environment setup around local dynamo is a little wonky.
+I imagine it would need a second pass when considering ecs.
+
+Thanks for your time; was very cool meeting you all.

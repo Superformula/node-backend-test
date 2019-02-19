@@ -26,11 +26,12 @@ module.exports = {
 		process.env.AWS_SECRET_ACCESS_KEY = 'SOME_SECRET';
 		process.env.AWS_REGION = 'us-east-1';
 
+		let host = process.env.DOCKER ? 'dynamo' : 'localhost';
 		db = new aws.DynamoDB({
-			endpoint: 'http://localhost:8000'
+			endpoint: `http://${host}:8000`
 		});
 		dc = new aws.DynamoDB.DocumentClient({
-			endpoint: 'http://localhost:8000'
+			endpoint: `http://${host}:8000`
 		});
 	},
 
@@ -40,7 +41,7 @@ module.exports = {
 		}
 
 		// first delete any existing tables
-		let tables = await this.dynamoListTables(true);
+		let tables = await this.dynamoListTables();
 		for (let TableName of tables) {
 			try {
 				await db.deleteTable({TableName}).promise();

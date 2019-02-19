@@ -387,5 +387,4 @@ describe('the app', () => {
 		// restore
 		User.delete = save;
 	});
-
 });

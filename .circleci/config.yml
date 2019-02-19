@@ -1,0 +1,18 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: circleci/node:10.15.1
+      - image: circleci/dynamo:db:stretch
+    steps:
+      - checkout
+      - run
+          name: waiting for dynamo
+          command: dockerize -wait tcp://127.0.0.1:8000 -timeout 120s
+      - run
+          name: install deps
+          command: npm i
+      - run
+          name: tests
+          command: ./node_modules/.bin/mocha ./models/*spec* ./*spec*

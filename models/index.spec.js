@@ -24,12 +24,13 @@ describe('models api', () => {
 
 		let db = models.getDynamoClient();
 		let dc = models.getDocumentClient();
-		assert(db.endpoint.href === 'http://localhost:8000/');
-		assert(dc.options.endpoint === 'http://localhost:8000');
+
+		let host = process.env.DOCKER ? 'dynamo' : 'localhost';
+		assert(db.endpoint.href === `http://${host}:8000/`);
+		assert(dc.options.endpoint === `http://${host}:8000`);
 	});
 
 	it('can perform a data reset for local testing', async function () {
-		models.initForLocal();
 		let err = await models.dataReset();
 		assert(!err);
 

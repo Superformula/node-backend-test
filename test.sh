@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
 
-./node_modules/.bin/mocha ./models/*spec* ./*spec*
+docker build -t sf .
+docker-compose run -e DOCKER=true web npm run test ./models/*spec* ./*spec*
+

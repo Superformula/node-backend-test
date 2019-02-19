@@ -1,0 +1,15 @@
+version: '3'
+services:
+  web:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - LOCAL=true
+      - DOCKER=true
+    volumes:
+      - .:/code
+    depends_on:
+      - dynamo
+  dynamo:
+    image: "amazon/dynamodb-local"

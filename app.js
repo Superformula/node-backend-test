@@ -7,7 +7,12 @@ let logger = require('./lib/logger');
 let metrics = require('./lib/metrics');
 
 let app = express();
-let server = app.listen(8080);
+let server = app.listen(8080, () => console.log('...'));
+
+if (process.env.LOCAL) {
+	models.initForLocal();
+	models.dataReset();
+}
 
 app.use(express.json());
 
@@ -23,7 +28,6 @@ app.post('/exit', (req, res) => {
 	if (models.local) {
 		server.close();
 	}
-
 });
 
 // root
@@ -186,4 +190,3 @@ app.delete('/v1/users/:id', async (req, res) => {
 	let duration = Date.now() - start;
 	metrics.record('lat_delete_user_200', duration);
 });
-

@@ -1,4 +1,5 @@
 let uuid = require('uuid/v4');
+let models = require('./index');
 
 /**
  * @class User
@@ -36,6 +37,7 @@ class User {
 
 	/**
 	 * @param {User} user
+	 * @return {string[]|null} errors
 	 */
 	static validate(user) {
 		let errors = [];
@@ -72,6 +74,67 @@ class User {
 		}
 
 		return errors.length ? errors : null;
+	}
+
+	/**
+	 * @param {User} user
+	 * @return {User|Error} inserted
+	 */
+	static async insert(user) {
+		if (!user) {
+			return new Error('missing user');
+		}
+
+		let req = {
+			TableName: 'users',
+			Item: user
+		};
+
+		let id = user.id;
+		let inserted = await models.dynamoPut(req, {id});
+		if (inserted instanceof Error) {
+			return inserted;
+		}
+
+		return new User(inserted);
+	}
+
+	/**
+	 * @param {string} id
+	 * @return {Promise<User|Error>}
+	 */
+	static async fetch(id) {
+		let params = {
+			TableName: 'users',
+			Key: {id}
+		};
+
+		return await models.dynamoRead(params);
+	}
+
+	/**
+	 * @param id
+	 * @return {Promise<Error>}
+	 */
+	static async delete(id) {
+		let params = {
+			TableName: 'users',
+			Key: {id}
+		};
+
+		return await models.dynamoDelete(params);
+	}
+
+	/**
+	 * @return {Promise<User[]|Error>}
+	 */
+	static async all() {
+		let resp = await models.dynamoScan('users');
+		if (resp instanceof Error) {
+			return resp;
+		}
+
+		return resp.Items.map(i => new User(i));
 	}
 }
 

@@ -1,9 +1,12 @@
 let assert = require('assert');
 let uuid = require('uuid/v4');
 
+let models = require('./index');
 let User = require('./user');
 
 describe('user model', function () {
+	models.initForLocal();
+
 	let fixture = {
 		id: uuid(),
 		name: 'test user',
@@ -120,4 +123,27 @@ describe('user model', function () {
 		errors = User.validate(u);
 		assert(errors === null);
 	});
+
+	it('can create a user record in dynamo', async function () {
+		await models.dataReset();
+
+		let u = new User(fixture);
+		u.id = uuid();
+
+		let inserted = await User.insert(u);
+		assert(!(inserted instanceof Error));
+		assert(inserted.createdAt === fixture.createdAt);
+		assert(inserted.updatedAt !== fixture.updatedAt);
+	});
+
+	it('can fetch a user by id', async function () {
+		await models.dataReset();
+
+		let u = new User(fixture);
+		u.id = 'FAKE-UUID';
+		
+
+	});
+
+
 });

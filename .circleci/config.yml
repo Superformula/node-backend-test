@@ -15,4 +15,4 @@ jobs:
           command: npm i
       - run
           name: tests
-          command: ./node_modules/.bin/mocha ./models/*spec* ./*spec*
+          command: npm run test ./models/*spec* ./*spec*

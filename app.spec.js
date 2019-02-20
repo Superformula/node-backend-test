@@ -1,7 +1,6 @@
 let assert = require('assert');
 let uuid = require('uuid');
 
-let app = require('./app');
 let models = require('./models');
 let User = require('./models/user');
 let HttpClient = require('./lib/httpClient');
@@ -9,7 +8,6 @@ let logger = require('./lib/logger');
 let metrics = require('./lib/metrics');
 
 describe('the app', () => {
-	models.initForLocal();
 	let client = new HttpClient('localhost', 8080);
 	let fixture = {
 		id: uuid(),
@@ -21,6 +19,8 @@ describe('the app', () => {
 
 	before(() => {
 		logger.disable();
+		process.env.LOCAL = true;
+		require('./app');
 	});
 
 	after(async () => {
@@ -70,7 +70,7 @@ describe('the app', () => {
 		assert(resp.statusCode === 401);
 	});
 
-	it('can fetch getAll users', async function () {
+	it('can fetch all users', async function () {
 		await models.dataReset();
 
 		let u1 = new User(fixture);
@@ -93,7 +93,7 @@ describe('the app', () => {
 		assert(ids.size === 0);
 	});
 
-	it('returns 500 on error fetching getAll users', async function () {
+	it('returns 500 on error fetching all users', async function () {
 		// error case
 		let save = User.getAll;
 		User.getAll = () => new Error();
@@ -113,11 +113,18 @@ describe('the app', () => {
 		let headers = {Authorization: 'abc'};
 		let resp = await client.request('GET', `/v1/users/${id}`, null, headers);
 		let body = JSON.parse(resp.body);
-
 		assert(resp.statusCode === 200);
 		for (let k of Object.keys(inserted)) {
 			assert(inserted[k] === body[k]);
 		}
+	});
+
+	it('returns a 404 if the user does not exist', async function () {
+		let headers = {Authorization: 'abc'};
+		let resp = await client.request('GET', `/v1/users/nonexistent`, null, headers);
+		let body = JSON.parse(resp.body);
+		assert(resp.statusCode === 404);
+		assert(body.error.includes('no such user'));
 	});
 
 	it('returns 500 on error fetching a single user', async function () {
@@ -167,8 +174,8 @@ describe('the app', () => {
 		let resp = await client.request('POST', '/v1/users', user, headers);
 		let body = JSON.parse(resp.body);
 		assert(resp.statusCode === 400);
-		assert(body.length === 1);
-		assert(body.includes('missing id'));
+		assert(body.error.length === 1);
+		assert(body.error.includes('missing id'));
 
 		// name validation
 		user = new User(fixture);
@@ -176,8 +183,8 @@ describe('the app', () => {
 		resp = await client.request('POST', '/v1/users', user, headers);
 		body = JSON.parse(resp.body);
 		assert(resp.statusCode === 400);
-		assert(body.length === 1);
-		assert(body.includes('missing name'));
+		assert(body.error.length === 1);
+		assert(body.error.includes('missing name'));
 
 		// dob validation
 		user = new User(fixture);
@@ -185,9 +192,9 @@ describe('the app', () => {
 		resp = await client.request('POST', '/v1/users', user, headers);
 		body = JSON.parse(resp.body);
 		assert(resp.statusCode === 400);
-		assert(body.length === 2);
-		assert(body.includes('invalid dob date format'));
-		assert(body.includes('invalid timezone for dob'));
+		assert(body.error.length === 2);
+		assert(body.error.includes('invalid dob date format'));
+		assert(body.error.includes('invalid timezone for dob'));
 
 		// address validation
 		user = new User(fixture);
@@ -195,8 +202,8 @@ describe('the app', () => {
 		resp = await client.request('POST', '/v1/users', user, headers);
 		body = JSON.parse(resp.body);
 		assert(resp.statusCode === 400);
-		assert(body.length === 1);
-		assert(body.includes('missing address'));
+		assert(body.error.length === 1);
+		assert(body.error.includes('missing address'));
 
 		// description validation
 		user = new User(fixture);
@@ -204,8 +211,8 @@ describe('the app', () => {
 		resp = await client.request('POST', '/v1/users', user, headers);
 		body = JSON.parse(resp.body);
 		assert(resp.statusCode === 400);
-		assert(body.length === 1);
-		assert(body.includes('missing user description'));
+		assert(body.error.length === 1);
+		assert(body.error.includes('missing user description'));
 
 		// multiple field errors
 		user = new User(fixture);
@@ -214,10 +221,10 @@ describe('the app', () => {
 		delete user.description;
 		resp = await client.request('POST', '/v1/users', user, headers);
 		body = JSON.parse(resp.body);
-		assert(body.includes('missing dob'));
-		assert(body.includes('invalid dob date format'));
-		assert(body.includes('missing address'));
-		assert(body.includes('missing user description'));
+		assert(body.error.includes('missing dob'));
+		assert(body.error.includes('invalid dob date format'));
+		assert(body.error.includes('missing address'));
+		assert(body.error.includes('missing user description'));
 	});
 
 	it('returns 500 on error posting a single user', async function () {
@@ -239,29 +246,30 @@ describe('the app', () => {
 		await models.dataReset();
 
 		let user = new User(fixture);
-		await User.insert(user);
+		let inserted = await User.insert(user);
 
 		let headers = {Authorization: 'abc'};
-		let changed = JSON.parse(JSON.stringify(user));
+		let changed = JSON.parse(JSON.stringify(inserted));
 		changed.name = 'a new name';
+
 		let resp = await client.request('PUT', `/v1/users/${user.id}`, changed, headers);
-		let inserted = JSON.parse(resp.body);
+		let updated = JSON.parse(resp.body);
 		let iso8601Pattern = /^(-?(?:[1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])T(2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?Z$/;
 
 		assert(resp.statusCode === 200);
-		assert(inserted.id === user.id);
-		assert(inserted.name === changed.name);
-		assert(inserted.dob === user.dob);
-		assert(inserted.address === user.address);
-		assert(inserted.description === user.description);
-		assert(inserted.createdAt === user.createdAt);
-		assert(inserted.updatedAt !== user.updatedAt);
-		assert(iso8601Pattern.test(inserted.createdAt));
-		assert(iso8601Pattern.test(inserted.updatedAt));
+		assert(updated.id === inserted.id);
+		assert(updated.name === changed.name);
+		assert(updated.dob === inserted.dob);
+		assert(updated.address === inserted.address);
+		assert(updated.description === inserted.description);
+		assert(updated.createdAt === inserted.createdAt);
+		assert(updated.updatedAt !== inserted.updatedAt);
+		assert(iso8601Pattern.test(updated.createdAt));
+		assert(iso8601Pattern.test(updated.updatedAt));
 
 		let fetched = User.fetch(user.id);
 		for (let k of Object.keys(fetched)) {
-			assert(fetched[k] === inserted[k]);
+			assert(fetched[k] === updated[k]);
 		}
 	});
 
@@ -274,14 +282,16 @@ describe('the app', () => {
 		// id validation
 		let headers = {Authorization: 'abc'};
 		let resp = await client.request('PUT', '/v1/users/non-existent-id', user, headers);
+		let body = JSON.parse(resp.body);
 		assert(resp.statusCode === 400);
+		assert(body.error.includes('user does not exist'));
 
 		let withMissingId = JSON.parse(JSON.stringify(user));
 		delete withMissingId.id;
 		resp = await client.request('PUT', `/v1/users/${user.id}`, withMissingId, headers);
-		let body = JSON.parse(resp.body);
+		body = JSON.parse(resp.body);
 		assert(resp.statusCode === 400);
-		assert(body.includes('missing id'));
+		assert(body.error.includes('missing id'));
 
 		// name validation
 		user = new User(fixture);
@@ -289,8 +299,8 @@ describe('the app', () => {
 		resp = await client.request('PUT', `/v1/users/${user.id}`, user, headers);
 		body = JSON.parse(resp.body);
 		assert(resp.statusCode === 400);
-		assert(body.length === 1);
-		assert(body.includes('missing name'));
+		assert(body.error.length === 1);
+		assert(body.error.includes('missing name'));
 
 		// dob validation
 		user = new User(fixture);
@@ -298,9 +308,9 @@ describe('the app', () => {
 		resp = await client.request('PUT', `/v1/users/${user.id}`, user, headers);
 		body = JSON.parse(resp.body);
 		assert(resp.statusCode === 400);
-		assert(body.length === 2);
-		assert(body.includes('invalid dob date format'));
-		assert(body.includes('invalid timezone for dob'));
+		assert(body.error.length === 2);
+		assert(body.error.includes('invalid dob date format'));
+		assert(body.error.includes('invalid timezone for dob'));
 
 		// address validation
 		user = new User(fixture);
@@ -308,8 +318,8 @@ describe('the app', () => {
 		resp = await client.request('PUT', `/v1/users/${user.id}`, user, headers);
 		body = JSON.parse(resp.body);
 		assert(resp.statusCode === 400);
-		assert(body.length === 1);
-		assert(body.includes('missing address'));
+		assert(body.error.length === 1);
+		assert(body.error.includes('missing address'));
 
 		// description validation
 		user = new User(fixture);
@@ -317,8 +327,8 @@ describe('the app', () => {
 		resp = await client.request('PUT', `/v1/users/${user.id}`, user, headers);
 		body = JSON.parse(resp.body);
 		assert(resp.statusCode === 400);
-		assert(body.length === 1);
-		assert(body.includes('missing user description'));
+		assert(body.error.length === 1);
+		assert(body.error.includes('missing user description'));
 
 		// multiple field errors
 		user = new User(fixture);
@@ -327,10 +337,10 @@ describe('the app', () => {
 		delete user.description;
 		resp = await client.request('PUT', `/v1/users/${user.id}`, user, headers);
 		body = JSON.parse(resp.body);
-		assert(body.includes('missing dob'));
-		assert(body.includes('invalid dob date format'));
-		assert(body.includes('missing address'));
-		assert(body.includes('missing user description'));
+		assert(body.error.includes('missing dob'));
+		assert(body.error.includes('invalid dob date format'));
+		assert(body.error.includes('missing address'));
+		assert(body.error.includes('missing user description'));
 	});
 
 	it('returns 500 on error updating a single user', async function () {

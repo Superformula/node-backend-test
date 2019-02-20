@@ -88,12 +88,13 @@ class User {
 			return new Error('missing user');
 		}
 
+		let item = new User(user);
 		let req = {
 			TableName: 'users',
-			Item: user
+			Item: item
 		};
 
-		let id = user.id;
+		let id = item.id;
 		let inserted = await models.dynamoPut(req, {id});
 		if (inserted instanceof Error) {
 			return inserted;
@@ -117,8 +118,9 @@ class User {
 			return resp;
 		}
 		if (!resp.Item) {
-			return new Error('record does not exist');
+			return null;
 		}
+
 		return new User(resp.Item);
 	}
 

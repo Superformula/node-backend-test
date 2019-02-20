@@ -52,7 +52,6 @@ module.exports = {
 
 		// then create fresh versions of them
 		for (let def of definitions) {
-			let TableName = def.TableName;
 			try {
 				await db.createTable(def).promise();
 			} catch (e) {
@@ -87,7 +86,7 @@ module.exports = {
 
 	async dynamoPut(req, key) {
 		if (!req) {
-			return new Error('missing request');
+			return new Error('missing request object');
 		}
 		if (!key || typeof key !== 'object') {
 			return new Error('invalid key object');

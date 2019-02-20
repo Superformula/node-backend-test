@@ -1,7 +1,6 @@
 1. improve tests on metrics, checks args being passed
 2. user delete should probably be soft deletes... check with codin.
-3. remove root request handler and create a
-   somewhat obfuscated heath endpoint
+3. remove root request handler and create a somewhat obfuscated health endpoint
    (all other paths should be authorized and include user/client information);
 4. send all app errors through the logger.
 5. ensure POST method does not allow createdAt property

@@ -7,7 +7,7 @@ let logger = require('./lib/logger');
 let metrics = require('./lib/metrics');
 
 let app = express();
-let server = app.listen(8080, () => console.log('...'));
+let server = app.listen(8080, () => logger.log('app', 'listening on 8080'));
 
 if (process.env.LOCAL) {
 	models.initForLocal();
@@ -47,7 +47,7 @@ app.use((req, res, next) => {
 	let isAuthenticated = auth.authenticate(accessToken);
 	if (!isAuthenticated) {
 		metrics.increment('unauthorized');
-		res.status(401).end();
+		res.status(401).json({error: 'unauthorized'});
 		let duration = Date.now() - start;
 		metrics.record('lat_auth_unauthorized', duration);
 		return;
@@ -63,7 +63,7 @@ app.get('/v1/users', async (req, res) => {
 	metrics.increment('req_get_users');
 	let resp = await User.getAll();
 	if (resp instanceof Error) {
-		res.status(500).end();
+		res.status(500).json({error: resp.message});
 		metrics.increment('req_get_users_500');
 		let duration = Date.now() - start;
 		metrics.record('lat_get_users_500', duration);
@@ -81,8 +81,15 @@ app.get('/v1/users/:id', async (req, res) => {
 	metrics.increment('req_get_user');
 	let id = req.params.id;
 	let user = await User.fetch(id);
+	if (user === null) {
+		res.status(404).json({error: 'no such user'});
+		metrics.increment('req_get_user_404');
+		let duration = Date.now() - start;
+		metrics.record('lat_get_user_404', duration);
+		return;
+	}
 	if (user instanceof Error) {
-		res.status(500).end();
+		res.status(500).json({error: user.message});
 		metrics.increment('req_get_user_500');
 		let duration = Date.now() - start;
 		metrics.record('lat_get_user_500', duration);
@@ -102,7 +109,7 @@ app.post('/v1/users', async (req, res) => {
 	let user = new User(body);
 	let validationErrors = User.validate(user);
 	if (validationErrors) {
-		res.status(400).json(validationErrors);
+		res.status(400).json({error: validationErrors});
 		metrics.increment('req_post_user_400');
 		let duration = Date.now() - start;
 		metrics.record('lat_post_user_400', duration);
@@ -111,7 +118,7 @@ app.post('/v1/users', async (req, res) => {
 
 	let inserted = await User.insert(user);
 	if (inserted instanceof Error) {
-		res.status(500).end();
+		res.status(500).json({error: inserted.message});
 		metrics.increment('req_post_user_500');
 		let duration = Date.now() - start;
 		metrics.record('lat_post_user_500', duration);
@@ -130,16 +137,15 @@ app.put('/v1/users/:id', async (req, res) => {
 	let id = req.params.id;
 	let existing = await User.fetch(id);
 	let isError = existing instanceof Error;
-	if (isError &&
-		existing.message.includes('does not exist')) {
-		res.status(400).end();
+	if (!existing) {
+		res.status(400).json({error: 'user does not exist'});
 		metrics.increment('req_put_user_400_nonexisting');
 		let duration = Date.now() - start;
 		metrics.record('lat_put_user_400_nonexisting', duration);
 		return;
 	}
 	if (isError) {
-		res.status(500).end();
+		res.status(500).json({error: existing.message});
 		metrics.increment('req_put_user_500_fetch');
 		let duration = Date.now() - start;
 		metrics.record('lat_put_user_500_fetch', duration);
@@ -150,7 +156,7 @@ app.put('/v1/users/:id', async (req, res) => {
 	let user = new User(body);
 	let validationErrors = User.validate(user);
 	if (validationErrors) {
-		res.status(400).json(validationErrors);
+		res.status(400).json({error: validationErrors});
 		metrics.increment('req_put_user_400_invalid_data');
 		let duration = Date.now() - start;
 		metrics.record('lat_put_user_400_invalid_data', duration);
@@ -160,7 +166,7 @@ app.put('/v1/users/:id', async (req, res) => {
 	let inserted = await User.insert(user);
 	if (inserted instanceof Error) {
 		metrics.increment('req_put_user_500_insert');
-		res.status(500).end();
+		res.status(500).json({error: inserted.message});
 		let duration = Date.now() - start;
 		metrics.record('lat_put_user_500_insert', duration);
 		return;
@@ -178,7 +184,7 @@ app.delete('/v1/users/:id', async (req, res) => {
 	let id = req.params.id;
 	let result = await User.delete(id);
 	if (result instanceof Error) {
-		res.status(500).end();
+		res.status(500).json({error: result.message});
 		let duration = Date.now() - start;
 		metrics.increment('req_delete_user_500');
 		metrics.record('lat_delete_user_500', duration);

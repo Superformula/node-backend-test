@@ -38,7 +38,15 @@ describe('user model', function () {
 			k => assert(fixture[k] === u[k]));
 	});
 
-	it('can be instantiated by pass json', () => {
+	it('will not replace missing values in passed object', () => {
+		let o = JSON.parse(JSON.stringify(fixture));
+		delete o.id;
+
+		let user = new User(o);
+		assert(!user.id);
+	});
+
+	it('can be instantiated by passing json', () => {
 		let json = JSON.stringify(fixture);
 		let u = new User(json);
 		Object.keys(u).forEach(
@@ -69,6 +77,10 @@ describe('user model', function () {
 		u.id = 'FAKE-UUID';
 		let errors = User.validate(u);
 		assert(errors.includes('invalid id'));
+
+		delete u.id;
+		errors = User.validate(u);
+		assert(errors.includes('missing id'));
 
 		u.id = uuid();
 		errors = User.validate(u);
@@ -136,13 +148,130 @@ describe('user model', function () {
 		assert(inserted.updatedAt !== fixture.updatedAt);
 	});
 
+	it('returns an error if no user is supplied on create', async function () {
+		await models.dataReset();
+		let result = await User.insert(null);
+		assert(result instanceof Error);
+		assert(result.message.includes('missing user'));
+	});
+
+	it('returns an error if there is an issue creating the record', async function () {
+		await models.dataReset();
+		let user = new User(fixture);
+		let dc = models.getDocumentClient();
+		dc.put = () => ({
+			promise() {
+				throw new Error('msg1');
+			}
+		});
+
+		let result = await User.insert(user);
+		assert(result instanceof Error);
+		assert(result.message.includes('msg1'));
+
+		// reset
+		models.initForLocal();
+	});
+
 	it('can fetch a user by id', async function () {
 		await models.dataReset();
 
 		let u = new User(fixture);
-		u.id = 'FAKE-UUID';
-		
+		await User.insert(u);
 
+		let fetched = await User.fetch(u.id);
+		assert(fetched.id === u.id);
+		assert(fetched.name === u.name);
+		assert(fetched.dob === u.dob);
+		assert(fetched.address = u.address);
+		assert(fetched.description === u.description);
+		assert(fetched.createdAt === u.createdAt);
+		assert(fetched.updatedAt !== u.updatedAt);
+	});
+
+	it('returns an error when there is an issue with fetch', async function () {
+		await models.dataReset();
+		let dc = models.getDocumentClient();
+		dc.get = () => ({
+			promise() {
+				return new Error('msg1');
+			}
+		});
+
+		let result = await User.fetch('some-id');
+		assert(result instanceof Error);
+		assert(result.message.includes('msg1'));
+
+		// reset
+		models.initForLocal();
+	});
+
+	it('can fetch all users', async function () {
+		await models.dataReset();
+
+		let u1 = new User(fixture);
+		let u2 = new User(fixture);
+		u2.id = uuid();
+
+		await User.insert(u1);
+		await User.insert(u2);
+
+		let users = await User.getAll();
+		assert(users.length === 2);
+		let set = new Set([u1.id, u2.id]);
+		for (let u of users) {
+			set.delete(u.id);
+		}
+		assert(set.size === 0);
+	});
+
+	it('returns an error when there is an issue with fetching', async function () {
+		await models.dataReset();
+		let dc = models.getDocumentClient();
+		dc.scan = () => ({
+			promise() {
+				throw new Error('msg1');
+			}
+		});
+
+		let result = await User.getAll();
+		assert(result instanceof Error);
+		assert(result.message.includes('msg1'));
+
+		models.initForLocal();
+	});
+
+	it('will return null on fetch when nonexistent', async function () {
+		await models.dataReset();
+		let fetched = await User.fetch('no-such-user-id');
+		assert(fetched === null);
+	});
+
+	it('can delete a user', async function () {
+		await models.dataReset();
+
+		let u = new User(fixture);
+		await User.insert(u);
+
+		let result = await User.delete(u.id);
+		assert(!(result instanceof Error));
+	});
+
+	it('returns an error if issue with delete', async function () {
+		await models.dataReset();
+		let dc = models.getDocumentClient();
+		dc.delete = () => ({
+			promise() {
+				throw new Error('msg1');
+			}
+		});
+
+		let result = await User.delete('some-id');
+		assert(result instanceof Error);
+		assert(result.message.includes('msg1'));
+
+		// reset
+		models.initForLocal();
 	});
 
 

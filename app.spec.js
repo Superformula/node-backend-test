@@ -17,7 +17,8 @@ describe('the app', () => {
 		description: 'this is a test user',
 	};
 
-	before(() => {
+	before(async function () {
+		this.timeout(10000);
 		logger.disable();
 		process.env.LOCAL = true;
 		require('./app');

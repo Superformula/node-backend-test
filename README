@@ -1,6 +1,6 @@
 beginnings of an api...
 
-the main focus here has been around testing...
+a large part of the effort here has been around testing and coverage...
 
 the api endpoints:
 GET     /
@@ -28,11 +28,17 @@ Some highlights:
     - each test starts with a clean db to help isolate each test case
     - a coverage report is available using nyc
     - some ideas for how metrics and logging might work are included in comments
-    - a basic circle ci config is present but not tested
+    - a basic circle ci config is present but not tested, if not spot on, think it's close.
 
-A few ideas that sprang up while coding have been jotted down in todo/
+Code quirks?
+    - I know it's unpopular, but I like to use let instead of const..
+    - It's less characters and let's me keep things dynamic (like the language).
+    - I know.. some dude at google wrote about using const and now we all love it.. don't hate me ;)
+    - linters can switch em out if people like... I can "let" it go 8)
 
-Some of the environment setup around local dynamo is a little wonky.
-I imagine it would need a second pass when considering ecs.
+A few ideas and questions that sprang up during dev have been jotted down in todo/
 
-Thanks for your time; was very cool meeting you all.
+Some of the env setup around local dynamo is a touch wonky.
+I imagine it would need a second pass when considering ECS.
+
+Thanks for your time; again, very cool meeting you all!

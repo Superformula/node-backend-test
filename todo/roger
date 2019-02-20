@@ -1,7 +1,19 @@
 1. improve tests on metrics, checks args being passed
 2. user delete should probably be soft deletes... check with codin.
-3. remove root request handler and create a somewhat obfuscated health endpoint
-   (all other paths should be authorized and include user/client information);
+3. remove root request handler and create a somewhat obfuscated /health endpoint
+   (all other paths should be authorized and include user/client information irl);
 4. send all app errors through the logger.
-5. ensure POST method does not allow createdAt property
-6. implement elastic search.
+5. ensure POST method does not allow createdAt property.
+6. dynamo scans can be parallel with TotalSegments arg irl.
+7. implement elastic search for search and paginated results irl.
+8. for the advanced "filter feature".. are we basically
+   talking a get all and filter(record => record.name === whatever)?
+   or are we thinking more like an elastic search query?
+   the latter might look something like:
+   {
+    query: {
+      match:{
+       name:'term'
+      }
+     }
+   }

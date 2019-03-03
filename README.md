@@ -1,78 +1,83 @@
-# Superformula Back-end Developer Test
+# RESTful API with CRUD Endpoints for Managing Golf Athletes
 
-Be sure to read **all** of this document carefully, and follow the guidelines within.
+One Paragraph of project description goes here
 
-## Context
+## Getting Started
 
-Build a RESTful API that can `create/read/update/delete` user data from a persistence store.
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
-### User Model
+### Prerequisites
+
+What things you need to install the software and how to install them
 
 ```
-{
-  "id": "xxx",                  // user ID (must be unique)
-  "name": "backend test",       // user name
-  "dob": "",                    // date of birth
-  "address": "",                // user address
-  "description": "",            // user description
-  "createdAt": ""               // user created date
-  "updatedAt": ""               // user updated date
-}
+Give examples
 ```
 
-## Requirements
+### Installing
 
-### Functionality
+A step by step series of examples that tell you how to get a development env running
 
-- The API should follow typical RESTful API design pattern.
-- The data should be saved in the DB.
-- Provide proper API documentation.
-- Proper error handling should be used.
+Say what the step will be
 
-### Tech stack
+```
+Give the example
+```
 
-- Use Node.js `LTS` and any framework of your choice.
-- Use any persistence store. NoSQL DB is preferred.
+And repeat
 
-### Bonus
+```
+until finished
+```
 
-- Write clear **documentation** on how it has been designed and how to run the code.
-- Provide proper unit tests.
-- Add a read only endpoint to fetch location information based off the user's address (use [NASA](https://api.nasa.gov/api.html) or [Mapbox](https://www.mapbox.com/api-documentation/) APIs)
-- Use Docker containers.
-- Utilize Docker Compose.
-- Setup a CircleCI config to build/test/deploy the service.
-- Write concise and clear commit messages.
-- Leverage Terraform or other infrastructure management tooling to spin up needed resources.
-- Providing an online demo is welcomed, but not required.
+End with an example of getting some data out of the system or using it for a little demo
 
-### Advanced requirements
+## Running the tests
 
-These may be used for further challenges. You can freely skip these if you are not asked to do them; feel free to try out if you feel up to it.
+Explain how to run the automated tests for this system
 
-- Use [hapi](https://hapijs.com/) to build the core feature and use a different framework (such as Express or Loopback) to handle HTTP requests.
-- Provide a complete user auth (authentication/authorization/etc) strategy, such as OAuth.
-- Provide a complete error handling and logging (when/how/etc) strategy.
-- Use a NoSQL DB and build a filter feature that can filter records with some of the attributes such as username. Do not use query languages such as MongoDB Query or Couchbase N1QL.
+### Break down into end to end tests
 
-## What We Care About
+Explain what these tests test and why
 
-Use any libraries that you would normally use if this were a real production App. Please note: we're interested in your code & the way you solve the problem, not how well you can use a particular library or feature.
+```
+Give an example
+```
 
-_We're interested in your method and how you approach the problem just as much as we're interested in the end result._
+### And coding style tests
 
-Here's what you should strive for:
+Explain what these tests test and why
 
-- Good use of current Node.js & API design best practices.
-- Solid testing approach.
-- Extensible code.
+```
+Give an example
+```
 
-## Q&A
+## Deployment
 
-> Where should I send back the result when I'm done?
+Add additional notes about how to deploy this on a live system
 
-Fork this repo and send us a pull request when you think you are done. There is no deadline for this task unless otherwise noted to you directly.
+## Built With
 
-> What if I have a question?
+* [Express](https://expressjs.com/) - Node.js web application framework
+* [MongoDB](https://www.mongodb.com/) - NoSQL database
+* [SuperTest](https://github.com/visionmedia/supertest) - Library for testing Node.js HTTP servers
+* [Mocha](https://mochajs.org/) - JavaScript test framework
+* [Chai](https://github.com/visionmedia/supertest) - JavaScript assertion library
 
-Just create a new issue in this repo and we will respond and get back to you quickly.
+## Versioning
+
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+
+## Authors
+
+* **Charlie Udom** 
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
+## Acknowledgments
+
+* Thanks to **Billie Thompson** for providing a clean and concise [README.md](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2) template.
+* Inspiration
+* etc

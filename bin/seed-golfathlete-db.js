@@ -6,7 +6,8 @@ const async = require('async')
 const Athlete = require('../src/models/athlete')
 
 const mongoose = require('mongoose')
-mongoose.connect('mongodb://localhost:27017/golfAthlete', { useNewUrlParser: true })
+mongoose.set('useCreateIndex', true)
+mongoose.connect('mongodb://localhost:27017/golfAthleteTest', { useNewUrlParser: true })
 mongoose.Promise = global.Promise
 const db = mongoose.connection
 db.on('error', console.error.bind(console, 'MongoDB connection error:'))
@@ -50,7 +51,7 @@ function createAthletes (cb) {
       createAthlete('Udom', 'Alexa', '0146376', '+2.0', '2019-03-02', '97.1', '2002-01-01', '4235 NW 192nd Ave, Portland, OR 97229', 'Future NCAA D1 Golfer', callback)
     },
     function (callback) {
-      createAthlete('Udom', 'Momo', '1239208', '6.9', '2019-03-02', '85.3', '2004-01-01', '4235 NW 192nd Ave, Portland, OR 97229', 'Fresh on the Varsity Golf Team', callback)
+      createAthlete('Udom', 'Momo', '1239208', '6.9', '2019-03-02', '85.3', '2004-01-01', '4235 NW 192nd Ave, Portland, OR 97229', 'Freshman on the Varsity Golf Team', callback)
     }
   ],
   cb)

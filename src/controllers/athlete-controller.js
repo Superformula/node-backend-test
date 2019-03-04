@@ -46,7 +46,18 @@ exports.createAthlete = (req, res, next) => {
 }
 
 exports.updateAthlete = (req, res, next) => {
-  res.send('NOT IMPLEMENTED')
+  Athlete.findById(req.params.id)
+    .exec((err, athlete) => {
+      if (err) {
+        return next(err)
+      }
+      if (athlete == null) {
+        return next(boom.notFound())
+      }
+      Athlete.updateOne(util.toMongoDb(req.body))
+        .then(res.status(204).send())
+        .catch(err => { return next(err) })
+    })
 }
 
 exports.patchAthlete = (req, res, next) => {

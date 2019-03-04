@@ -21,20 +21,6 @@ describe('app', () => {
     description: 'Recreational golfer'
   }
 
-  describe('GET /api/v1/athletes', () => {
-    it('should return an empty list', done => {
-      request(app)
-        .get('/api/v1/athletes')
-        .expect('Content-Type', /json/)
-        .expect(200)
-        .end((err, res) => {
-          expect(res.body).to.be.an('array')
-          expect(res.body.length).to.equal(0)
-          done()
-        })
-    })
-  })
-
   describe('POST /api/v1/athletes', () => {
     it('should create a new athlete', done => {
       request(app)
@@ -44,6 +30,7 @@ describe('app', () => {
         .expect(201)
         .end((err, res) => {
           id = res.body.id
+          expect(res.body.lastName).to.equal('McTesterson')
           done()
         })
     })
@@ -55,11 +42,7 @@ describe('app', () => {
         .post('/api/v1/athletes')
         .send(Object.assign({}, athlete, { lastName: undefined }))
         .set('Accept', 'application/json')
-        .expect(400)
-        .end((err, res) => {
-          expect(res.body.error).to.equal('Bad Request')
-          done()
-        })
+        .expect(400, done)
     })
   })
 
@@ -69,11 +52,7 @@ describe('app', () => {
         .post('/api/v1/athletes')
         .send(Object.assign({}, athlete, { ghinNumber: '123456' }))
         .set('Accept', 'application/json')
-        .expect(400)
-        .end((err, res) => {
-          expect(res.body.error).to.equal('Bad Request')
-          done()
-        })
+        .expect(400, done)
     })
   })
 
@@ -82,12 +61,7 @@ describe('app', () => {
       request(app)
         .get('/api/v1/athletes')
         .expect('Content-Type', /json/)
-        .expect(200)
-        .end((err, res) => {
-          expect(res.body.length).to.equal(1)
-          expect(res.body[0].lastName).to.equal('McTesterson')
-          done()
-        })
+        .expect(200, done)
     })
   })
 
@@ -96,28 +70,40 @@ describe('app', () => {
       request(app)
         .get(`/api/v1/athletes/${id}`)
         .expect('Content-Type', /json/)
-        .expect(200)
-        .end((err, res) => {
-          expect(res.body.lastName).to.equal('McTesterson')
-          done()
-        })
+        .expect(200, done)
     })
   })
 
   describe('GET /api/v1/athletes/:id with invalid id', () => {
     it('should return a 404 error', done => {
       request(app)
-        .get(`/api/v1/athletes/${id}`)
+        .get(`/api/v1/athletes/foo`)
         .expect('Content-Type', /json/)
-        .expect(200)
-        .end((err, res) => {
-          expect(res.body.lastName).to.equal('McTesterson')
-          done()
-        })
+        .expect(404, done)
+    })
+  })
+
+  describe('PUT /api/v1/athletes/:id', () => {
+    it('should update existing athlete', done => {
+      request(app)
+        .put(`/api/v1/athletes/${id}`)
+        .send(Object.assign({}, athlete, { id: id, firstName: 'Test' }))
+        .set('Accept', 'application/json')
+        .expect(204, done)
+    })
+  })
+
+  describe('PUT /api/v1/athletes/:id with invalid id', () => {
+    it('should return a 404 error', done => {
+      request(app)
+        .put(`/api/v1/athletes/foo`)
+        .expect('Content-Type', /json/)
+        .expect(404, done)
     })
   })
 
   after(done => {
+    // close the connection opened by SuperTest
     mongoose.connection.db.dropDatabase(() => {
       mongoose.connection.close(done)
     })

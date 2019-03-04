@@ -3,7 +3,7 @@ const expect = chai.expect
 const Athlete = require('../../../src/models/athlete')
 
 describe('new Athlete', () => {
-  it('should create a new instance Athlete', () => {
+  it('should create a new instance of Athlete', () => {
     const now = Date.now()
     const athlete = new Athlete({
       lastName: 'Heath',

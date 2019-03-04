@@ -10,8 +10,8 @@ const athleteRouter = require('./routes/athlete-routes')
 
 const app = express()
 
-const mongoDB = 'mongodb://localhost:27017/golfAthlete'
-mongoose.connect(mongoDB, { useNewUrlParser: true })
+mongoose.set('useCreateIndex', true)
+mongoose.connect('mongodb://localhost:27017/golfAthlete', { useNewUrlParser: true })
 mongoose.Promise = global.Promise
 const db = mongoose.connection
 db.on('error', console.error.bind(console, 'MongoDB connection error:'))
@@ -28,16 +28,16 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
 app.use('/api/v1/athletes', athleteRouter)
-app.use('*', (req, res, next) => { next(boom.badRequest()) })
+app.use('*', (req, res, next) => { next(boom.badRequest('Invalid route')) })
 
-// handle MongoDB ObjectId CastError and boomify non-Boom errors
 app.use((err, req, res, next) => {
   if (!boom.isBoom(err)) {
-    if (err instanceof mongoose.Error.CastError) {
-      next(boom.notFound('Not found'))
+    if (err.name && err.name === 'ValidationError') { // handle joi validation errors
+      next(boom.badRequest(err.message))
+    } else if (err.name && err.name === 'MongoError' && err.code && err.code === 11000) { // handle duplicate key error
+      next(boom.badRequest('Athlete with this GHIN number already exists'))
     } else {
-      console.log(err.message)
-      next(boom.boomify(err))
+      next(boom.boomify(err)) // boomify all other non-Boom errors
     }
   } else {
     next(err)
@@ -46,7 +46,6 @@ app.use((err, req, res, next) => {
 
 // error handler expecting a Boom error
 app.use((err, req, res, next) => {
-  console.log(JSON.stringify(err, null, 2))
   res.status(err.output.statusCode).json(err.output.payload)
 })
 

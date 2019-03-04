@@ -16,8 +16,6 @@ const athletes = []
 function createAthlete (lastName, firstName, ghinNumber, cachedGhinIndex, cachedGhinIndexDate, driverClubHeadSpeed, dob, address, description, cb) {
   const now = Date.now()
 
-  // todo joi validate
-
   const athlete = new Athlete({
     lastName: lastName,
     firstName: firstName,
@@ -52,7 +50,7 @@ function createAthletes (cb) {
       createAthlete('Udom', 'Alexa', '0146376', '+2.0', '2019-03-02', '97.1', '2002-01-01', '4235 NW 192nd Ave, Portland, OR 97229', 'Future NCAA D1 Golfer', callback)
     },
     function (callback) {
-      createAthlete('Udom', 'Momo', '1239208 ', '6.9', '2019-03-02', '85.3', '2004-01-01', '4235 NW 192nd Ave, Portland, OR 97229', 'Fresh on the Varsity Golf Team', callback)
+      createAthlete('Udom', 'Momo', '1239208', '6.9', '2019-03-02', '85.3', '2004-01-01', '4235 NW 192nd Ave, Portland, OR 97229', 'Fresh on the Varsity Golf Team', callback)
     }
   ],
   cb)

@@ -8,6 +8,7 @@ const app = require('../src/app')
 
 describe('app', () => {
   let id
+  let createdAt
 
   const athlete = {
     lastName: 'McTesterson',
@@ -30,9 +31,20 @@ describe('app', () => {
         .expect(201)
         .end((err, res) => {
           id = res.body.id
+          createdAt = res.body.createdAt
           expect(res.body.lastName).to.equal('McTesterson')
           done()
         })
+    })
+  })
+
+  describe('POST /api/v1/athletes with same id', () => {
+    it('should return a 400', done => {
+      request(app)
+        .post('/api/v1/athletes')
+        .send(Object.assign(athlete, { _id: id }))
+        .set('Accept', 'application/json')
+        .expect(400, done)
     })
   })
 
@@ -71,7 +83,11 @@ describe('app', () => {
       request(app)
         .get('/api/v1/athletes')
         .expect('Content-Type', /json/)
-        .expect(200, done)
+        .expect(200)
+        .end((err, res) => {
+          expect(res.body).to.be.an('array')
+          done()
+        })
     })
   })
 
@@ -80,7 +96,12 @@ describe('app', () => {
       request(app)
         .get(`/api/v1/athletes/${id}`)
         .expect('Content-Type', /json/)
-        .expect(200, done)
+        .expect(200)
+        .end((err, res) => {
+          expect(res.body.id).to.equal(id)
+          expect(res.body.lastName).to.equal('McTesterson')
+          done()
+        })
     })
   })
 
@@ -97,9 +118,23 @@ describe('app', () => {
     it('should update existing athlete by id', done => {
       request(app)
         .put(`/api/v1/athletes/${id}`)
-        .send(Object.assign({}, athlete, { id: id, firstName: 'Test' }))
+        .send(Object.assign({}, athlete, { firstName: 'Tester', createdAt: '1999-12-31' }))
         .set('Accept', 'application/json')
         .expect(204, done)
+    })
+  })
+
+  describe('GET /api/v1/athletes/:id', () => {
+    it('should return one updated athlete by id', done => {
+      request(app)
+        .get(`/api/v1/athletes/${id}`)
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .end((err, res) => {
+          expect(res.body.id).to.equal(id)
+          expect(res.body.firstName).to.equal('Tester')
+          done()
+        })
     })
   })
 
@@ -109,6 +144,26 @@ describe('app', () => {
         .put(`/api/v1/athletes/foo`)
         .expect('Content-Type', /json/)
         .expect(404, done)
+    })
+  })
+
+  describe('PUT /api/v1/athletes/:id with last name missing', () => {
+    it('should return 400', done => {
+      request(app)
+        .put(`/api/v1/athletes/${id}`)
+        .send(Object.assign({}, athlete, { id: id, lastName: undefined }))
+        .set('Accept', 'application/json')
+        .expect(400, done)
+    })
+  })
+
+  describe('PUT /api/v1/athletes/:id with GHIN number too long', () => {
+    it('should return 400', done => {
+      request(app)
+        .put(`/api/v1/athletes/${id}`)
+        .send(Object.assign({}, athlete, { id: id, ghinNumber: '12345678' }))
+        .set('Accept', 'application/json')
+        .expect(400, done)
     })
   })
 

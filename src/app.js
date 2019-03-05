@@ -11,6 +11,7 @@ const athleteRouter = require('./routes/athlete-routes')
 const app = express()
 
 mongoose.set('useCreateIndex', true)
+mongoose.set('runValidators', true)
 mongoose.connect('mongodb://localhost:27017/golfAthleteTest', { useNewUrlParser: true })
 mongoose.Promise = global.Promise
 const db = mongoose.connection
@@ -35,7 +36,7 @@ app.use((err, req, res, next) => {
     if (err.name && err.name === 'ValidationError') { // handle joi validation errors
       next(boom.badRequest(err.message))
     } else if (err.name && err.name === 'MongoError' && err.code && err.code === 11000) { // handle duplicate key error
-      next(boom.badRequest('Athlete with this GHIN number already exists'))
+      next(boom.badRequest(err.message))
     } else {
       next(boom.boomify(err)) // boomify all other non-Boom errors
     }

@@ -24,8 +24,11 @@ const joiAthleteSchema = joi.object({
 
 const convertedSchema = joigoose.convert(joiAthleteSchema)
 
+// Commented this out because this prevents using save for updateAthlete.
+// Using save for updateAthlete takes advantage of the joi validate that was added.
+// Moving this check to createAthlete.
 // check for existing athlete by GHIN number
-convertedSchema.ghinNumber.unique = true
+// convertedSchema.ghinNumber.unique = true
 
 const AthleteSchema = new Schema(convertedSchema)
 

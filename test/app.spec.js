@@ -38,6 +38,26 @@ describe('app', () => {
     })
   })
 
+  describe('POST /api/v1/athletes', () => {
+    it('should create a new athlete with no GHIN number', done => {
+      request(app)
+        .post('/api/v1/athletes')
+        .send(Object.assign(athlete, { ghinNumber: undefined }))
+        .set('Accept', 'application/json')
+        .expect(201, done)
+    })
+  })
+
+  describe('POST /api/v1/athletes', () => {
+    it('should create another new athlete with no GHIN number', done => {
+      request(app)
+        .post('/api/v1/athletes')
+        .send(Object.assign(athlete, { ghinNumber: undefined }))
+        .set('Accept', 'application/json')
+        .expect(201, done)
+    })
+  })
+
   describe('POST /api/v1/athletes with same id', () => {
     it('should return a 400', done => {
       request(app)

@@ -45,7 +45,7 @@ function createAthlete (lastName, firstName, ghinNumber, cachedGhinIndex, cached
 function createAthletes (cb) {
   async.series([
     function (callback) {
-      createAthlete('Udom', 'Charlie', '5192665', '8.3', '2019-03-02', '106.4', '1973-01-01', '4235 NW 192nd Ave, Portland, OR 97229', 'TPI Level 2 Coach', callback)
+      createAthlete('Udom', 'Charlie', '5192665', '8.3', '2019-03-02', '106.4', '1973-01-01', '4235 NW 192nd Ave, Portland, OR 97229', 'TPI Level 2 Certified Coach', callback)
     },
     function (callback) {
       createAthlete('Udom', 'Alexa', '0146376', '+2.0', '2019-03-02', '97.1', '2002-01-01', '4235 NW 192nd Ave, Portland, OR 97229', 'Future NCAA D1 Golfer', callback)

@@ -1,0 +1,207 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Golf Performance Training",
+    "description": "RESTful API with CRUD endpoints for managing golf athletes",
+    "contact":{
+      "email": "charlie.udom@gmail.com"
+    },
+    "license": {
+      "name": "ISC",
+      "url": "https://opensource.org/licenses/ISC"
+    }
+  },
+  "host": "localhost:3000",
+  "basePath": "/api/v1",
+  "tags": [
+    {
+      "name": "athletes",
+      "description": "API for golf athletes"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/athletes": {
+      "post": {
+        "tags": [
+          "athletes"
+        ],
+        "summary": "Add a new athlete",
+        "parameters": [
+          {
+            "name": "athlete",
+            "in": "body",
+            "description": "Athlete that needs to be added to the program",
+            "require": true,
+            "schema": {
+              "$ref": "#/definitions/Athlete"
+            }
+          }
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "Athlete added",
+            "schema": {
+              "$ref": "#/definitions/Athlete"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "athletes"
+        ],
+        "summary": "List all athletes",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Athletes"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/athletes/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Unique ID of athlete",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": [
+          "athletes"
+        ],
+        "summary": "Get athlete by ID",
+        "responses": {
+          "200": {
+            "description": "Athlete found",
+            "schema": {
+              "$ref": "#/definitions/Athlete"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update athlete by ID",
+        "tags": [
+          "athletes"
+        ],
+        "parameters": [
+          {
+            "name": "athlete",
+            "in": "body",
+            "description": "Athlete with updated values",
+            "schema": {
+              "$ref": "#/definitions/Athlete"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Athlete updated",
+            "schema": {
+              "$ref": "#/definitions/Athlete"
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete athlete by ID",
+        "tags": [
+          "athletes"
+        ],
+        "responses": {
+          "200": {
+            "description": "Athlete is deleted",
+            "schema": {
+              "$ref": "#/definitions/Athlete"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Athlete": {
+      "required": [
+        "lastName",
+        "firstName"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "uniqueItems": true
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "ghinNumber" : {
+          "type": "string",
+          "uniqueItems": true
+        },
+        "cachedGhinIndex" : {
+          "type": "string"
+        },
+        "cachedGhinIndexDate" : {
+          "type": "string"
+        },
+        "driverClubHeadSpeed" : {
+          "type": "float"
+        },
+        "dob": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        }
+      }
+    },
+    "Athletes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Athlete"
+      }
+    }
+  }
+}

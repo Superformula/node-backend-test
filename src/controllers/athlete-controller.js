@@ -38,7 +38,7 @@ exports.createAthlete = (req, res, next) => {
     .exec((err, athlete) => {
       if (err) {
         return next(err)
-      } else if (athlete && athlete.ghinNumber === req.body.ghinNumber) {
+      } else if (athlete && athlete.ghinNumber && athlete.ghinNumber === req.body.ghinNumber) {
         return next(boom.badRequest('Athlete with this GHIN number already exists'))
       }
       const now = Date.now()

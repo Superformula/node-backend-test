@@ -6,6 +6,8 @@ const rateLimit = require('express-rate-limit')
 const morgan = require('morgan')
 const helmet = require('helmet')
 const mongoose = require('mongoose')
+const swaggerUi = require('swagger-ui-express')
+const swaggerDocument = require('../swagger')
 const athleteRouter = require('./routes/athlete-routes')
 
 const app = express()
@@ -22,6 +24,7 @@ const limiter = rateLimit({
   max: 180 // limit each IP to 100 requests per windowMs
 })
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 app.use(limiter) // apply to all requests; todo configure per route as appropriate
 app.use(morgan('dev'))
 app.use(helmet())

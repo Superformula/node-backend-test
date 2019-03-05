@@ -123,11 +123,14 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Athlete updated",
-            "schema": {
-              "$ref": "#/definitions/Athlete"
-            }
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       },
@@ -137,14 +140,14 @@
           "athletes"
         ],
         "responses": {
-          "200": {
-            "description": "Athlete is deleted",
-            "schema": {
-              "$ref": "#/definitions/Athlete"
-            }
+          "204": {
+            "description": "No Content"
           },
           "400": {
             "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       }

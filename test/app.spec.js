@@ -42,7 +42,7 @@ describe('app', () => {
     it('should create a new athlete with no GHIN number', done => {
       request(app)
         .post('/api/v1/athletes')
-        .send(Object.assign(athlete, { ghinNumber: undefined }))
+        .send(Object.assign({}, athlete, { ghinNumber: undefined }))
         .set('Accept', 'application/json')
         .expect(201, done)
     })
@@ -52,7 +52,7 @@ describe('app', () => {
     it('should create another new athlete with no GHIN number', done => {
       request(app)
         .post('/api/v1/athletes')
-        .send(Object.assign(athlete, { ghinNumber: undefined }))
+        .send(Object.assign({}, athlete, { ghinNumber: undefined }))
         .set('Accept', 'application/json')
         .expect(201, done)
     })
@@ -62,7 +62,7 @@ describe('app', () => {
     it('should return a 400', done => {
       request(app)
         .post('/api/v1/athletes')
-        .send(Object.assign(athlete, { _id: id }))
+        .send(Object.assign({}, athlete, { id: id }))
         .set('Accept', 'application/json')
         .expect(400, done)
     })
@@ -138,7 +138,7 @@ describe('app', () => {
     it('should update existing athlete by id', done => {
       request(app)
         .put(`/api/v1/athletes/${id}`)
-        .send(Object.assign({}, athlete, { firstName: 'Tester', createdAt: '1999-12-31' }))
+        .send(Object.assign({}, athlete, { id: id, firstName: 'Tester', createdAt: '1999-12-31' }))
         .set('Accept', 'application/json')
         .expect(204, done)
     })

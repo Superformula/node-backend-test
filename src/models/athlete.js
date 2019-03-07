@@ -30,7 +30,7 @@ const convertedSchema = joigoose.convert(joiAthleteSchema)
 // check for existing athlete by GHIN number
 // convertedSchema.ghinNumber.unique = true
 
-const AthleteSchema = new Schema(convertedSchema)
+const AthleteSchema = new Schema(convertedSchema, { timestamps: true })
 
 AthleteSchema
   .virtual('fullName')

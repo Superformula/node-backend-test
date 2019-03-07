@@ -32,67 +32,50 @@ describe('app', () => {
         .end((err, res) => {
           id = res.body.id
           createdAt = res.body.createdAt
+          console.log(res.body)
           expect(res.body.lastName).to.equal('McTesterson')
           done()
         })
     })
-  })
-
-  describe('POST /api/v1/athletes', () => {
     it('should create a new athlete with no GHIN number', done => {
       request(app)
         .post('/api/v1/athletes')
-        .send(Object.assign({}, athlete, { ghinNumber: undefined }))
+        .send({ ...athlete, ghinNumber: undefined })
         .set('Accept', 'application/json')
         .expect(201, done)
     })
-  })
-
-  describe('POST /api/v1/athletes', () => {
     it('should create another new athlete with no GHIN number', done => {
       request(app)
         .post('/api/v1/athletes')
-        .send(Object.assign({}, athlete, { ghinNumber: undefined }))
+        .send({ ...athlete, ghinNumber: undefined })
         .set('Accept', 'application/json')
         .expect(201, done)
     })
-  })
-
-  describe('POST /api/v1/athletes with same id', () => {
-    it('should return a 400', done => {
+    it('should return a 400 with same id', done => {
       request(app)
         .post('/api/v1/athletes')
-        .send(Object.assign({}, athlete, { id: id }))
+        .send({ ...athlete, id })
         .set('Accept', 'application/json')
         .expect(400, done)
     })
-  })
-
-  describe('POST /api/v1/athletes with same GHIN number', () => {
-    it('should return a 400', done => {
+    it('should return a 400 with same GHIN number', done => {
       request(app)
         .post('/api/v1/athletes')
         .send(athlete)
         .set('Accept', 'application/json')
         .expect(400, done)
     })
-  })
-
-  describe('POST /api/v1/athletes with last name is missing', () => {
-    it('should return a 400 error', done => {
+    it('should return a 400 error with last name missing', done => {
       request(app)
         .post('/api/v1/athletes')
-        .send(Object.assign({}, athlete, { lastName: undefined }))
+        .send({ ...athlete, lastName: undefined })
         .set('Accept', 'application/json')
         .expect(400, done)
     })
-  })
-
-  describe('POST /api/v1/athletes with GHIN number too short', () => {
-    it('should return a 400 error', done => {
+    it('should return a 400 error with GHIN number too short', done => {
       request(app)
         .post('/api/v1/athletes')
-        .send(Object.assign({}, athlete, { ghinNumber: '123456' }))
+        .send({ ...athlete, ghinNumber: '123456' })
         .set('Accept', 'application/json')
         .expect(400, done)
     })
@@ -123,10 +106,7 @@ describe('app', () => {
           done()
         })
     })
-  })
-
-  describe('GET /api/v1/athletes/:id with invalid id', () => {
-    it('should return a 404 error', done => {
+    it('should return a 404 error with invalid id', done => {
       request(app)
         .get(`/api/v1/athletes/foo`)
         .expect('Content-Type', /json/)
@@ -138,7 +118,7 @@ describe('app', () => {
     it('should update existing athlete by id', done => {
       request(app)
         .put(`/api/v1/athletes/${id}`)
-        .send(Object.assign({}, athlete, { id: id, firstName: 'Tester', createdAt: '1999-12-31' }))
+        .send({ ...athlete, id, firstName: 'Tester', createdAt: '1999-12-31' })
         .set('Accept', 'application/json')
         .expect(204, done)
     })
@@ -158,30 +138,24 @@ describe('app', () => {
     })
   })
 
-  describe('PUT /api/v1/athletes/:id with invalid id', () => {
-    it('should return a 404 error', done => {
+  describe('PUT /api/v1/athletes/:id', () => {
+    it('should return a 404 error with invalid id', done => {
       request(app)
         .put(`/api/v1/athletes/foo`)
         .expect('Content-Type', /json/)
         .expect(404, done)
     })
-  })
-
-  describe('PUT /api/v1/athletes/:id with last name missing', () => {
-    it('should return 400', done => {
+    it('should return 400 with last name missing', done => {
       request(app)
         .put(`/api/v1/athletes/${id}`)
-        .send(Object.assign({}, athlete, { id: id, lastName: undefined }))
+        .send({ ...athlete, id, lastName: undefined })
         .set('Accept', 'application/json')
         .expect(400, done)
     })
-  })
-
-  describe('PUT /api/v1/athletes/:id with GHIN number too long', () => {
-    it('should return 400', done => {
+    it('should return 400 with GHIN number too long', done => {
       request(app)
         .put(`/api/v1/athletes/${id}`)
-        .send(Object.assign({}, athlete, { id: id, ghinNumber: '12345678' }))
+        .send({ ...athlete, id, ghinNumber: '12345678' })
         .set('Accept', 'application/json')
         .expect(400, done)
     })
@@ -191,17 +165,14 @@ describe('app', () => {
     it('should delete existing athlete by id', done => {
       request(app)
         .delete(`/api/v1/athletes/${id}`)
-        .send(Object.assign({}, athlete, { id: id }))
+        .send({ ...athlete, id })
         .set('Accept', 'application/json')
         .expect(204, done)
     })
-  })
-
-  describe('DELETE /api/v1/athletes/:id', () => {
     it('should 404 for previously deleted athlete', done => {
       request(app)
         .delete(`/api/v1/athletes/${id}`)
-        .send(Object.assign({}, athlete, { id: id }))
+        .send({ ...athlete, id })
         .set('Accept', 'application/json')
         .expect(404, done)
     })

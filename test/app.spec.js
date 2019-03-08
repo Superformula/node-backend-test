@@ -133,6 +133,7 @@ describe('app', () => {
         .end((err, res) => {
           expect(res.body.id).to.equal(id)
           expect(res.body.firstName).to.equal('Tester')
+          expect(res.body.createdAt).to.equal(createdAt)
           done()
         })
     })

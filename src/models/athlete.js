@@ -30,7 +30,7 @@ const convertedSchema = joigoose.convert(joiAthleteSchema)
 
 const AthleteSchema = new Schema(convertedSchema, { timestamps: true })
 
-AthleteSchema.pre('findOneAndUpdate', function(next) {
+AthleteSchema.pre('findOneAndUpdate', function (next) {
   this.options.runValidators = true
   next()
 })

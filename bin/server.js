@@ -6,7 +6,9 @@ const app = require('../src/app')
 const debug = require('debug')('golf-athlete-api:server')
 const http = require('http')
 
-const port = normalizePort(process.env.PORT || '3000')
+const config = require('../src/config')
+
+const port = normalizePort(config.app.port)
 app.set('port', port)
 
 const server = http.createServer(app)

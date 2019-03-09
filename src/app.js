@@ -8,6 +8,8 @@ const helmet = require('helmet')
 const mongoose = require('mongoose')
 const swaggerUi = require('swagger-ui-express')
 const swaggerDocument = require('../swagger')
+
+const config = require('./config')
 const athleteRouter = require('./routes/athlete-routes')
 
 const app = express()
@@ -15,7 +17,7 @@ const app = express()
 mongoose.set('useCreateIndex', true)
 mongoose.set('runValidators', true)
 mongoose.set('useFindAndModify', false)
-mongoose.connect('mongodb://localhost:27017/golfAthleteTest', { useNewUrlParser: true })
+mongoose.connect(`${config.db.url}${config.db.name}`, { useNewUrlParser: true })
 mongoose.Promise = global.Promise
 const db = mongoose.connection
 db.on('error', console.error.bind(console, 'MongoDB connection error:'))

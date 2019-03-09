@@ -14,6 +14,7 @@ const app = express()
 
 mongoose.set('useCreateIndex', true)
 mongoose.set('runValidators', true)
+mongoose.set('useFindAndModify', false)
 mongoose.connect('mongodb://localhost:27017/golfAthleteTest', { useNewUrlParser: true })
 mongoose.Promise = global.Promise
 const db = mongoose.connection

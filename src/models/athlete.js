@@ -12,14 +12,12 @@ const joiAthleteSchema = joi.object({
   lastName: joi.string().min(1).max(100).required(),
   firstName: joi.string().min(1).max(100).required(),
   ghinNumber: joi.string().min(7).max(7),
-  cachedGhinIndex: joi.string().min(1).max(100),
+  cachedGhinIndex: joi.string().min(1).max(5),
   cachedGhinIndexDate: joi.date().iso(),
   driverClubHeadSpeed: joi.number().precision(1),
   dob: joi.date().iso(),
-  address: joi.string().min(1).max(100),
-  description: joi.string().min(1).max(100),
-  createdAt: joi.date().iso(),
-  updatedAt: joi.date().iso()
+  address: joi.string().min(1).max(200),
+  description: joi.string().min(1).max(300)
 })
 
 const convertedSchema = joigoose.convert(joiAthleteSchema)
@@ -31,6 +29,11 @@ const convertedSchema = joigoose.convert(joiAthleteSchema)
 // convertedSchema.ghinNumber.unique = true
 
 const AthleteSchema = new Schema(convertedSchema, { timestamps: true })
+
+AthleteSchema.pre('findOneAndUpdate', function(next) {
+  this.options.runValidators = true
+  next()
+})
 
 AthleteSchema
   .virtual('fullName')

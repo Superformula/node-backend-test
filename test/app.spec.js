@@ -32,7 +32,6 @@ describe('app', () => {
         .end((err, res) => {
           id = res.body.id
           createdAt = res.body.createdAt
-          console.log(res.body)
           expect(res.body.lastName).to.equal('McTesterson')
           done()
         })
@@ -118,7 +117,7 @@ describe('app', () => {
     it('should update existing athlete by id', done => {
       request(app)
         .put(`/api/v1/athletes/${id}`)
-        .send({ ...athlete, id, firstName: 'Tester', createdAt: '1999-12-31' })
+        .send({ ...athlete, id, lastName: undefined, firstName: 'Tester', createdAt: '1999-12-31' })
         .set('Accept', 'application/json')
         .expect(204, done)
     })
@@ -132,6 +131,7 @@ describe('app', () => {
         .expect(200)
         .end((err, res) => {
           expect(res.body.id).to.equal(id)
+          expect(res.body.lastName).to.equal(athlete.lastName)
           expect(res.body.firstName).to.equal('Tester')
           expect(res.body.createdAt).to.equal(createdAt)
           done()
@@ -140,18 +140,28 @@ describe('app', () => {
   })
 
   describe('PUT /api/v1/athletes/:id', () => {
-    it('should return a 404 error with invalid id', done => {
+    it('should return a 400 error with invalid id', done => {
+      const invalidId = 'foo'
       request(app)
-        .put(`/api/v1/athletes/foo`)
+        .put(`/api/v1/athletes/${invalidId}`)
+        .send({ ...athlete, id: invalidId })
         .expect('Content-Type', /json/)
-        .expect(404, done)
+        .expect(400, done)
     })
-    it('should return 400 with last name missing', done => {
+    it('should return 400 with path id and body id not matching', done => {
       request(app)
         .put(`/api/v1/athletes/${id}`)
-        .send({ ...athlete, id, lastName: undefined })
+        .send({ ...athlete, id: 'foo' })
         .set('Accept', 'application/json')
         .expect(400, done)
+    })
+    it('should return 404 with path id and body id not found', done => {
+      const notFoundId = '2c3b3580-429c-11e9-b3fc-53aac329b547'
+      request(app)
+        .put(`/api/v1/athletes/${notFoundId}`)
+        .send({ ...athlete, id: notFoundId })
+        .set('Accept', 'application/json')
+        .expect(404, done)
     })
     it('should return 400 with GHIN number too long', done => {
       request(app)

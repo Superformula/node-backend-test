@@ -3,7 +3,7 @@
 'use strict'
 
 const app = require('../src/app')
-const debug = require('debug')('golf-athlete-api:server')
+const logger = require('../src/logger')
 const http = require('http')
 
 const config = require('../src/config')
@@ -45,10 +45,10 @@ function onError (error) {
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
-      console.error(bind + ' requires elevated privileges')
+      logger.error(bind + ' requires elevated privileges')
       process.exit(1)
     case 'EADDRINUSE':
-      console.error(bind + ' is already in use')
+      logger.error(bind + ' is already in use')
       process.exit(1)
     default:
       throw error
@@ -60,5 +60,5 @@ function onListening () {
   const bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port
-  debug('Listening on ' + bind)
+  logger.info('Listening on ' + bind)
 }

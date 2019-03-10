@@ -1,9 +1,10 @@
 'use strict'
 
 const boom = require('boom')
+const _ = require('lodash')
+
 const util = require('../util')
 const Athlete = require('../models/athlete')
-const _ = require('lodash')
 
 exports.getAthletes = async (req, res, next) => {
   try {

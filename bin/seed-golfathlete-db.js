@@ -4,14 +4,16 @@
 
 const async = require('async')
 const mongoose = require('mongoose')
+const config = require('../src/config')
 const Athlete = require('../src/models/athlete')
 const athleteData = require('./athlete-data')
+const logger = require('../src/logger')
 
 mongoose.set('useCreateIndex', true)
-mongoose.connect('mongodb://localhost:27017/golfAthleteTest', { useNewUrlParser: true })
+mongoose.connect(`${config.db.url}${config.db.name}`, { useNewUrlParser: true })
 mongoose.Promise = global.Promise
 const db = mongoose.connection
-db.on('error', console.error.bind(console, 'MongoDB connection error:'))
+db.on('error', logger.error.bind(logger, 'MongoDB connection error:'))
 
 const athletes = []
 
@@ -25,7 +27,7 @@ function createAthlete (athleteData, cb) {
   })
   athlete.save()
     .then(newAthlete => {
-      console.log('New Athlete: ' + newAthlete)
+      logger.info('New Athlete: ' + newAthlete)
       athletes.push(newAthlete)
       cb(null, newAthlete)
     })
@@ -36,28 +38,30 @@ function createAthlete (athleteData, cb) {
 
 function createAthletes (cb) {
   async.series([
-    function (callback) {
-      createAthlete(athleteData.charlie, callback)
-    },
-    function (callback) {
-      createAthlete(athleteData.alexa, callback)
-    },
-    function (callback) {
-      createAthlete(athleteData.momo, callback)
-    }
-  ],
-  cb)
+      function (callback) {
+        createAthlete(athleteData.charlie, callback)
+      },
+      function (callback) {
+        createAthlete(athleteData.alexa, callback)
+      },
+      function (callback) {
+        createAthlete(athleteData.momo, callback)
+      }
+    ],
+    cb)
 }
 
-async.series([
-  createAthletes
-  // add create methods for SuperSpeed and TPI data
-],
-function (err, results) {
-  if (err) {
-    console.log('FINAL ERR: ' + err)
-  } else {
-    console.log('ATHLETES: ' + athletes)
-  }
-  mongoose.connection.close()
+db.dropDatabase().then(() => {
+  async.series([
+      createAthletes
+      // add create methods for SuperSpeed and TPI data
+    ],
+    function (err, results) {
+      if (err) {
+        logger.error('FINAL ERR: ' + err)
+      } else {
+        logger.info('ATHLETES: ' + athletes)
+      }
+      mongoose.connection.close()
+    })
 })

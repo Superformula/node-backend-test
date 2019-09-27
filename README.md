@@ -20,40 +20,12 @@ Build a RESTful API that can `create/read/update/delete` user data from a persis
 }
 ```
 
-## Requirements
-
 ### Functionality
 
 - The API should follow typical RESTful API design pattern.
 - The data should be saved in the DB.
 - Provide proper API documentation.
 - Proper error handling should be used.
-
-### Tech stack
-
-- Use Node.js `LTS` and any framework of your choice.
-- Use any persistence store. NoSQL DB is preferred.
-
-### Bonus
-
-- Write clear **documentation** on how it has been designed and how to run the code.
-- Provide proper unit tests.
-- Add a read only endpoint to fetch location information based off the user's address (use [NASA](https://api.nasa.gov/api.html) or [Mapbox](https://www.mapbox.com/api-documentation/) APIs)
-- Use Docker containers.
-- Utilize Docker Compose.
-- Setup a CircleCI config to build/test/deploy the service.
-- Write concise and clear commit messages.
-- Leverage Terraform or other infrastructure management tooling to spin up needed resources.
-- Providing an online demo is welcomed, but not required.
-
-### Advanced requirements
-
-These may be used for further challenges. You can freely skip these if you are not asked to do them; feel free to try out if you feel up to it.
-
-- Use [hapi](https://hapijs.com/) to build the core feature and use a different framework (such as Express or Loopback) to handle HTTP requests.
-- Provide a complete user auth (authentication/authorization/etc) strategy, such as OAuth.
-- Provide a complete error handling and logging (when/how/etc) strategy.
-- Use a NoSQL DB and build a filter feature that can filter records with some of the attributes such as username. Do not use query languages such as MongoDB Query or Couchbase N1QL.
 
 ## What We Care About
 
@@ -67,6 +39,62 @@ Here's what you should strive for:
 - Solid testing approach.
 - Extensible code.
 
+You may pick either `Implementation Path: Docker Containers` or `Implementation Path: Cloud-native` requirements below.
+
+## Implementation Path: Docker Containers
+
+### Basic Requirements
+
+  - Use Node.js `LTS` and any framework of your choice.
+  - Use any persistence store. NoSQL DB is preferred.
+  - Write clear **documentation** on how it has been designed and how to run the code.
+
+### Bonus
+
+  - Provide proper unit tests.
+  - Add a read only endpoint to fetch location information based off the user's address (use [NASA](https://api.nasa.gov/api.html) or [Mapbox](https://www.mapbox.com/api-documentation/) APIs)
+  - Use Docker containers.
+  - Utilize Docker Compose.
+  - Setup a CircleCI config to build/test/deploy the service.
+  - Write concise and clear commit messages.
+  - Leverage Terraform or other infrastructure management tooling to spin up needed resources.
+  - Providing an online demo is welcomed, but not required.
+
+### Advanced Requirements
+
+These may be used for further challenges. You can freely skip these if you are not asked to do them; feel free to try out if you feel up to it.
+
+- Use [hapi](https://hapijs.com/) to build the core feature and use a different framework (such as Express or Loopback) to handle HTTP requests.
+- Provide a complete user auth (authentication/authorization/etc) strategy, such as OAuth.
+- Provide a complete error handling and logging (when/how/etc) strategy.
+- Use a NoSQL DB and build a filter feature that can filter records with some of the attributes such as username. Do not use query languages such as MongoDB Query or Couchbase N1QL.
+
+
+## Implementation Path: Cloud-native
+
+### Basic Requirements
+
+  - Create each endpoint as an individual AWS Lambda in Node.js
+  - Use any AWS Database-as-a-Service persistence store. DynmamoDB is preferred.
+  - Write clear **documentation** on how it has been designed and how to run the code.
+
+### Bonus
+
+  - Use Infrastructure-as-code tooling that can be used to deploy all resources to an AWS account. Examples: CloudFormation / SAM, Terraform, Serverless Framework, etc.
+  - Provide proper unit tests.
+  - Write concise and clear commit messages.
+  - Use API Gateway to expose AWS Lambdas
+  - Providing an online demo is welcomed, but not required.
+  - Bundle npm modules into your Lambdas
+
+### Advanced Requirements
+
+These may be used for further challenges. You can freely skip these; feel free to try out if you feel up to it.
+
+  - Describe your strategy for Lambda error handling, retries, and DLQs
+  - Describe your cloud-native logging, monitoring, and alarming strategy across all endpoints
+  - Build a filter feature that can filter records with some of the attributes such as username.
+
 ## Q&A
 
 > Where should I send back the result when I'm done?
@@ -75,4 +103,4 @@ Fork this repo and send us a pull request when you think you are done. There is 
 
 > What if I have a question?
 
-Just create a new issue in this repo and we will respond and get back to you quickly.
+Create a new issue in this repo and we will respond and get back to you quickly.

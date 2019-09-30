@@ -1,4 +1,4 @@
-# Superformula Back-end Developer Test
+****# Superformula Back-end Developer Test
 
 Be sure to read **all** of this document carefully, and follow the guidelines within.
 
@@ -39,7 +39,7 @@ Here's what you should strive for:
 - Solid testing approach.
 - Extensible code.
 
-You may pick either `Implementation Path: Docker Containers` or `Implementation Path: Cloud-native` requirements below.
+If you have not been specifically asked, you may pick either `Implementation Path: Docker Containers` or `Implementation Path: Cloud-native` requirements below.
 
 ## Implementation Path: Docker Containers
 
@@ -47,6 +47,7 @@ You may pick either `Implementation Path: Docker Containers` or `Implementation 
 
   - Use Node.js `LTS` and any framework of your choice.
   - Use any persistence store. NoSQL DB is preferred.
+  - Write concise and clear commit messages.
   - Write clear **documentation** on how it has been designed and how to run the code.
 
 ### Bonus
@@ -56,7 +57,6 @@ You may pick either `Implementation Path: Docker Containers` or `Implementation 
   - Use Docker containers.
   - Utilize Docker Compose.
   - Setup a CircleCI config to build/test/deploy the service.
-  - Write concise and clear commit messages.
   - Leverage Terraform or other infrastructure management tooling to spin up needed resources.
   - Providing an online demo is welcomed, but not required.
 
@@ -76,13 +76,13 @@ These may be used for further challenges. You can freely skip these if you are n
 
   - Create each endpoint as an individual AWS Lambda in Node.js
   - Use any AWS Database-as-a-Service persistence store. DynmamoDB is preferred.
+  - Write concise and clear commit messages.
   - Write clear **documentation** on how it has been designed and how to run the code.
 
 ### Bonus
 
   - Use Infrastructure-as-code tooling that can be used to deploy all resources to an AWS account. Examples: CloudFormation / SAM, Terraform, Serverless Framework, etc.
   - Provide proper unit tests.
-  - Write concise and clear commit messages.
   - Use API Gateway to expose AWS Lambdas
   - Providing an online demo is welcomed, but not required.
   - Bundle npm modules into your Lambdas

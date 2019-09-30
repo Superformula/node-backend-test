@@ -1,4 +1,4 @@
-****# Superformula Back-end Developer Test
+# Superformula Back-end Developer Test
 
 Be sure to read **all** of this document carefully, and follow the guidelines within.
 

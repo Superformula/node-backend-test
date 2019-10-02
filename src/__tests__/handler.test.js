@@ -12,6 +12,8 @@ test("crud", async () => {
     address: faker.address.streetAddress(),
     description: faker.lorem.sentence()
   };
+
+  // create user
   const createUserResponse = await fetch(`${domain}/user`, {
     method: "post",
     body: JSON.stringify(createUserBody),
@@ -23,11 +25,14 @@ test("crud", async () => {
   expect(createUserResponseBody.updatedAt).toBeLessThan(Date.now());
 
   const userId = createUserResponseBody.id;
+  
+  // get user
   const readUserResponse = await fetch(`${domain}/user/${userId}`);
   const readUserResponseBody = await readUserResponse.json();
 
   expect(readUserResponseBody).toStrictEqual(createUserResponseBody);
 
+  // update user
   const updateUserBody = {
     name: faker.name.findName(),
     dob: faker.date.past().toUTCString(),
@@ -45,6 +50,7 @@ test("crud", async () => {
     updateUserResponseBody.createdAt
   );
 
+  // delete user
   const deleteUserResponse = await fetch(`${domain}/user/${userId}`, {
     method: "delete",
     headers: { "Content-Type": "application/json" }

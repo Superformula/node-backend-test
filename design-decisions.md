@@ -7,7 +7,8 @@ Assumptions, thoughts and decisions for current and future consideration.
 - DynamoDb - The problems prefers it and it has good options for local development in a docker image or serverless plugin
 - Documentation (github md's, api gateway, swagger) - TBD
 - Serverless provisioning (serverless, AWS Sam, Terraform...) - I'd like to try out AWS Sam but I'm familiar with serverless so I'll choose it for this project
-- Local dev environment - I would normally begin with a fully functioning local dev environment (serverless-offline, serverless-dynamodb-local) - I'll still likely head down this path as I believe it's the essential first piece of a real project
+- Local dev environment - I would normally begin with a fully functioning local dev environment (serverless-offline, serverless-dynamodb-local) - This is going to take a little more time but I still think it's essential to start any real project this way.  I'll invest the extra time on this.
+- serverless-dynamodb-local - We have other options with dynamodb-local through [docker](https://hub.docker.com/r/amazon/dynamodb-local) which I've used recently.  But I really wanted to evaluate this library. It unfortunately requires Java.  For me that's not a huge issue but something that could become an issue for larger teams.
 - Validation - Try to handle with Json Shema and API Gateway.  See below for a more optimal long-term approach.  This may fit into that long-term approach.
 - Testing (mocha, tsnode, jest) - I've used mocha combined with tsnode.  I'll likely follow that pattern but may evaluate other options as I go.  Also consider integration tests and further as time permits
 

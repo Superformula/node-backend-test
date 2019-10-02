@@ -1,0 +1,22 @@
+{
+  "name": "users-api",
+  "version": "1.0.0",
+  "description": "API provides CRUD operaions for cloud-native users api",
+  "repository": "https://github.com/greenreign/node-backend-test.git",
+  "author": "Zak Sesti",
+  "license": "MIT",
+  "scripts": {
+    "prestart": "tsc",
+    "lint": "tslint -c tslint.json 'src/**/*.ts'",
+    "start": "node dist/index.js"
+  },
+  "devDependencies": {
+    "@types/node": "^12.7.9",
+    "@types/pino": "^5.8.10",
+    "tslint": "^5.20.0",
+    "typescript": "^3.6.3"
+  },
+  "dependencies": {
+    "pino": "^5.13.4"
+  }
+}

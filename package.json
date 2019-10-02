@@ -7,10 +7,12 @@
   "license": "MIT",
   "scripts": {
     "prestart": "tsc",
+    "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "start": "node dist/index.js"
   },
   "devDependencies": {
     "@types/node": "^12.7.9",
+    "tslint": "^5.20.0",
     "typescript": "^3.6.3"
   }
 }

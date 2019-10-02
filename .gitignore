@@ -1,3 +1,4 @@
 node_modules
 .dynamodb
 .webpack
+/lib

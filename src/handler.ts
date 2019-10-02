@@ -73,6 +73,8 @@ export const createUser: APIGatewayProxyHandler = async event => {
     const { name, dob, address, description } = JSON.parse(
       event.body as string
     );
+
+    // ensure all fields are truthy
     assert(name && dob && address && description, "Invalid body");
 
     const container = retrieveContainer();
@@ -116,6 +118,7 @@ export const updateUser: APIGatewayProxyHandler = async event => {
       field => body[field]
     );
 
+    // ensure we have at least one field
     assert(updateFields.length, "Invalid Body");
 
     const now = Date.now();

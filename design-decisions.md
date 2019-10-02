@@ -13,6 +13,7 @@ Assumptions, thoughts and decisions for current and future consideration.
 
 ## Future Considerations
 - Build pipeline ( circle, code pipelines ) - This is normally something I would set up very early on in a project but I'll likely skip it as I don't think it's at the core of what the problem needs to demostrate
+- Multi-stage - For now we will only support the default stage but it would be trivial to introduce multiple stages. (test, preprod, prod)
 - HTTPS - Normally I'd start with HTTPS as long as we owned the certificate we wanted to use.  I'll likely skip this for this excercise rather than spend time procurring a certificate
 - Lambda server framework - (aws-lambda, serverless-http) - The problem states each endpoint should be an AWS Lambda function.  I'll use pure lambdas with some extraction of common code for the API Gateway -> Lambda interaction
 - Security ( JWT, un/pw, auth services, Gateway Authorizers ) - Obviously we would want some security around this service but the problem does not require it so I will skip it.

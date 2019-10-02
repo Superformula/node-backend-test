@@ -12,7 +12,11 @@
   },
   "devDependencies": {
     "@types/node": "^12.7.9",
+    "@types/pino": "^5.8.10",
     "tslint": "^5.20.0",
     "typescript": "^3.6.3"
+  },
+  "dependencies": {
+    "pino": "^5.13.4"
   }
 }

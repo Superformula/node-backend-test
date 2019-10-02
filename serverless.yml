@@ -11,9 +11,9 @@ custom:
   dynamodb:
     stages:
       - development
-  serverless-offline:
-    port: 8462
-
+    start:
+      inMemory: true
+      migrate: true
 provider:
   name: aws
   runtime: nodejs10.x
@@ -26,7 +26,7 @@ functions:
   readUser:
     name: ${self:provider.stage}-${self:service.name}-readUser
     description: Reads a user
-    handler: src/handler.readUser
+    handler: handler.readUser
     events:
       - http:
           method: get
@@ -37,7 +37,7 @@ functions:
   createUser:
     name: ${self:provider.stage}-${self:service.name}-createUser
     description: Creates a user
-    handler: src/handler.createUser
+    handler: handler.createUser
     events:
       - http:
           method: post
@@ -48,7 +48,7 @@ functions:
   updateUser:
     name: ${self:provider.stage}-${self:service.name}-updateUser
     description: Updates a user
-    handler: src/handler.updateUser
+    handler: handler.updateUser
     events:
       - http:
           method: patch
@@ -59,7 +59,7 @@ functions:
   deleteUser:
     name: ${self:provider.stage}-${self:service.name}-deleteUser
     description: Deletes a user
-    handler: src/handler.deleteUser
+    handler: handler.deleteUser
     events:
       - http:
           method: delete
@@ -75,12 +75,8 @@ resources:
         KeySchema:
           - AttributeName: id
             KeyType: HASH
-          - AttributeName: name
-            KeyType: RANGE
         AttributeDefinitions:
           - AttributeName: id
-            AttributeType: S
-          - AttributeName: name
             AttributeType: S
         ProvisionedThroughput:
           ReadCapacityUnits: 1

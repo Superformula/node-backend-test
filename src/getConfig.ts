@@ -4,6 +4,7 @@ export default function() {
   switch (stage) {
     case "development":
     default:
-      return require("../config/development");
+      const config = require("../config/development");
+      return config;
   }
 }

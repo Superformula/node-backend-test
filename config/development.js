@@ -3,7 +3,7 @@ const DYNAMODB_REGION = "us-fake-1";
 const DYNAMODB_ACCESS_KEY_ID = "fake";
 const DYNAMODB_SECRET_ACCESS_KEY = "fake";
 
-export default {
+module.exports = {
   DynamoDB: {
     endpoint: DYNAMODB_ENDPOINT,
     region: DYNAMODB_REGION,

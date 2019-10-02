@@ -1,13 +1,12 @@
 {
+  "name": "cbaron-test",
+  "license": "UNLICENSED",
+  "private": true,
+  "version": "0.0.1",
   "dependencies": {
-    "@types/node": "^12.7.8",
     "aws-lambda": "^0.1.2",
     "aws-sdk": "^2.539.0",
-    "jest": "^24.9.0",
-    "node-fetch": "^2.6.0",
     "serverless": "^1.53.0",
-    "serverless-dynamodb-local": "^0.2.38",
-    "serverless-offline": "^5.11.0",
     "serverless-webpack": "^5.3.1",
     "ts-loader": "^6.2.0",
     "typescript": "^3.6.3",
@@ -15,9 +14,18 @@
     "webpack": "^4.41.0"
   },
   "scripts": {
+    "check-types": "tsc",
+    "start": "yarn serverless offline start",
     "test": "jest"
   },
   "devDependencies": {
-    "faker": "^4.1.0"
+    "@types/node": "^12.7.8",
+    "@types/aws-lambda": "^8.10.33",
+    "@types/uuid": "^3.4.5",
+    "jest": "^24.9.0",
+    "node-fetch": "^2.6.0",
+    "faker": "^4.1.0",
+    "serverless-dynamodb-local": "^0.2.38",
+    "serverless-offline": "^5.11.0"
   }
 }

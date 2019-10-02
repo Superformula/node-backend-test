@@ -2,7 +2,7 @@ import * as assert from "assert";
 import { APIGatewayProxyHandler } from "aws-lambda";
 import { DynamoDB } from "aws-sdk";
 import * as uuid from "uuid/v4";
-import getConfig from "./src/getConfig";
+import getConfig from "./getConfig";
 import { DocumentClient } from "aws-sdk/clients/dynamodb";
 
 type Container = {
@@ -37,7 +37,7 @@ const getUser = async (userId: string, { client, TableName }: Container) => {
 
   const result = await client.query(dynamoParams).promise();
 
-  return result.Items.length && result.Items[0];
+  return result.Items && result.Items.length && result.Items[0];
 };
 
 const respondWithUser = async (userId: string, container: Container) => {
@@ -53,7 +53,8 @@ const respondWithUser = async (userId: string, container: Container) => {
 
 export const readUser: APIGatewayProxyHandler = async event => {
   try {
-    const userId = event.pathParameters.userId;
+    const userId = event.pathParameters!.userId;
+    assert(userId, "Invalid request");
     const container = retrieveContainer();
 
     const response = await respondWithUser(userId, container);
@@ -68,7 +69,10 @@ export const readUser: APIGatewayProxyHandler = async event => {
 
 export const createUser: APIGatewayProxyHandler = async event => {
   try {
-    const { name, dob, address, description } = JSON.parse(event.body);
+    assert(event.body, "Invalid request");
+    const { name, dob, address, description } = JSON.parse(
+      event.body as string
+    );
     assert(name && dob && address && description, "Invalid body");
 
     const container = retrieveContainer();
@@ -103,10 +107,11 @@ export const createUser: APIGatewayProxyHandler = async event => {
 
 export const updateUser: APIGatewayProxyHandler = async event => {
   try {
-    const userId = event.pathParameters.userId;
+    const userId = event.pathParameters!.userId;
+    assert(userId && event.body, "Invalid request");
     const container = retrieveContainer();
     const { TableName, client } = container;
-    const body = JSON.parse(event.body);
+    const body = JSON.parse(event.body as string);
     const updateFields = ["name", "dob", "address", "description"].filter(
       field => body[field]
     );
@@ -156,7 +161,8 @@ export const updateUser: APIGatewayProxyHandler = async event => {
 
 export const deleteUser: APIGatewayProxyHandler = async event => {
   try {
-    const userId = event.pathParameters.userId;
+    const userId = event.pathParameters!.userId;
+    assert(userId, "Invalid request");
     const container = retrieveContainer();
 
     const user = await getUser(userId, container);

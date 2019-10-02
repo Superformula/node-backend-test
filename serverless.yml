@@ -26,7 +26,7 @@ functions:
   readUser:
     name: ${self:provider.stage}-${self:service.name}-readUser
     description: Reads a user
-    handler: handler.readUser
+    handler: src/handler.readUser
     events:
       - http:
           method: get
@@ -37,7 +37,7 @@ functions:
   createUser:
     name: ${self:provider.stage}-${self:service.name}-createUser
     description: Creates a user
-    handler: handler.createUser
+    handler: src/handler.createUser
     events:
       - http:
           method: post
@@ -48,7 +48,7 @@ functions:
   updateUser:
     name: ${self:provider.stage}-${self:service.name}-updateUser
     description: Updates a user
-    handler: handler.updateUser
+    handler: src/handler.updateUser
     events:
       - http:
           method: patch
@@ -59,7 +59,7 @@ functions:
   deleteUser:
     name: ${self:provider.stage}-${self:service.name}-deleteUser
     description: Deletes a user
-    handler: handler.deleteUser
+    handler: src/handler.deleteUser
     events:
       - http:
           method: delete

@@ -9,13 +9,14 @@
     "prestart": "tsc",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "test": "jest --coverage",
-    "start": "sls offline start"
+    "start": "sls offline start --stage local"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.33",
     "@types/jest": "^24.0.18",
     "@types/node": "^12.7.9",
     "@types/pino": "^5.8.10",
+    "serverless-dynamodb-local": "^0.2.38",
     "jest": "^24.9.0",
     "serverless-offline": "^5.12.0",
     "ts-jest": "^24.1.0",

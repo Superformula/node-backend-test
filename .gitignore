@@ -1,5 +1,7 @@
 dist
 node_modules
 .serverless
+.dynamodb
+yarn-error.log
 .vscode
 coverage

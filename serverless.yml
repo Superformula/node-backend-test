@@ -1,0 +1,88 @@
+service:
+  name: cbaron-backend
+
+# Add the serverless-webpack plugin
+plugins:
+  - serverless-webpack
+  - serverless-offline
+  - serverless-dynamodb-local
+
+custom:
+  dynamodb:
+    stages:
+      - development
+  serverless-offline:
+    port: 8462
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  region: us-east-2
+  stage: ${opt:stage,'development'}
+  environment:
+    STAGE: ${opt:stage,'development'}
+
+functions:
+  readUser:
+    name: ${self:provider.stage}-${self:service.name}-readUser
+    description: Reads a user
+    handler: src/handler.readUser
+    events:
+      - http:
+          method: get
+          path: /user/{userId}
+          cors:
+            origins:
+              - "*"
+  createUser:
+    name: ${self:provider.stage}-${self:service.name}-createUser
+    description: Creates a user
+    handler: src/handler.createUser
+    events:
+      - http:
+          method: post
+          path: /user
+          cors:
+            origins:
+              - "*"
+  updateUser:
+    name: ${self:provider.stage}-${self:service.name}-updateUser
+    description: Updates a user
+    handler: src/handler.updateUser
+    events:
+      - http:
+          method: patch
+          path: /user/{userId}
+          cors:
+            origins:
+              - "*"
+  deleteUser:
+    name: ${self:provider.stage}-${self:service.name}-deleteUser
+    description: Deletes a user
+    handler: src/handler.deleteUser
+    events:
+      - http:
+          method: delete
+          path: /user/{userId}
+          cors:
+            origins:
+              - "*"
+resources:
+  Resources:
+    UserTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+          - AttributeName: name
+            KeyType: RANGE
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: name
+            AttributeType: S
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.stage}-User

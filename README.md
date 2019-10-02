@@ -123,10 +123,14 @@ The following routes have been implemented (See User Model above):
 #### Testing
 
 ```sh
+# start local server
+yarn start
+
+# run test suite
 yarn test
 ```
 
-Will run tests using [jest](https://jestjs.io/)
+Will run tests using [jest](https://jestjs.io/). Currently, we need to manually spin up the local server to run tests.
 
 #### TODO
 
@@ -134,3 +138,4 @@ Will run tests using [jest](https://jestjs.io/)
 - Add CI/CD with linting, type check, tests, deployment to aws
 - Add route to get paginated list of users
 - Add more robust integration tests
+- Add testing server to integration tests

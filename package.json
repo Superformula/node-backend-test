@@ -7,7 +7,6 @@
   "license": "MIT",
   "scripts": {
     "prestart": "tsc",
-    "prestop": "sls dynamodb stop",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "test": "jest --coverage",
     "start": "sls offline start --stage local"

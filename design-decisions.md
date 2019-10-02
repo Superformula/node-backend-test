@@ -13,6 +13,12 @@ Assumptions, thoughts and decisions for current and future consideration.
 - Testing (mocha, tsnode, jest) - I've used mocha combined with tsnode.  I'll likely follow that pattern but may evaluate other options as I go.  Also consider integration tests and further as time permits
 
 ## Future Considerations
+- Error Handling - TBD
+- Logging - TBD
+- Monitoring - TBD
+- Analytics - TBD
+- Retries - TBD
+- Caching or Edge deployment - TBD
 - Build pipeline ( circle, code pipelines ) - This is normally something I would set up very early on in a project but I'll likely skip it as I don't think it's at the core of what the problem needs to demostrate
 - Multi-stage - For now we will only support the default stage but it would be trivial to introduce multiple stages. (test, preprod, prod)
 - HTTPS - Normally I'd start with HTTPS as long as we owned the certificate we wanted to use.  I'll likely skip this for this excercise rather than spend time procurring a certificate

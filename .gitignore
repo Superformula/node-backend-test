@@ -1,5 +1,10 @@
 dist
 node_modules
 .serverless
+<<<<<<< HEAD
 .dynamodb
 yarn-error.log
+=======
+.vscode
+coverage
+>>>>>>> 5d642e6e4a4418e913c4d1476dda13ec893253c0

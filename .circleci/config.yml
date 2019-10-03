@@ -1,0 +1,54 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:10
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      # install dependencies
+      - run: yarn
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies
+
+      # run linter
+      # TODO: add linter to repo
+      - run: yarn lint
+
+      # run typescript type checker
+      - run: yarn check-types
+
+      # run tests
+      # TODO: start test servers using jest
+      - run: yarn test
+
+  deploy:
+    # TODO: enter aws keys into circleci
+    - run:
+        name: Deploy application
+        command: sls deploy --stage staging
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master

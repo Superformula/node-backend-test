@@ -106,12 +106,21 @@ Create a new issue in this repo and we will respond and get back to you quickly.
 
 ### Documentation
 
-Currently, the backend API service can be run on a local environment by running `yarn start`. This command uses [serverless](https://serverless.com), [serverless.yml](https://github.com/cbaron/node-backend-test/blob/master/serverless.yml), and the plugins referenced inside serverless.yml to emulate
-a local environment for developing against aws lambda methods.
+#### Local development
+
+From the root of the repository, run `yarn` to install package dependencies.
+
+```sh
+sls dynamodb install
+```
+
+Will install DynamoDB Local
+
+After installing package dependencies and DynamoDB, the backend API service can be run on a local environment by running `yarn start`. This command uses [serverless](https://serverless.com), [serverless.yml](https://github.com/cbaron/node-backend-test/blob/master/serverless.yml), and the plugins referenced inside serverless.yml to emulate a local environment for developing against aws lambda methods.
 
 The lambda methods are implemented in Typescript - `yarn check-types` will run the typescript compiler.
 
-### RESTful API
+#### RESTful API
 
 The following routes have been implemented (See User Model above):
 

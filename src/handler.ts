@@ -1,19 +1,20 @@
 import * as assert from "assert";
-import { APIGatewayProxyHandler } from "aws-lambda";
+import { APIGatewayProxyHandler, APIGatewayProxyEvent } from "aws-lambda";
 import { DynamoDB } from "aws-sdk";
 import * as uuid from "uuid/v4";
 import getConfig from "./getConfig";
 import { DocumentClient } from "aws-sdk/clients/dynamodb";
 
-type Container = {
-  config: {
-    DynamoDB: object;
-    stage: string;
-  };
+interface Container {
+  config: { DynamoDB: object; stage: string };
   dynamodb: DynamoDB;
   client: DocumentClient;
   TableName: string;
+}
+type PathParameters = {
+  userId: string;
 };
+
 const retrieveContainer: () => Container = () => {
   const config = getConfig();
   const dynamodb = new DynamoDB({ ...config.DynamoDB });
@@ -53,7 +54,7 @@ const respondWithUser = async (userId: string, container: Container) => {
 
 export const readUser: APIGatewayProxyHandler = async event => {
   try {
-    const userId = event.pathParameters!.userId;
+    const { userId } = event.pathParameters as PathParameters;
     assert(userId, "Invalid request");
     const container = retrieveContainer();
 
@@ -109,7 +110,7 @@ export const createUser: APIGatewayProxyHandler = async event => {
 
 export const updateUser: APIGatewayProxyHandler = async event => {
   try {
-    const userId = event.pathParameters!.userId;
+    const { userId } = event.pathParameters as PathParameters;
     assert(userId && event.body, "Invalid request");
     const container = retrieveContainer();
     const { TableName, client } = container;
@@ -164,7 +165,7 @@ export const updateUser: APIGatewayProxyHandler = async event => {
 
 export const deleteUser: APIGatewayProxyHandler = async event => {
   try {
-    const userId = event.pathParameters!.userId;
+    const { userId } = event.pathParameters as PathParameters;
     assert(userId, "Invalid request");
     const container = retrieveContainer();
 

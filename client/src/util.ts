@@ -6,3 +6,13 @@ export const defaultUser = {
   dob: new Date(),
   description: ""
 };
+
+export interface User {
+  id: string | undefined;
+  name: string;
+  dob: string;
+  address: string;
+  description: string;
+  createdAt: number | undefined;
+  updatedAt: number | undefined;
+}

@@ -17,7 +17,7 @@
     "check-types": "tsc",
     "test": "jest",
     "start-api": "yarn serverless offline start",
-    "start-client": "cd client && yarn start"
+    "start-client": "cd client && yarn && yarn start"
   },
   "devDependencies": {
     "@types/node": "^12.7.8",

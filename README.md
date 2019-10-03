@@ -116,9 +116,14 @@ sls dynamodb install
 
 Will install DynamoDB Local
 
-After installing package dependencies and DynamoDB, the backend API service can be run on a local environment by running `yarn start`. This command uses [serverless](https://serverless.com), [serverless.yml](https://github.com/cbaron/node-backend-test/blob/master/serverless.yml), and the plugins referenced inside serverless.yml to emulate a local environment for developing against aws lambda methods.
+After installing package dependencies and DynamoDB, the backend API service can be run on a local environment by running `yarn start-api`. This command uses [serverless](https://serverless.com), [serverless.yml](https://github.com/cbaron/node-backend-test/blob/master/serverless.yml), and the plugins referenced inside serverless.yml to emulate a local environment for developing against aws lambda methods.
 
 The lambda methods are implemented in Typescript - `yarn check-types` will run the typescript compiler.
+
+##### React client
+
+A [React](https://reactjs.org/) application currently resides in the `client` directory. To run it, run `yarn start-client`.
+The application can be accessed at `http://localhost:9000/`.
 
 #### RESTful API
 

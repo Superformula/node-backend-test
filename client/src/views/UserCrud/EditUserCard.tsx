@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/styles";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
@@ -8,7 +7,7 @@ import IconButton from "@material-ui/core/IconButton";
 import CancelIcon from "@material-ui/icons/Cancel";
 import SaveIcon from "@material-ui/icons/Save";
 import UserForm from "./UserForm";
-import { apiDomain } from "../../util";
+import { apiDomain, User } from "../../util";
 
 interface Props {
   user: User;
@@ -16,26 +15,13 @@ interface Props {
   onUserUpdate: (user: User) => void;
 }
 
-interface User {
-  id: string;
-  name: string;
-  dob: string;
-  address: string;
-  description: string;
-  createdAt: number;
-  updatedAt: number;
-}
-
-const useStyles = makeStyles({});
-
 const EditUserCard: React.FC<Props> = ({
   user: propsUser,
   onCancel,
   onUserUpdate
 }: Props) => {
-  const classes = useStyles();
   const [user, setUser] = useState({ ...propsUser });
-  const { id, name, address, dob, description } = user;
+  const { id } = user;
   const handleUserSubmission = async () => {
     try {
       const updateUserResponse = await window.fetch(`${apiDomain}/user/${id}`, {

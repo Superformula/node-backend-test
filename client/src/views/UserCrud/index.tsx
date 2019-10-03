@@ -1,29 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/styles";
+import React, { useState } from "react";
 import UserCard from "./UserCard";
 import AddUserCard from "./AddUserCard";
 import Grid from "@material-ui/core/Grid";
+import { User } from "../../util";
 
 interface Props {}
 
-interface User {
-  id: string;
-  name: string;
-  dob: string;
-  address: string;
-  description: string;
-  createdAt: number;
-  updatedAt: number;
-}
-
-const useStyles = makeStyles({
-  root: {}
-});
-
-const domain = "http://localhost:3000";
-
 const UserCrud: React.FC<Props> = ({}) => {
-  const classes = useStyles();
   const [users, setUsers]: [User[], (users: User[]) => void] = useState([]);
 
   const handleAddedUser = (user: User) => setUsers([...users, user]);

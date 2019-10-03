@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/styles";
+import React, { useState } from "react";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
@@ -10,7 +9,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
 import EditUserCard from "./EditUserCard";
-import { apiDomain } from "../../util";
+import { apiDomain, User } from "../../util";
 
 interface Props {
   user: User;
@@ -18,26 +17,13 @@ interface Props {
   onUserUpdate: (user: User) => void;
 }
 
-interface User {
-  id: string;
-  name: string;
-  dob: string;
-  address: string;
-  description: string;
-  createdAt: number;
-  updatedAt: number;
-}
-
-const useStyles = makeStyles({});
-
 const UserCard: React.FC<Props> = ({
   user,
   onUserDelete,
   onUserUpdate
 }: Props) => {
-  const classes = useStyles();
   const [isEditing, setIsEditing] = useState(false);
-  const { id, name, dob, address, description, createdAt, updatedAt } = user;
+  const { id, name, dob, description } = user;
   const handleDeleteClick = async () => {
     try {
       const deleteUserResponse = await window.fetch(`${apiDomain}/user/${id}`, {
@@ -71,7 +57,7 @@ const UserCard: React.FC<Props> = ({
   }
 
   return (
-    <Card className={classes.card}>
+    <Card>
       <CardHeader
         avatar={<Avatar aria-label="firstInitial">{name.slice(0, 1)}</Avatar>}
         title={name}

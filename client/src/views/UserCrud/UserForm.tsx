@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/styles";
 import TextField from "@material-ui/core/TextField";
 import Container from "@material-ui/core/Container";
@@ -8,20 +8,11 @@ import {
   MuiPickersUtilsProvider,
   MaterialUiPickersDate
 } from "@material-ui/pickers";
+import { User } from "../../util";
 
 interface Props {
   user: User;
   onUserChange: (user: User) => void;
-}
-
-interface User {
-  id: string;
-  name: string;
-  dob: string;
-  address: string;
-  description: string;
-  createdAt: number;
-  updatedAt: number;
 }
 
 const useStyles = makeStyles({

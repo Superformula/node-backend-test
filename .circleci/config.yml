@@ -39,7 +39,7 @@ jobs:
     # TODO: enter aws keys into circleci
     - run:
         name: Deploy application
-        command: sls deploy --stage staging
+        command: AWS_SDK_LOAD_CONFIG=true && SLS_DEBUG=* sls deploy --stage staging
 
 workflows:
   version: 2

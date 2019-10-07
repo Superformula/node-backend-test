@@ -10,8 +10,14 @@ export class UserDataAccess {
   private static TABLE: string = 'users';
   private documentClient: DocumentClient;
 
-  public constructor(options?: { region: string, endpoint: string }) {
-    this.documentClient = new DocumentClient(options);
+  public constructor() {
+    // This information should eventually be configured through an env file
+    // or something more robust.
+    let dynamoEnv: {};
+    if (process.argv[4] === '--stage' && process.argv[5] === 'local') {
+      dynamoEnv = { region: 'localhost', endpoint: 'http://localhost:8000' };
+    }
+    this.documentClient = new DocumentClient(dynamoEnv);
   }
 
   public putUser = async (userCreate: UserCreate): Promise<User> => {

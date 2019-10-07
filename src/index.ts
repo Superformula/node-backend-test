@@ -6,7 +6,7 @@ import { UserUpdate } from './model/UserUpdate';
 import { UserController } from './UserController';
 import { UserDataAccess } from './UserDataAccess';
 
-const userController: UserController = new UserController(new UserDataAccess({ region: 'localhost', endpoint: 'http://localhost:8000' }));
+const userController: UserController = new UserController(new UserDataAccess());
 const exceptionMapper: ExceptionMapper = new ExceptionMapper();
 
 export const getUser: Handler = async (event: any): Promise<APIGatewayProxyResult> => {

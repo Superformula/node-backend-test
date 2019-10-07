@@ -17,16 +17,8 @@ export class UserController {
    * @param  {string} id
    * @returns User
    */
-  public getUser = (id: string): User => {
-    return {
-      id,
-      address: '123 Main',
-      name: 'backend test',
-      dob: moment('2001-10-02T02:52:57.240Z').valueOf(),
-      description: 'Described',
-      createdAt: moment('2001-10-02T02:52:57.240Z').valueOf(),
-      updatedAt: moment('2001-10-02T02:52:57.240Z').valueOf(),
-    };
+  public getUser = async (id: string): Promise<User> => {
+    return this.userDataAccess.getUserOrFail(id);
   }
 
   /**

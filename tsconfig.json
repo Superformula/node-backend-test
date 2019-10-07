@@ -12,10 +12,13 @@
     "sourceMap": false,
     "strictNullChecks": false,
     "target": "es2017",
-		"outDir": "dist",
-		"noImplicitThis": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true
+    "outDir": "dist",
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
   },
-  "compileOnSave": true
+  "compileOnSave": true,
+  "include": [
+    "src/**/*"
+  ]
 }

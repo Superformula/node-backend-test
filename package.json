@@ -8,7 +8,7 @@
   "scripts": {
     "prestart": "yarn build",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
-    "test": "jest --coverage",
+    "test": "jest",
     "build": "rimraf dist && tsc",
     "start": "sls offline start --stage local"
   },
@@ -18,12 +18,15 @@
     "@types/moment": "^2.13.0",
     "@types/node": "^12.7.9",
     "@types/pino": "^5.8.10",
+    "@types/supertest": "^2.0.8",
     "@types/uuid": "^3.4.5",
     "aws-sdk": "^2.543.0",
+    "fastify": "^2.9.0",
     "jest": "^24.9.0",
     "rimraf": "^3.0.0",
     "serverless-dynamodb-local": "^0.2.38",
     "serverless-offline": "^5.12.0",
+    "supertest": "^4.0.2",
     "ts-jest": "^24.1.0",
     "tslint": "^5.20.0",
     "typescript": "^3.6.3"

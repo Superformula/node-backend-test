@@ -9,6 +9,7 @@
     "prestart": "yarn build",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "test": "jest",
+    "deploy": "yarn build && sls deploy",
     "build": "rimraf dist && tsc",
     "start": "sls offline start --stage local"
   },

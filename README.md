@@ -8,8 +8,8 @@ Provides endpoints to Create/Read/Update/Delete users.  See the detailed [instru
 - NPM
 - Yarn
 - Git
-- GitBash
 - Java Runtime Engine (JRE) version 6.x or newer.  This is a requirement of `serverless-dynamodb-local`.  
+- Curl (optional for testing)
 
 ### Install serverless with binary extensions
 `npm -g install serverless`
@@ -23,8 +23,25 @@ Provides endpoints to Create/Read/Update/Delete users.  See the detailed [instru
 ## Run locally
 
 ### Start local service
-- `yarn start` 
+`yarn start` 
 
-### Expore
-- Verify: `curl localhost:3000/users/1`
-- Hack/inspect dynamodb-local: http://localhost:8000/shell/#
+
+### Create a user
+```
+curl -X POST -d '{"address":"123 Main","name":"backend test","dob":"2001-10-02T02:52:57.240Z","description":"Described"}' -H "Content-Type: application/json" localhost:3000/users
+```
+### Get the user
+```
+curl localhost:3000/users/d606838c-73ef-4e50-b589-81d4aa67d2f9
+```
+### Update the user
+```
+curl -X PUT -d '{"name": "updated name"}' -H "Content-Type: application/json" localhost:3000/users/d606838c-73ef-4e50-b589-81d4aa67d2f9
+```
+
+### Delete the user
+```
+curl -X DELETE localhost:3000/users/d606838c-73ef-4e50-b589-81d4aa67d2f9
+```
+### Explore the database
+http://localhost:8000/shell/#

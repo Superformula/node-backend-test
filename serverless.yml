@@ -58,6 +58,36 @@ functions:
             parameters:
               paths:
                 id: true
+
+  createUser:
+    handler: dist/index.createUser
+    events:
+      - http:
+          path: users
+          method: post
+
+  updateUser:
+    handler: dist/index.updateUser
+    events:
+      - http:
+          path: users/{id}
+          method: put
+          request:
+            parameters:
+              paths:
+                id: true
+
+  deleteUser:
+    handler: dist/index.deleteUser
+    events:
+      - http:
+          path: users/{id}
+          method: delete
+          request:
+            parameters:
+              paths:
+                id: true
+
 #      - websocket: $connect
 #      - s3: ${env:BUCKET}
 #      - schedule: rate(10 minutes)

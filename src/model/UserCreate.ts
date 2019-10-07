@@ -1,6 +1,6 @@
 export interface UserCreate {
   address: string;
   name: string;
-  dob: string;
+  dob: number;
   description: string;
 }

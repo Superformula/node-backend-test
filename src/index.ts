@@ -1,13 +1,14 @@
 import { APIGatewayProxyResult, Handler } from 'aws-lambda';
-import * as pino from 'pino';
+import { BaseLogger } from 'pino';
+import { LogFactory } from './LogFactory';
 import { User } from './model/User';
 import { UserCreate } from './model/UserCreate';
 import { UserUpdate } from './model/UserUpdate';
 import { UserController } from './UserController';
+import { UserDataAccess } from './UserDataAccess';
 
-const logger: pino.Logger = pino();
-const userController: UserController = new UserController();
-
+const userController: UserController = new UserController(new UserDataAccess({ region: 'localhost', endpoint: 'http://localhost:8000' }));
+const logger: BaseLogger = LogFactory.build('index');
 export const getUser: Handler = async (event: any): Promise<APIGatewayProxyResult> => {
   const id: string = event.pathParameters.id;
   const user: User = userController.getUser(id);
@@ -18,13 +19,16 @@ export const getUser: Handler = async (event: any): Promise<APIGatewayProxyResul
 };
 
 export const createUser: Handler = async (event: any): Promise<APIGatewayProxyResult> => {
-  logger.debug('createUser!!!');
-  const userCreate: UserCreate = JSON.parse(event.body);
-  const user: User = userController.createUser(userCreate);
-  return {
-    statusCode: 200,
-    body: JSON.stringify(user),
-  };
+  try {
+    const userCreate: UserCreate = JSON.parse(event.body);
+    const user: User = await userController.createUser(userCreate);
+    return {
+      statusCode: 200,
+      body: JSON.stringify(user),
+    };
+  } catch (error) {
+    logger.error(error);
+  }
 };
 
 export const updateUser: Handler = async (event: any): Promise<APIGatewayProxyResult> => {

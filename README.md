@@ -32,16 +32,16 @@ curl -X POST -d '{"address":"123 Main","name":"backend test","dob":"2001-10-02T0
 ```
 ### Get the user
 ```
-curl localhost:3000/users/d606838c-73ef-4e50-b589-81d4aa67d2f9
+curl localhost:3000/users/{createdUserid}
 ```
 ### Update the user
 ```
-curl -X PUT -d '{"name": "updated name"}' -H "Content-Type: application/json" localhost:3000/users/d606838c-73ef-4e50-b589-81d4aa67d2f9
+curl -X PUT -d '{"name": "updated name"}' -H "Content-Type: application/json" localhost:3000/users/{createdUserid}
 ```
 
 ### Delete the user
 ```
-curl -X DELETE localhost:3000/users/d606838c-73ef-4e50-b589-81d4aa67d2f9
+curl -X DELETE localhost:3000/users/{createdUserid}
 ```
 ### Explore the database
 http://localhost:8000/shell/#

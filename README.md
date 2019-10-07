@@ -23,7 +23,7 @@ Provides endpoints to Create/Read/Update/Delete users.  See the detailed [instru
 ## Run tests
 `yarn start` ctrl-c to stop  
 `yarn test`
-> For now we have to start our local service and then run the test.  This is obviously not ideal and there are several ways to fix this going forward but for time preservation we must manage the service manually to run tests at the moment.
+> For now we have to start our local service and then run the test.  This is obviously not ideal and there are several ways to fix this going forward.
 
 ## Run locally
 
@@ -50,3 +50,4 @@ curl -X DELETE localhost:3000/users/{createdUserid}
 ```
 ### Explore the database
 http://localhost:8000/shell/#
+

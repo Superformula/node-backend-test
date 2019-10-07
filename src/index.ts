@@ -1,6 +1,5 @@
 import { APIGatewayProxyResult, Handler } from 'aws-lambda';
-import { BaseLogger } from 'pino';
-import { LogFactory } from './LogFactory';
+import { ExceptionMapper } from './exception/ExceptionMapper';
 import { User } from './model/User';
 import { UserCreate } from './model/UserCreate';
 import { UserUpdate } from './model/UserUpdate';
@@ -8,14 +7,20 @@ import { UserController } from './UserController';
 import { UserDataAccess } from './UserDataAccess';
 
 const userController: UserController = new UserController(new UserDataAccess({ region: 'localhost', endpoint: 'http://localhost:8000' }));
-const logger: BaseLogger = LogFactory.build('index');
+const exceptionMapper: ExceptionMapper = new ExceptionMapper();
+
 export const getUser: Handler = async (event: any): Promise<APIGatewayProxyResult> => {
-  const id: string = event.pathParameters.id;
-  const user: User = userController.getUser(id);
-  return {
-    statusCode: 200,
-    body: JSON.stringify(user),
-  };
+  try {
+    const id: string = event.pathParameters.id;
+    const user: User = await userController.getUser(id);
+    return {
+      statusCode: 200,
+      body: JSON.stringify(user),
+    };
+  } catch (error) {
+    return exceptionMapper.map(error);
+  }
+
 };
 
 export const createUser: Handler = async (event: any): Promise<APIGatewayProxyResult> => {
@@ -27,7 +32,7 @@ export const createUser: Handler = async (event: any): Promise<APIGatewayProxyRe
       body: JSON.stringify(user),
     };
   } catch (error) {
-    logger.error(error);
+    return exceptionMapper.map(error);
   }
 };
 

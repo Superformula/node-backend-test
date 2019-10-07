@@ -21,7 +21,6 @@
     "@types/supertest": "^2.0.8",
     "@types/uuid": "^3.4.5",
     "aws-sdk": "^2.543.0",
-    "fastify": "^2.9.0",
     "jest": "^24.9.0",
     "rimraf": "^3.0.0",
     "serverless-dynamodb-local": "^0.2.38",

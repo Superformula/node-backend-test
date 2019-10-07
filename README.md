@@ -20,6 +20,11 @@ Provides endpoints to Create/Read/Update/Delete users.  See the detailed [instru
 ### Setup dynamodb-local
 `sls dynamodb install`
 
+## Run tests
+`yarn start` ctrl-c to stop  
+`yarn test`
+> For now we have to start our local service and then run the test.  This is obviously not ideal and there are several ways to fix this going forward but for time preservation we must manage the service manually to run tests at the moment.
+
 ## Run locally
 
 ### Start local service

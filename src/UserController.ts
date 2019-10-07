@@ -1,12 +1,16 @@
 import * as moment from 'moment';
-import * as pino from 'pino';
-import * as uuid from 'uuid/v4';
+import { BaseLogger } from 'pino';
+import { LogFactory } from './LogFactory';
 import { User } from './model/User';
 import { UserCreate } from './model/UserCreate';
 import { UserUpdate } from './model/UserUpdate';
+import { UserDataAccess } from './UserDataAccess';
 
 export class UserController {
-  private logger: pino.Logger = pino();
+  private readonly logger: BaseLogger = LogFactory.build(this.constructor.name);
+
+  public constructor(private readonly userDataAccess: UserDataAccess) {
+  }
 
   /**
    * Get the user for the given id
@@ -18,10 +22,10 @@ export class UserController {
       id,
       address: '123 Main',
       name: 'backend test',
-      dob: '2001-10-02T02:52:57.240Z',
+      dob: moment('2001-10-02T02:52:57.240Z').valueOf(),
       description: 'Described',
-      createdAt: '2001-10-02T02:52:57.240Z',
-      updatedAt: '2001-10-02T02:52:57.240Z',
+      createdAt: moment('2001-10-02T02:52:57.240Z').valueOf(),
+      updatedAt: moment('2001-10-02T02:52:57.240Z').valueOf(),
     };
   }
 
@@ -30,12 +34,8 @@ export class UserController {
    * @param  {UserCreate} userCreate
    * @returns User
    */
-  public createUser = (userCreate: UserCreate): User => {
-    return {
-      ...userCreate,
-      id: uuid(),
-      createdAt: moment().toISOString(),
-    };
+  public createUser = async (userCreate: UserCreate): Promise<User> => {
+    return await this.userDataAccess.putUser(userCreate);
   }
 
   /**
@@ -48,8 +48,8 @@ export class UserController {
     return {
       id,
       ...userUpdate,
-      createdAt: 'todo',
-      updatedAt: moment().toISOString(),
+      createdAt: moment().valueOf(),
+      updatedAt: moment().valueOf(),
     };
   }
 

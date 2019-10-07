@@ -3,6 +3,7 @@ import { User } from '../src/model/User';
 import { UserCreate } from '../src/model/UserCreate';
 import { UserUpdate } from '../src/model/UserUpdate';
 import { UserController } from '../src/UserController';
+import { UserDataAccess } from '../src/UserDataAccess';
 
 const UUID_LENGTH: number = 36;
 
@@ -10,7 +11,8 @@ describe('UserControllerTest', () => {
   let userController: UserController;
 
   beforeAll(() => {
-    userController = new UserController();
+
+    userController = new UserController(new UserDataAccess({ region: 'localhost', endpoint: 'http://localhost:8000' }));
   });
 
   test('getUser returns user', () => {
@@ -23,10 +25,10 @@ describe('UserControllerTest', () => {
     const userCreate: UserCreate = {
       address: '123 Main',
       description: 'test create user',
-      dob: moment('1997-03-26').toISOString(),
+      dob: moment('1997-03-26').valueOf(),
       name: 'Test User',
     };
-    const user: User = userController.createUser(userCreate);
+    const user: User = await userController.createUser(userCreate);
     expect(user).not.toBeNull();
     expect(user.id).toHaveLength(UUID_LENGTH);
     expect(user.createdAt).not.toBeNull();
@@ -38,12 +40,12 @@ describe('UserControllerTest', () => {
     const userCreate: UserCreate = {
       address: '123 Main',
       description: 'test create user',
-      dob: moment('1997-03-26').toISOString(),
+      dob: moment('1997-03-26').valueOf(),
       name: 'Test User',
     };
 
-    beforeEach(() => {
-      createdUser = userController.createUser(userCreate);
+    beforeEach(async () => {
+      createdUser = await userController.createUser(userCreate);
     });
 
     test('updateUser updates a user', () => {

@@ -2,8 +2,8 @@ export interface User {
   id: string;
   address: string;
   name: string;
-  dob: string;
+  dob: number;
   description: string;
-  createdAt: string;
-  updatedAt?: string;
+  createdAt: number;
+  updatedAt?: number;
 }

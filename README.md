@@ -2,7 +2,7 @@
 Provides endpoints to Create/Read/Update/Delete users.  
 - [Problem instructions](problem-description.md)  
 - [Design decisions](design-decisions.md)
-
+***
 ## Development Setup (ONE TIME)
 
 ### Prerequisites
@@ -26,7 +26,7 @@ Provides endpoints to Create/Read/Update/Delete users.
 `yarn start` ctrl-c to stop  
 `yarn test`
 > For now we have to start our local service and then run the test.  This is obviously not ideal and there are several ways to fix this going forward.
-
+***
 ## Run locally
 
 ### Start local service

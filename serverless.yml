@@ -77,7 +77,7 @@ functions:
               paths:
                 id: true
             schema:
-              application/json: ${file(dist/schema/userCreate.json)} 
+              application/json: ${file(dist/schema/userUpdate.json)} 
 
   deleteUser:
     handler: dist/index.deleteUser

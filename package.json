@@ -10,7 +10,7 @@
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "test": "jest",
     "deploy": "yarn build && sls deploy",
-    "build": "rimraf dist && tsc",
+    "build": "rimraf dist && tsc && cp -r src/schema dist",
     "start": "sls offline start --stage local"
   },
   "devDependencies": {

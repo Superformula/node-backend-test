@@ -15,7 +15,8 @@
     "outDir": "dist",
     "noImplicitThis": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "noUnusedParameters": true,
+    "resolveJsonModule": true
   },
   "compileOnSave": true,
   "include": [

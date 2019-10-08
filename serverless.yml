@@ -62,6 +62,9 @@ functions:
       - http:
           path: users
           method: post
+          request:
+            schema:
+              application/json: ${file(dist/schema/userCreate.json)} 
 
   updateUser:
     handler: dist/index.updateUser
@@ -73,6 +76,8 @@ functions:
             parameters:
               paths:
                 id: true
+            schema:
+              application/json: ${file(dist/schema/userCreate.json)} 
 
   deleteUser:
     handler: dist/index.deleteUser

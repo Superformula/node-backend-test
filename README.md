@@ -22,7 +22,7 @@ Provides endpoints to Create/Read/Update/Delete users.
 
 ### Setup dynamodb-local
 `sls dynamodb install`
-
+***
 ## Run tests
 `yarn start` ctrl-c to stop  
 `yarn test`
@@ -70,7 +70,7 @@ Example:
 curl -X DELETE localhost:3000/users/{createdUserid}
 ```
 ***
-### Explore the database
+## Explore the database
 http://localhost:8000/shell/#
 
 ***

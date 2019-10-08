@@ -1,5 +1,7 @@
 # User's API
-Provides endpoints to Create/Read/Update/Delete users.  See the detailed [instructions](problem-description.md)
+Provides endpoints to Create/Read/Update/Delete users.  
+- [Problem instructions](problem-description.md)  
+- [Design decisions](design-decisions.md)
 
 ## Development Setup (ONE TIME)
 
@@ -33,7 +35,7 @@ Provides endpoints to Create/Read/Update/Delete users.  See the detailed [instru
 
 ### Create a user
 ```
-curl -X POST -d '{"address":"123 Main","name":"backend test","dob":"2001-10-02T02:52:57.240Z","description":"Described"}' -H "Content-Type: application/json" localhost:3000/users
+curl -X POST -d '{"address": "123 Main","name": "backend test", "dob": 1570497497, "description":"Described"}' -H "Content-Type: application/json" localhost:3000/users
 ```
 ### Get the user
 ```
@@ -50,4 +52,16 @@ curl -X DELETE localhost:3000/users/{createdUserid}
 ```
 ### Explore the database
 http://localhost:8000/shell/#
+
+## Deploy to aws
+`sls deploy`
+
+## Hosted version
+URLs
+```
+GET - https://mumv8tvcx7.execute-api.us-east-1.amazonaws.com/dev/users/{id}  
+POST - https://mumv8tvcx7.execute-api.us-east-1.amazonaws.com/dev/users  
+PUT - https://mumv8tvcx7.execute-api.us-east-1.amazonaws.com/dev/users/{id}  
+DELETE - https://mumv8tvcx7.execute-api.us-east-1.amazonaws.com/dev/users/{id}  
+```
 

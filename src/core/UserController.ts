@@ -1,6 +1,6 @@
-import { User } from './model/User';
-import { UserCreate } from './model/UserCreate';
-import { UserUpdate } from './model/UserUpdate';
+import { User } from '../model/User';
+import { UserCreate } from '../model/UserCreate';
+import { UserUpdate } from '../model/UserUpdate';
 import { UserDataAccess } from './UserDataAccess';
 
 export class UserController {

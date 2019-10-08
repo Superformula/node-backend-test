@@ -1,13 +1,11 @@
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 import * as moment from 'moment';
-import { BaseLogger } from 'pino';
 import * as uuid from 'uuid/v4';
-import { FatalException } from './exception/FatalException';
-import { NotFoundException } from './exception/NotFoundException';
-import { LogFactory } from './LogFactory';
-import { User } from './model/User';
-import { UserCreate } from './model/UserCreate';
-import { UserUpdate } from './model/UserUpdate';
+import { FatalException } from '../exception/FatalException';
+import { NotFoundException } from '../exception/NotFoundException';
+import { User } from '../model/User';
+import { UserCreate } from '../model/UserCreate';
+import { UserUpdate } from '../model/UserUpdate';
 
 export class UserDataAccess {
   private static TABLE: string = 'users';
@@ -22,6 +20,7 @@ export class UserDataAccess {
     }
     this.documentClient = new DocumentClient(dynamoEnv);
   }
+
   /**
    * Create a new user
    * @param  {UserCreate} userCreate
@@ -62,11 +61,9 @@ export class UserDataAccess {
     if (!output || !output.Item) {
       throw new NotFoundException(`User not found: ${id}`);
     }
-    const log: BaseLogger = LogFactory.build('zak');
-    log.info('output from get is');
-    log.info(output.Item);
     return output.Item as User;
   }
+
   /**
    * Delete a user.  This will always succeed if it finds a user or not.
    * @param  {string} id

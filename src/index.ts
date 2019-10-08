@@ -37,20 +37,28 @@ export const createUser: Handler = async (event: any): Promise<APIGatewayProxyRe
 };
 
 export const updateUser: Handler = async (event: any): Promise<APIGatewayProxyResult> => {
-  const userUpdate: UserUpdate = JSON.parse(event.body);
-  const id: string = event.pathParameters.id;
-  const user: User = userController.updateUser(id, userUpdate);
-  return {
-    statusCode: 200,
-    body: JSON.stringify(user),
-  };
+  try {
+    const userUpdate: UserUpdate = JSON.parse(event.body);
+    const id: string = event.pathParameters.id;
+    const user: User = await userController.updateUser(id, userUpdate);
+    return {
+      statusCode: 200,
+      body: JSON.stringify(user),
+    };
+  } catch (error) {
+    return exceptionMapper.map(error);
+  }
 };
 
 export const deleteUser: Handler = async (event: any): Promise<APIGatewayProxyResult> => {
-  const id: string = event.pathParameters.id;
-  userController.deleteUser(id);
-  return {
-    statusCode: 204,
-    body: '',
-  };
+  try {
+    const id: string = event.pathParameters.id;
+    await userController.deleteUser(id);
+    return {
+      statusCode: 204,
+      body: '',
+    };
+  } catch (error) {
+    return exceptionMapper.map(error);
+  }
 };

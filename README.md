@@ -12,6 +12,7 @@ Provides endpoints to Create/Read/Update/Delete users.
 - Git
 - Java Runtime Engine (JRE) version 6.x or newer.  This is a requirement of `serverless-dynamodb-local`.  
 - Curl (optional for testing)
+- AWS account and keys configured (if you would like to deploy the service to AWS)
 
 ### Install serverless with binary extensions
 `npm -g install serverless`
@@ -31,31 +32,52 @@ Provides endpoints to Create/Read/Update/Delete users.
 
 ### Start local service
 `yarn start` 
+> Service available at http://localhost:3000
 
 
 ### Create a user
+Path: `/users`  
+Method: `POST`
+Body: [schema](src/schema/userCreate.json)  
+Example:
 ```
 curl -X POST -d '{"address": "123 Main","name": "backend test", "dob": 1570497497, "description":"Described"}' -H "Content-Type: application/json" localhost:3000/users
 ```
 ### Get the user
+Path: `/users/{id}`  
+Method: `GET`  
+Parameters: id  
+Example:
 ```
-curl localhost:3000/users/{createdUserid}
+curl localhost:3000/users/{userid}
 ```
 ### Update the user
+Path: `/users/{id}`  
+Method: `PUT`  
+Parameters: id  
+Body: [schema](src/schema/userUpdate.json)  
+Example:
 ```
-curl -X PUT -d '{"name": "updated name"}' -H "Content-Type: application/json" localhost:3000/users/{createdUserid}
+curl -X PUT -d '{"name": "updated name"}' -H "Content-Type: application/json" localhost:3000/users/{userid}
 ```
 
 ### Delete the user
+Path: `/users/{id}`  
+Method: `DELETE`  
+Parameters: id  
+Example:
 ```
 curl -X DELETE localhost:3000/users/{createdUserid}
 ```
+***
 ### Explore the database
 http://localhost:8000/shell/#
 
+***
 ## Deploy to aws
 `sls deploy`
 
+***
 ## Hosted version
 URLs
 ```

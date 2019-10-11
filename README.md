@@ -75,7 +75,7 @@ These may be used for further challenges. You can freely skip these if you are n
 ### Basic Requirements
 
   - Create each endpoint as an individual AWS Lambda in Node.js
-  - Use any AWS Database-as-a-Service persistence store. DynmamoDB is preferred.
+  - Use any AWS Database-as-a-Service persistence store. DynamoDB is preferred.
   - Write concise and clear commit messages.
   - Write clear **documentation** on how it has been designed and how to run the code.
 

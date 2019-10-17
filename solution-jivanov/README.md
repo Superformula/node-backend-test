@@ -70,7 +70,7 @@ example:\
 **Important note:** each endpoint is protected with an API key. It will be generated upon deployment and displayed on-screen (look at the deployment section above). It must be provided as part of the request header "x-api-key: API_KEY_HERE"
 
 
-RESPONSE MODEL (for all of the above operations):
+**Response model** (for all of the above operations):
 ```
 {
     message: "success or error message",
@@ -83,7 +83,7 @@ RESPONSE MODEL (for all of the above operations):
  
 ---
 
-###Filesystem structure
+### Filesystem structure
 - `/` - root folder contains config files and handlers of the endpoints
 - `/serverless.yml` - main microservices config file (IaC)
 - `/dynamodb.yml` - CloudFormation IaC directives to provision the DB  
@@ -91,7 +91,7 @@ RESPONSE MODEL (for all of the above operations):
 - `services/` - contains all services classes
 
 
-###Additional notes:
+### Additional notes:
 1. Utilizing the isomorphic ValidationJS library for the input validations. That would allow to re-use the same on the frontend too (and potentially leverage the full-stack javascript).
 2. Field validations are kept at minimum at this time (due to none specified in the requirements), but could be easily amended thanks to the above mentioned library.
 3. 'Name' is the only mandatory field (when creating a new record); that is to avoid creating empty user records.

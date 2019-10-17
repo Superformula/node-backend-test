@@ -1,0 +1,148 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: superformula # NOTE: update this with your service name
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+# frameworkVersion: "=X.X.X"
+
+custom:
+  defaultStage: dev # default stage to deploy to
+
+  myStage: ${opt:stage, self:custom.defaultStage} # deploy to the stage that is given via a CLI param with fallback to the default stage
+
+  usersTableName: ${self:service}-users-${self:custom.myStage}
+
+  environment:
+    dev:
+      USERS_TABLE_NAME: ${self:custom.usersTableName}
+
+  myEnvironment: ${self:custom.environment.${self:custom.myStage}} # helper var to set the env vars accordingly to the given stage
+
+
+provider:
+  name: aws
+  stage: ${self:custom.myStage}
+  profile: ${self:custom.myStage} # matches the stage name
+  runtime: nodejs10.x
+
+  usagePlan:
+    quota:
+      limit: 1000
+      period: MONTH
+    throttle:
+      burstLimit: 20
+      rateLimit: 5
+
+  iamRoleStatements:
+  # permissions below are optionally needed in case the services are run within a VPC
+  #- Effect: "Allow"
+  #  Action: ["ec2:DescribeInstances",
+  #           "ec2:CreateNetworkInterface",
+  #           "ec2:AttachNetworkInterface",
+  #           "ec2:DescribeNetworkInterfaces",
+  #           "ec2:DeleteNetworkInterface",
+  #           "ec2:DetachNetworkInterface",
+  #           "ec2:ModifyNetworkInterfaceAttribute",
+  #           "ec2:ResetNetworkInterfaceAttribute",
+  #  ]
+  #  Resource: "*"
+
+  # permissions below are needed to access the DynamoDB table
+  - Effect: Allow
+    Action:
+      - dynamodb:DescribeTable
+      - dynamodb:Query
+      - dynamodb:Scan
+      - dynamodb:GetItem
+      - dynamodb:PutItem
+      - dynamodb:UpdateItem
+      - dynamodb:DeleteItem
+    # Restrict our IAM role permissions to
+    # the specific table for the stage
+    Resource:
+      - "Fn::GetAtt": [ UsersTable, Arn ]
+
+  environment: ${self:custom.myEnvironment}
+
+  apiKeys:
+    - ${self:custom.myStage}-superformula-APIKey
+
+#plugins:
+#- serverless-offline
+
+functions:
+  create:
+    handler: users.create
+    timeout: 10
+    memorySize: 1024
+    events:
+      - http:
+          path: users
+          method: post
+          integration: lambda-proxy
+          cors: true
+          private: true
+
+  read:
+    handler: users.read
+    timeout: 10
+    memorySize: 1024
+    events:
+    - http:
+        path: users/{id}
+        method: get
+        integration: lambda-proxy
+        cors: true
+        private: true
+
+  update:
+    handler: users.update
+    timeout: 10
+    memorySize: 1024
+    events:
+    - http:
+        path: users/{id}
+        method: post
+        integration: lambda-proxy
+        cors: true
+        private: true
+
+  delete:
+    handler: users.delete
+    timeout: 10
+    memorySize: 1024
+    events:
+    - http:
+        path: users/{id}
+        method: delete
+        integration: lambda-proxy
+        cors: true
+        private: true
+
+  query:
+    handler: users.query
+    timeout: 10
+    memorySize: 1024
+    events:
+    - http:
+        path: users/query
+        method: post
+        integration: lambda-proxy
+        cors: true
+        private: true
+
+resources: # CloudFormation template syntax from here on.
+  # DynamoDB
+  - ${file(dynamodb.yml)}

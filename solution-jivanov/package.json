@@ -1,0 +1,23 @@
+{
+  "name": "superformula-task",
+  "version": "1.0.0",
+  "description": "",
+  "main": "handler.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "jest",
+    "coverage": "jest --coverage"
+  },
+  "author": "J.Ivanov",
+  "license": "MIT",
+  "devDependencies": {
+    "aws-sdk-mock": "^4.5.0",
+    "jest": "^24.9.0"
+  },
+  "dependencies": {
+    "uuid": "^3.3.3",
+    "validate.js": "^0.13.1"
+  }
+}

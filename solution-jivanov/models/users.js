@@ -82,7 +82,7 @@ class Users extends Model {
     constructor() {
         super({dynamoDb: true}); // start with DynamoDB enabled
 
-        if ( !USERS_TABLE_NAME /*|| !Users.isString(USERS_TABLE_NAME)*/) throw new Error('No Users table name provided in the YML file');
+        if ( !USERS_TABLE_NAME || !Users.isString(USERS_TABLE_NAME) ) throw new Error('No Users table name provided in the YML file');
 
         // init some vars
         this.itemId = '';
@@ -192,6 +192,11 @@ class Users extends Model {
     }
 
     prepareUpdateRequest(itemId=this.itemId, itemData=this.itemData) {
+        console.log("itemData= ", itemData);
+
+        if (!Users.isObject(itemData)) throw new Error("Please assure you pass the data to update as an object");
+        if (Users.isEmptyObject(itemData)) throw new Error("No data to update! Please assure you pass the data you need to update as an object");
+
         // prepare expression, attributes and names
         let expression = '';
         let attributes = {
@@ -237,11 +242,6 @@ class Users extends Model {
     }
 
     async update(itemId=this.itemId, itemData=this.itemData) {
-
-        console.log("itemData= ", itemData);
-
-        if (!Users.isObject(itemData)) throw new Error("Please assure you pass the data to update as an object");
-        if (Users.isEmptyObject(itemData)) throw new Error("No data to update! Please assure you pass the data you need to update as an object");
 
         const request = this.prepareUpdateRequest(itemId, itemData);
 

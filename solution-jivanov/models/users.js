@@ -134,12 +134,12 @@ class Users extends Model {
         return this.validateData(itemData, constraints);
     }
 
-    async create(itemData=this.itemData) {
+    prepareCreateRequest(itemData=this.itemData) {
         const timestamp = new Date().toISOString();
 
         this.itemId = uuidv4();
 
-        const params = {
+        return {
             TableName: USERS_TABLE_NAME,
             Item: {
                 id: this.itemId,
@@ -148,25 +148,35 @@ class Users extends Model {
                 updatedAt: timestamp
             }
         };
+    }
 
-        console.log("CREATE, params= ", params);
+    async create(itemData=this.itemData) {
 
-        await this.dynamoDb.put(params).promise();
+        const request = this.prepareCreateRequest(itemData);
+
+        console.log("CREATE, request= ", request);
+
+        await this.dynamoDb.put(request).promise();
 
         return this.itemId;
     }
 
-    async read(itemId=this.itemId) {
-        const params = {
+    prepareReadRequest(itemId=this.itemId) {
+        return {
             TableName: USERS_TABLE_NAME,
             Key: {
                 id: itemId,
             }
         };
+    }
 
-        console.log("READ, params= ", params);
+    async read(itemId=this.itemId) {
 
-        const result = await this.dynamoDb.get(params).promise();
+        const request = this.prepareReadRequest(itemId);
+
+        console.log("READ, request= ", request);
+
+        const result = await this.dynamoDb.get(request).promise();
 
         if (result.Item)
         { // item is found, capture the data
@@ -181,13 +191,7 @@ class Users extends Model {
         return this.itemData;
     }
 
-    async update(itemId=this.itemId, itemData=this.itemData) {
-
-        console.log("itemData= ", itemData);
-
-        if (!Users.isObject(itemData)) throw new Error("Please assure you pass the data to update as an object");
-        if (Users.isEmptyObject(itemData)) throw new Error("No data to update! Please assure you pass the data you need to update as an object");
-
+    prepareUpdateRequest(itemId=this.itemId, itemData=this.itemData) {
         // prepare expression, attributes and names
         let expression = '';
         let attributes = {
@@ -213,7 +217,7 @@ class Users extends Model {
         console.log("expression= ", expression);
         console.log("attributes= ", attributes);
 
-        let params = {
+        let request = {
             TableName: USERS_TABLE_NAME,
             Key: {
                 id: itemId,
@@ -226,30 +230,47 @@ class Users extends Model {
         // add ExpressionAttributeNames if needed
         if (!Users.isEmptyObject(names))
         {
-            params['ExpressionAttributeNames'] = names;
+            request['ExpressionAttributeNames'] = names;
         }
 
-        console.log("UPDATE, params= ", params);
+        return request;
+    }
 
-        const result = await this.dynamoDb.update(params).promise();
+    async update(itemId=this.itemId, itemData=this.itemData) {
+
+        console.log("itemData= ", itemData);
+
+        if (!Users.isObject(itemData)) throw new Error("Please assure you pass the data to update as an object");
+        if (Users.isEmptyObject(itemData)) throw new Error("No data to update! Please assure you pass the data you need to update as an object");
+
+        const request = this.prepareUpdateRequest(itemId, itemData);
+
+        console.log("UPDATE, request= ", request);
+
+        const result = await this.dynamoDb.update(request).promise();
 
         console.log("result= ", result);
 
         return this.itemId;
     }
 
-    async delete(itemId=this.itemId) {
-        const params = {
+    prepareDeleteRequest(itemId=this.itemId) {
+        return {
             TableName: USERS_TABLE_NAME,
             Key: {
                 id: itemId,
             },
             ConditionExpression: 'attribute_exists(id)', // assure the record exists, throw an error otherwise
         };
+    }
 
-        console.log("DELETE, params= ", params);
+    async delete(itemId=this.itemId) {
 
-        return await this.dynamoDb.delete(params).promise();
+        const request = this.prepareDeleteRequest(itemId);
+
+        console.log("DELETE, request= ", request);
+
+        return await this.dynamoDb.delete(request).promise();
     }
 
     async query() {

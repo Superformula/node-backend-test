@@ -1,0 +1,454 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Superformula RESTful API
+
+Mappings:
+
+  ApiGateway:
+    IntegrationRequestTemplates:
+      Default: |
+        #set($allParams = $input.params())
+        {
+          "body": $input.json('$'),
+          "method": "$context.httpMethod",
+          "uri": "$context.resourcePath",
+          "params": {
+            #foreach($type in $allParams.keySet())
+              #set($params = $allParams.get($type))
+              "$type": {
+                #foreach($paramName in $params.keySet())
+                  "$paramName": "$util.escapeJavaScript($params.get($paramName))"
+                  #if($foreach.hasNext),#end
+                #end
+              }
+              #if($foreach.hasNext),#end
+            #end
+          }
+        }
+    IntegrationResponseTemplates:
+      Error: |
+        $input.path('$.errorMessage')
+      Options: |
+        {
+          "statusCode": 200
+        }
+
+Resources:
+
+  ##
+  # Api Documentation Resources
+  ##
+  ApiDocumentationBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+
+  ApiDocumentationBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref ApiDocumentationBucket
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+            Principal: "*"
+            Resource: !Sub arn:aws:s3:::${ApiDocumentationBucket}/*
+
+  ##
+  # Rest Api Resources
+  ##
+  RestApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+      Name: !Sub ${AWS::StackName}
+
+  RestApiStage:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      DeploymentId: !Ref RestApiDeployment
+      RestApiId: !Ref RestApi
+      StageName: prod
+
+  RestApiRootResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt RestApi.RootResourceId
+      PathPart: api
+      RestApiId: !Ref RestApi
+
+  RestApiV1Resource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !Ref RestApiRootResource
+      PathPart: v1
+      RestApiId: !Ref RestApi
+
+  RestApiUsersResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !Ref RestApiV1Resource
+      PathPart: users
+      RestApiId: !Ref RestApi
+
+  RestApiUserResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !Ref RestApiUsersResource
+      PathPart: '{id}'
+      RestApiId: !Ref RestApi
+
+  ##
+  # DynamoDB Table Resources
+  ##
+  UsersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ${AWS::StackName}-Users
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+
+  ##
+  # Lambda Permission Resources
+  ##
+  CloudWatchLogsManagedPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Resource: !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/*
+
+  DynamoDbManagedPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:DeleteItem
+              - dynamodb:GetItem
+              - dynamodb:PutItem
+              - dynamodb:Query
+              - dynamodb:Scan
+              - dynamodb:UpdateItem
+            Resource:
+              - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${UsersTable}
+              - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${UsersTable}/index/*
+
+  LambdaFunctionsRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRole
+            Principal:
+              Service: lambda.amazonaws.com
+      ManagedPolicyArns:
+        - !Ref CloudWatchLogsManagedPolicy
+        - !Ref DynamoDbManagedPolicy
+
+  ##
+  # Users Create Api Endpoint Resources
+  ##
+  UsersCreateLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: {{LAMBDAS_RELEASE_BUCKET}}
+        S3Key: users-create.zip
+      FunctionName: !Sub ${AWS::StackName}-UsersCreate
+      Handler: index.handler
+      Environment:
+        Variables:
+          STACK_NAME: !Ref AWS::StackName
+      Role: !GetAtt LambdaFunctionsRole.Arn
+      Runtime: nodejs10.x
+      Timeout: 30
+
+  UsersCreateLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt UsersCreateLambdaFunction.Arn
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApi}/*/POST/api/v1/users
+    DependsOn: UsersCreateLambdaFunction
+
+  UsersCreateApiMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      ApiKeyRequired: false
+      AuthorizationType: NONE
+      HttpMethod: POST
+      Integration:
+        IntegrationHttpMethod: POST
+        IntegrationResponses:
+          - StatusCode: 201
+          - StatusCode: 422
+            SelectionPattern: .*"status":422.*
+            ResponseTemplates:
+              application/json: !FindInMap [ApiGateway, IntegrationResponseTemplates, Error]
+          - StatusCode: 500
+            SelectionPattern: .*"status":500.*
+            ResponseTemplates:
+              application/json: !FindInMap [ApiGateway, IntegrationResponseTemplates, Error]
+        RequestTemplates:
+          application/json: !FindInMap [ApiGateway, IntegrationRequestTemplates, Default]
+        Type: AWS
+        Uri: !Sub
+          - arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${Function}/invocations
+          - Function: !GetAtt UsersCreateLambdaFunction.Arn
+      MethodResponses:
+        - StatusCode: 201
+        - StatusCode: 422
+        - StatusCode: 500
+      ResourceId: !Ref RestApiUsersResource
+      RestApiId: !Ref RestApi
+    DependsOn: UsersCreateLambdaFunction
+
+  ##
+  # Users Get Api Endpoint Resources
+  ##
+  UsersGetLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: {{LAMBDAS_RELEASE_BUCKET}}
+        S3Key: users-get.zip
+      FunctionName: !Sub ${AWS::StackName}-UsersGet
+      Handler: index.handler
+      Environment:
+        Variables:
+          STACK_NAME: !Ref AWS::StackName
+      Role: !GetAtt LambdaFunctionsRole.Arn
+      Runtime: nodejs10.x
+      Timeout: 30
+
+  UsersGetLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt UsersGetLambdaFunction.Arn
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApi}/*/GET/api/v1/users/{id}
+    DependsOn: UsersGetLambdaFunction
+
+  UsersGetApiMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      ApiKeyRequired: false
+      AuthorizationType: NONE
+      HttpMethod: GET
+      Integration:
+        IntegrationHttpMethod: POST
+        IntegrationResponses:
+          - StatusCode: 200
+          - StatusCode: 404
+            SelectionPattern: .*"status":404.*
+            ResponseTemplates:
+              application/json: !FindInMap [ApiGateway, IntegrationResponseTemplates, Error]
+          - StatusCode: 500
+            SelectionPattern: .*"status":500.*
+            ResponseTemplates:
+              application/json: !FindInMap [ApiGateway, IntegrationResponseTemplates, Error]
+        RequestTemplates:
+          application/json: !FindInMap [ApiGateway, IntegrationRequestTemplates, Default]
+        Type: AWS
+        Uri: !Sub
+          - arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${Function}/invocations
+          - Function: !GetAtt UsersGetLambdaFunction.Arn
+      MethodResponses:
+        - StatusCode: 200
+        - StatusCode: 404
+        - StatusCode: 500
+      ResourceId: !Ref RestApiUserResource
+      RestApiId: !Ref RestApi
+    DependsOn: UsersGetLambdaFunction
+
+  ##
+  # Users OPTIONS Api Endpoint Resources
+  ##
+  UserOptionsApiMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      ApiKeyRequired: false
+      AuthorizationType: NONE
+      HttpMethod: OPTIONS
+      Integration:
+        IntegrationResponses:
+          - StatusCode: 200
+        RequestTemplates:
+          application/json: !FindInMap [ApiGateway, IntegrationResponseTemplates, Options]
+        Type: MOCK
+      MethodResponses:
+        - StatusCode: 200
+      ResourceId: !Ref RestApiUserResource
+      RestApiId: !Ref RestApi
+
+  UsersOptionsApiMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      ApiKeyRequired: false
+      AuthorizationType: NONE
+      HttpMethod: OPTIONS
+      Integration:
+        IntegrationResponses:
+          - StatusCode: 200
+        RequestTemplates:
+          application/json: !FindInMap [ApiGateway, IntegrationResponseTemplates, Options]
+        Type: MOCK
+      MethodResponses:
+        - StatusCode: 200
+      ResourceId: !Ref RestApiUsersResource
+      RestApiId: !Ref RestApi
+
+  ##
+  # Deployment Resources
+  ##
+  RestApiDeployment:
+    Type: AWS::ApiGateway::Deployment
+    Properties:
+      RestApiId: !Ref RestApi
+    DependsOn:
+      - UsersCreateApiMethod
+      - UsersGetApiMethod
+      - UsersOptionsApiMethod
+
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+          - DomainName: !GetAtt ApiDocumentationBucket.DomainName
+            Id: !Ref ApiDocumentationBucket
+            S3OriginConfig:
+              OriginAccessIdentity: !Ref AWS::NoValue
+          - DomainName: !Sub ${RestApi}.execute-api.${AWS::Region}.amazonaws.com
+            CustomOriginConfig:
+              OriginProtocolPolicy: https-only
+            Id: !Ref RestApi
+            OriginPath: !Sub /${RestApiStage}
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - GET
+            - HEAD
+          ForwardedValues:
+            QueryString: true
+          TargetOriginId: !Ref ApiDocumentationBucket
+          ViewerProtocolPolicy: redirect-to-https
+        CacheBehaviors:
+          - AllowedMethods:
+              - DELETE
+              - GET
+              - HEAD
+              - OPTIONS
+              - PATCH
+              - POST
+              - PUT
+            CachedMethods:
+              - GET
+              - HEAD
+              - OPTIONS
+            Compress: true
+            ForwardedValues:
+              Headers:
+                - Accept
+                - Content-Type
+              QueryString: true
+            PathPattern: /api/v1/*
+            TargetOriginId: !Ref RestApi
+            ViewerProtocolPolicy: https-only
+        DefaultRootObject: index.html
+        Enabled: true
+        HttpVersion: http2
+    DependsOn:
+      - ApiDocumentationBucket
+      - RestApiDeployment
+
+  DeployApiDocumentationS3ManagedPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action: s3:ListBucket
+            Resource:
+              - !Sub arn:aws:s3:::${ApiDocumentationBucket}
+              - arn:aws:s3:::{{DOCS_RELEASE_BUCKET}}
+          - Effect: Allow
+            Action: s3:GetObject
+            Resource:
+              - !Sub arn:aws:s3:::${ApiDocumentationBucket}/*
+              - arn:aws:s3:::{{DOCS_RELEASE_BUCKET}}/*
+          - Effect: Allow
+            Action:
+              - s3:PutObject
+            Resource: !Sub arn:aws:s3:::${ApiDocumentationBucket}/*
+
+  DeployApiDocumentationRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRole
+            Principal:
+              Service: lambda.amazonaws.com
+      ManagedPolicyArns:
+        - !Ref CloudWatchLogsManagedPolicy
+        - !Ref DeployApiDocumentationS3ManagedPolicy
+
+  DeployApiDocumentationLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: {{LAMBDAS_RELEASE_BUCKET}}
+        S3Key: deploy-api-docs.zip
+      FunctionName: !Sub ${AWS::StackName}-DeployApiDocs
+      Handler: index.handler
+      Role: !GetAtt DeployApiDocumentationRole.Arn
+      Runtime: nodejs10.x
+      Timeout: 30
+
+  DeployApiDocumentation:
+    Type: Custom::DeployApiDocumentation
+    Properties:
+      ServiceToken: !GetAtt DeployApiDocumentationLambdaFunction.Arn
+      ApiUrl: !Sub https://${CloudFrontDistribution.DomainName}/api/v1
+      DestinationBucket: !Ref ApiDocumentationBucket
+      SourceBucket: {{DOCS_RELEASE_BUCKET}}
+      RewriteFiles:
+        - api_data.js
+        - api_data.json
+        - api_project.js
+        - api_project.json
+    DependsOn:
+      - ApiDocumentationBucket
+      - CloudFrontDistribution
+      - DeployApiDocumentationLambdaFunction
+
+Outputs:
+
+  ApiUrl:
+    Value: !Sub https://${CloudFrontDistribution.DomainName}/api/v1
+
+  DocumentationUrl:
+    Value: !Sub https://${CloudFrontDistribution.DomainName}

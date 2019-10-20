@@ -1,0 +1,54 @@
+{
+  "name": "node-backend-test",
+  "version": "1.0.0",
+  "description": "RESTful API for Superformula",
+  "main": "index.js",
+  "scripts": {
+    "prebuild": "npm run lint:fix && rm -rf dist && mkdir dist",
+    "build": "npm run build:docs && npm run build:lambdas && npm run build:templates",
+    "build:docs": "apidoc --input src/ -o dist/docs/",
+    "build:lambdas": "webpack --config webpack.config.js --hide-modules",
+    "build:templates": "node bin/build-templates.js",
+    "lint": "eslint {bin,src,test}/**/*.js",
+    "lint:fix": "npm run lint -- --fix",
+    "prerelease": "npm run build --production",
+    "release": "npm run release:docs && npm run release:lambdas && npm run release:templates",
+    "release:docs": "node bin/release-docs.js",
+    "release:lambdas": "node bin/release-lambdas.js",
+    "release:templates": "node bin/release-templates.js",
+    "postinstall": "[ -f \".env\" ] || cp .env.example .env"
+  },
+  "author": "CJ O'Hara",
+  "dependencies": {
+    "@aws/dynamodb-data-mapper": "^0.7.3",
+    "@babel/runtime": "^7.6.3",
+    "aws-sdk": "^2.552.0",
+    "cfn-response": "^1.0.1",
+    "moment": "^2.24.0",
+    "uuid": "^3.3.3",
+    "uuid-validate": "0.0.3",
+    "validate.js": "^0.13.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.6.4",
+    "@babel/plugin-transform-runtime": "^7.6.2",
+    "@babel/preset-env": "^7.6.3",
+    "apidoc": "^0.17.7",
+    "archiver": "^3.1.1",
+    "babel-loader": "^8.0.6",
+    "dotenv": "^8.2.0",
+    "eslint": "^6.5.1",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "terser-webpack-plugin": "^2.1.3",
+    "webpack": "^4.41.1",
+    "webpack-cli": "^3.3.9"
+  },
+  "apidoc": {
+    "title": "API Documentation - Superformula Backend Test",
+    "sampleUrl": "{{API_URL}}"
+  }
+}

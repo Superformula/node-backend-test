@@ -31,7 +31,7 @@ const Lambda = require('aws-sdk/clients/lambda');
  * 		"state": "GA",
  * 		"zip": "30281"
  * 	},
- * 	"description": "Just your average dude.",
+ * 	"description": "Just your average dude."
  * }
  *
  * @apiSuccess (Success) {String} id User's unique identifier.
@@ -45,18 +45,20 @@ const Lambda = require('aws-sdk/clients/lambda');
  * @apiSuccessExample Success-Response
  * HTTP/1.1 200 OK
  * {
- * 	"id": "000df75e-53e3-4afd-9362-b8b6b8afba90",
- * 	"name": "John Smith",
- * 	"dob": "1977-08-12",
- * 	"address": {
- * 		"street": "8276 Proctor Street",
- * 		"city": "Stockbridge",
- * 		"state": "GA",
- * 		"zip": "30281"
- * 	},
- * 	"description": "Just your average dude.",
- * 	"createdAt": "2019-10-19T15:22:18.210Z",
- * 	"updatedAt": "2019-10-20T17:39:41.380Z"
+ * 	"data":
+ * 		"id": "000df75e-53e3-4afd-9362-b8b6b8afba90",
+ * 		"name": "John Smith",
+ * 		"dob": "1977-08-12",
+ * 		"address": {
+ * 			"street": "8276 Proctor Street",
+ * 			"city": "Stockbridge",
+ * 			"state": "GA",
+ * 			"zip": "30281"
+ * 		},
+ * 		"description": "Just your average dude.",
+ * 		"createdAt": "2019-10-19T15:22:18.210Z",
+ * 		"updatedAt": "2019-10-20T17:39:41.380Z"
+ * 	}
  * }
  *
  * @apiUse ResourceNotFoundException

@@ -41,18 +41,20 @@ const Lambda = require('aws-sdk/clients/lambda');
  * @apiSuccessExample Success-Response
  * HTTP/1.1 201 Created
  * {
- * 	"id": "e34c2498-8b12-485a-9f3b-92342b561062",
- * 	"name": "Jennie Smith",
- * 	"dob": "1990-05-08",
- * 	"address": {
- * 		"street": "939 Elmwood Street",
- * 		"city": "Moncks Corner",
- * 		"state": "SC",
- * 		"zip": "29461"
- * 	},
- * 	"description": "She's like the best.",
- * 	"createdAt": "2019-10-21T02:23:31.467Z",
- * 	"updatedAt": "2019-10-21T02:23:31.467Z"
+ * 	"data":
+ * 		"id": "e34c2498-8b12-485a-9f3b-92342b561062",
+ * 		"name": "Jennie Smith",
+ * 		"dob": "1990-05-08",
+ * 		"address": {
+ * 			"street": "939 Elmwood Street",
+ * 			"city": "Moncks Corner",
+ * 			"state": "SC",
+ * 			"zip": "29461"
+ * 		},
+ * 		"description": "She's like the best.",
+ * 		"createdAt": "2019-10-21T02:23:31.467Z",
+ * 		"updatedAt": "2019-10-21T02:23:31.467Z"
+ * 	}
  * }
  *
  * @apiUse InvalidAttributeException

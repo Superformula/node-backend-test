@@ -23,18 +23,20 @@ const DyanamoDB = require('aws-sdk/clients/dynamodb');
  * @apiSuccessExample Success-Response
  * HTTP/1.1 200 OK
  * {
- * 	"id": "548cad96-8191-4396-97d7-d84a1f3bc060",
- * 	"name": "Jane Doe",
- * 	"dob": "1985-01-15",
- * 	"address": {
- * 		"street": "12520 Boulder St",
- * 		"city": "Boulder Creek",
- * 		"state": "CA",
- * 		"zip": "95006"
- * 	},
- * 	"description": "One Cool Gal!",
- * 	"createdAt": 1571363778,
- * 	"updatedAt": 1571548812
+ * 	"data": {
+ * 		"id": "548cad96-8191-4396-97d7-d84a1f3bc060",
+ * 		"name": "Jane Doe",
+ * 		"dob": "1985-01-15",
+ * 		"address": {
+ * 			"street": "12520 Boulder St",
+ * 			"city": "Boulder Creek",
+ * 			"state": "CA",
+ * 			"zip": "95006"
+ * 		},
+ * 		"description": "One Cool Gal!",
+ * 		"createdAt": "2019-10-18T02:23:31.467Z",
+ * 		"updatedAt": "2019-10-20T17:39:41.380Z"
+ * 	}
  * }
  *
  * @apiUse ResourceNotFoundException

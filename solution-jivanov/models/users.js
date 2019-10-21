@@ -77,7 +77,6 @@ const dynamoDbKeys = new Map ([
     ['name', '#userName'],
 ]);
 
-
 class Users extends Model {
     constructor() {
         super({dynamoDb: true}); // start with DynamoDB enabled

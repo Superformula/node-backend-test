@@ -5,6 +5,7 @@ const ZipEntriesPlugin = require('./src/plugins/zip-entries-webpack-plugin');
 module.exports = {
 	mode: process.env.NODE_ENV || 'development',
 	entry: {
+		'cloudfront-create-invalidation': '@/lambdas/cloudfront-create-invalidation.js',
 		'deploy-api-docs': '@/lambdas/deploy-api-docs.js',
 		'users-delete': '@/lambdas/users-delete.js',
 		'users-create': '@/lambdas/users-create.js',

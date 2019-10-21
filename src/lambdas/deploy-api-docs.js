@@ -1,5 +1,5 @@
-const AWS = require('aws-sdk');
 const cfnResponse = require('cfn-response');
+const S3 = require('aws-sdk/clients/s3');
 
 /**
  * Deploy Api Documentation to the CloudFront Origin's S3 Bucket
@@ -14,7 +14,7 @@ export async function handler(event, context, callback) {
 	if (event.RequestType === 'Delete') {
 		await response(event, context, cfnResponse.SUCCESS);
 	} else {
-		const s3 = new AWS.S3();
+		const s3 = new S3();
 		const apiUrl = event.ResourceProperties.ApiUrl;
 		const destinationBucket = event.ResourceProperties.DestinationBucket;
 		const sourceBucket = event.ResourceProperties.SourceBucket;

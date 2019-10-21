@@ -12,13 +12,13 @@ const DyanamoDB = require('aws-sdk/clients/dynamodb');
  *
  * @apiParam {String} id User's unique identifier.
  *
- * @apiSuccess {String} id User's unique identifier.
- * @apiSuccess {String} name User's name.
- * @apiSuccess {String} dob User's date of birth.
- * @apiSuccess {Object} address User's address.
- * @apiSuccess {String} description Description of the User.
- * @apiSuccess {Number} createdAt Timestamp of when the User was created.
- * @apiSuccess {Number} updatedAt Timestamp of when the User was last updated.
+ * @apiSuccess (Success) {String} id User's unique identifier.
+ * @apiSuccess (Success) {String} name User's name.
+ * @apiSuccess (Success) {String} dob ISO 8601 Date of User's date of birth.
+ * @apiSuccess (Success) {Object} address User's address.
+ * @apiSuccess (Success) {String} description Description of the User.
+ * @apiSuccess (Success) {String} createdAt ISO 8601 Datetime in UTC of when the User was created.
+ * @apiSuccess (Success) {String} updatedAt ISO 8601 Datetime in UTC of when the User was last updated.
  *
  * @apiSuccessExample Success-Response
  * HTTP/1.1 200 OK
@@ -44,7 +44,8 @@ export async function handler(event, context, callback) {
 	console.log(event);
 
 	try {
-		const user = new User(event.params.path);
+		const user = new User();
+		user.id = event.params.path.id;
 
 		const client = new DyanamoDB();
 		const mapper = new DataMapper({client});

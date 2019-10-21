@@ -20,7 +20,8 @@ export default class User extends Model {
 				uuid: 4,
 				defaultValue() {
 					return uuid();
-				}
+				},
+				userInput: false
 			},
 			name: {
 				presence: true,
@@ -51,12 +52,14 @@ export default class User extends Model {
 			createdAt: {
 				presence: true,
 				datetime: true,
-				defaultValue: moment.utc().toISOString()
+				defaultValue: moment.utc().toISOString(),
+				userInput: false
 			},
 			updatedAt: {
 				presence: true,
 				datetime: true,
-				defaultValue: moment.utc().toISOString()
+				defaultValue: moment.utc().toISOString(),
+				userInput: false
 			}
 		};
 	}

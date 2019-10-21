@@ -18,7 +18,7 @@ export default class Model {
 	populate(data) {
 		const attributes = this.attributes();
 		Object.keys(attributes).forEach(key => {
-			if (data.hasOwnProperty(key)) {
+			if (data.hasOwnProperty(key) && attributes[key].userInput !== false) {
 				if (typeof attributes[key].transform === 'function') {
 					this[key] = attributes[key].transform(data[key]);
 				} else {
@@ -48,17 +48,16 @@ export default class Model {
 		const properties = {};
 		const constraints = {};
 		const attributes = this.attributes();
+
 		Object.keys(attributes).forEach(key => {
 			properties[key] = this.hasOwnProperty(key) ? this[key] : null;
 		});
+
 		Object.keys(attributes).forEach(key => {
 			const constraint = attributes[key];
-			if (constraint.hasOwnProperty('defaultValue')) {
-				delete constraint.defaultValue;
-			}
-			if (constraint.hasOwnProperty('transform')) {
-				delete constraint.transform;
-			}
+			delete constraint.defaultValue;
+			delete constraint.transform;
+			delete constraint.userInput;
 			constraints[key] = constraint;
 		});
 
@@ -70,6 +69,7 @@ export default class Model {
 
 	/**
 	 * This Model's attributes including validation, default value, and input transformation.
+	 * If they property should ignore user input (i.e. is generated), add attribute userInput: false
 	 * See https://validatejs.org for more validator configurations.
 	 *
 	 * Example:
@@ -79,7 +79,8 @@ export default class Model {
 	 * 		presence: true,
 	 * 		defaultValue() {
 	 * 			return Math.random();
-	 * 		}
+	 * 		},
+	 * 		userInput: false
 	 * 	},
 	 * 	date: {
 	 * 		presence: true,

@@ -3,7 +3,7 @@ import Exception from '@/exceptions/exception';
 /**
  * @apiDefine ResourceNotFoundException
  *
- * @apiError ResourceNotFound The resource with that id does not exist.
+ * @apiError (Error) ResourceNotFound The resource with that id does not exist.
  *
  * @apiErrorExample ResourceNotFound
  * HTTP/1.1 404 Not Found
@@ -12,7 +12,7 @@ import Exception from '@/exceptions/exception';
  * 		{
  * 			"status": 404,
  * 			"title": "ResourceNotFound",
- * 			"detail": "User with id 'b1343cf8-72c2-4e37-8d96-c48c3aa796d7' not found."
+ * 			"detail": "User with id 'b1343cf8-72c2-4e37-8d96-c48c3aa796d7' does not exist."
  * 		}
  * 	]
  * }

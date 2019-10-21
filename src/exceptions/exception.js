@@ -1,7 +1,7 @@
 /**
  * @apiDefine Exception
  *
- * @apiError InternalServiceError An unknown error occurred.
+ * @apiError (Error) InternalServiceError An unknown error occurred.
  *
  * @apiErrorExample InternalServiceError
  * HTTP/1.1 500 Internal Service Error

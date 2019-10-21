@@ -3,7 +3,7 @@ import Exception from '@/exceptions/exception';
 /**
  * @apiDefine InvalidAttributeException
  *
- * @apiError InvalidAttribute An invalid attribute was used.
+ * @apiError (Error) InvalidAttribute An invalid attribute was used.
  *
  * @apiErrorExample InvalidAttribute
  * HTTP/1.1 422 Unprocessable Entity

@@ -81,7 +81,7 @@ export async function handler(event, context, callback) {
 
 		let updated = new User(event.body);
 		updated.id = user.id;
-		updated.createdAt = user.createdAt;
+		updated.createdAt = moment(user.createdAt).utc().toISOString();
 		updated.updatedAt = moment.utc().toISOString();
 
 		await updated.validate();

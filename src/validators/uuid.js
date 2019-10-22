@@ -19,12 +19,12 @@ export default class UuidValidator extends Validator {
 		 * @param {string} key
 		 * @returns {*}
 		 */
-		this._validate.validators.uuid = (value, options, key) => {
+		this._validate.validators.uuid = (value, options) => {
 			if (typeof value === 'undefined' || value === null) {
 				return null;
 			}
 			const isValid = (options && +options) ? uuidValidate(value, options) : uuidValidate(value);
-			return !isValid ? `${key} is not a valid uuid.` : null;
+			return !isValid ? 'is not a valid uuid' : null;
 		};
 	}
 }

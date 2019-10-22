@@ -7,7 +7,7 @@ export default class DatetimeValidator extends Validator {
 	 */
 	register() {
 		this._validate.extend(this._validate.validators.datetime, {
-			parse(value, options) {
+			parse(value) {
 				return +moment.utc(value);
 			},
 			format(value, options) {

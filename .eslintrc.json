@@ -19,7 +19,9 @@
     "linebreak-style": ["error", "unix"],
     "no-prototype-builtins": "off",
     "no-tabs": "off",
+    "no-undef": "off",
     "object-curly-spacing": ["error", "never"],
+    "prefer-promise-reject-errors": "off",
     "semi": ["error", "always"],
     "space-before-function-paren": ["error", {
       "anonymous": "always",

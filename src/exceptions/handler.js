@@ -1,5 +1,8 @@
 import Exception from '@/exceptions/exception';
 
+/**
+ * Format errors for API Gateway response
+ */
 export default class ExceptionHandler {
 	/**
 	 * ExceptionHandler constructor

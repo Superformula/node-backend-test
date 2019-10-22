@@ -2,7 +2,7 @@ import Address from '@/models/address';
 import DatetimeValidator from '@/validators/datetime';
 import Model from '@/models/model';
 import moment from 'moment';
-import uuid from 'uuid/v4';
+import uuid from 'uuid';
 import UuidValidator from '@/validators/uuid';
 import {DynamoDbSchema, DynamoDbTable, embed} from '@aws/dynamodb-data-mapper';
 
@@ -19,7 +19,7 @@ export default class User extends Model {
 				type: 'string',
 				uuid: 4,
 				defaultValue() {
-					return uuid();
+					return uuid.v4();
 				},
 				userInput: false
 			},
@@ -91,7 +91,7 @@ Object.defineProperties(User.prototype, {
 			id: {
 				type: 'String',
 				keyType: 'HASH',
-				defaultProvider: uuid
+				defaultProvider: uuid.v4
 			},
 			name: {
 				type: 'String'

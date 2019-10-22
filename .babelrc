@@ -4,5 +4,12 @@
   ],
   "plugins": [
     "@babel/plugin-transform-runtime"
-  ]
+  ],
+  "env": {
+    "test": {
+      "plugins": [
+        ["babel-plugin-webpack-alias-7"]
+      ]
+    }
+  }
 }

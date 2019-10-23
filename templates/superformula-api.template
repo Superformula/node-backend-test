@@ -1,6 +1,73 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Superformula RESTful API
 
+Parameters:
+
+  ApiKeyRequired:
+    Type: String
+    Description: Would you like to require an API key for the Rest API? If enabled, this will generate a new API key for you. Select 'Yes' if so.
+    Default: 'Yes'
+    AllowedValues:
+      - 'Yes'
+      - 'No'
+
+  AlarmsEnabled:
+    Type: String
+    Description: Would you like to enable alarms? Select 'Yes' if so.
+    Default: 'Yes'
+    AllowedValues:
+      - 'Yes'
+      - 'No'
+
+  AlarmApiLatencyThreshold:
+    Type: Number
+    Description: If alarms are enabled, what latency (millisenconds) would you like to trigger an alarm?
+    Default: 1000
+    MinValue: 0
+
+  AlarmHighRequestsThreshold:
+    Type: Number
+    Description: If alarms are enabled, how many requests (count) per minute would you like to trigger an alarm?
+    Default: 1000
+    MinValue: 0
+
+  AlarmHigh4xxErrorRateThreshold:
+    Type: Number
+    Description: If alarms are enabled, what 4xx error rate (percentage) would you like to trigger an alarm?
+    Default: 25
+    MinValue: 0
+
+  AlarmHigh5xxErrorRateThreshold:
+    Type: Number
+    Description: If alarms are enabled, what 5xx error rate (percentage) would you like to trigger an alarm?
+    Default: 10
+    MinValue: 0
+
+Metadata:
+
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      -
+        Label:
+          default: Authentication
+        Parameters:
+          - ApiKeyRequired
+      -
+        Label:
+          default: Alerting
+        Parameters:
+          - AlarmsEnabled
+          - AlarmApiLatencyThreshold
+          - AlarmHighRequestsThreshold
+          - AlarmHigh4xxErrorRateThreshold
+          - AlarmHigh5xxErrorRateThreshold
+
+Conditions:
+
+  RestApiKeyCondition: !Equals [ !Ref ApiKeyRequired, 'Yes' ]
+
+  AlarmsEnabledCondition: !Equals [ !Ref AlarmsEnabled, 'Yes' ]
+
 Mappings:
 
   ApiGateway:
@@ -205,7 +272,7 @@ Resources:
   UsersCreateApiMethod:
     Type: AWS::ApiGateway::Method
     Properties:
-      ApiKeyRequired: false
+      ApiKeyRequired: !If [ RestApiKeyCondition, true, false ]
       AuthorizationType: NONE
       HttpMethod: POST
       Integration:
@@ -266,7 +333,7 @@ Resources:
   UsersDeleteApiMethod:
     Type: AWS::ApiGateway::Method
     Properties:
-      ApiKeyRequired: false
+      ApiKeyRequired: !If [ RestApiKeyCondition, true, false ]
       AuthorizationType: NONE
       HttpMethod: DELETE
       Integration:
@@ -325,7 +392,7 @@ Resources:
   UsersGetApiMethod:
     Type: AWS::ApiGateway::Method
     Properties:
-      ApiKeyRequired: false
+      ApiKeyRequired: !If [ RestApiKeyCondition, true, false ]
       AuthorizationType: NONE
       HttpMethod: GET
       Integration:
@@ -386,7 +453,7 @@ Resources:
   UsersListApiMethod:
     Type: AWS::ApiGateway::Method
     Properties:
-      ApiKeyRequired: false
+      ApiKeyRequired: !If [ RestApiKeyCondition, true, false ]
       AuthorizationType: NONE
       HttpMethod: GET
       Integration:
@@ -442,7 +509,7 @@ Resources:
   UsersUpdateApiMethod:
     Type: AWS::ApiGateway::Method
     Properties:
-      ApiKeyRequired: false
+      ApiKeyRequired: !If [ RestApiKeyCondition, true, false ]
       AuthorizationType: NONE
       HttpMethod: PATCH
       Integration:
@@ -484,7 +551,7 @@ Resources:
   UserOptionsApiMethod:
     Type: AWS::ApiGateway::Method
     Properties:
-      ApiKeyRequired: false
+      ApiKeyRequired: !If [ RestApiKeyCondition, true, false ]
       AuthorizationType: NONE
       HttpMethod: OPTIONS
       Integration:
@@ -501,7 +568,7 @@ Resources:
   UserCollectionOptionsApiMethod:
     Type: AWS::ApiGateway::Method
     Properties:
-      ApiKeyRequired: false
+      ApiKeyRequired: !If [ RestApiKeyCondition, true, false ]
       AuthorizationType: NONE
       HttpMethod: OPTIONS
       Integration:
@@ -646,6 +713,45 @@ Resources:
       - DeployApiDocumentationLambdaFunction
 
   ##
+  # RestAPI Key Resources
+  ##
+  RestApiUsagePlan:
+    Type: AWS::ApiGateway::UsagePlan
+    Condition: RestApiKeyCondition
+    Properties:
+      ApiStages:
+        - ApiId: !Ref RestApi
+          Stage: prod
+    DependsOn:
+      - RestApi
+      - RestApiDeployment
+
+  RestApiKey:
+    Type: AWS::ApiGateway::ApiKey
+    Condition: RestApiKeyCondition
+    Properties:
+      Description: !Sub ${AWS::StackName}-ApiKey
+      Enabled: true
+      GenerateDistinctId: true
+      StageKeys:
+        - RestApiId: !Ref RestApi
+          StageName: prod
+    DependsOn:
+      - RestApi
+      - RestApiDeployment
+
+  RestApiUsagePlanKey:
+    Type: AWS::ApiGateway::UsagePlanKey
+    Condition: RestApiKeyCondition
+    Properties:
+      KeyId: !Ref RestApiKey
+      KeyType: API_KEY
+      UsagePlanId: !Ref RestApiUsagePlan
+    DependsOn:
+      - RestApiKey
+      - RestApiUsagePlan
+
+  ##
   # CloudFront Cache Invalidation Resources
   ##
   CloudFrontManagedPolicy:
@@ -688,7 +794,119 @@ Resources:
       Timeout: 30
     DependsOn: CloudFrontDistribution
 
+  ##
+  # CloudWatch Alarms
+  ##
+  AlarmsSnsTopic:
+    Type: AWS::SNS::Topic
+    Condition: AlarmsEnabledCondition
+    Properties:
+      DisplayName: !Sub ${AWS::StackName}-AlarmsSnsTopic
+
+  RestApiLatencyAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Condition: AlarmsEnabledCondition
+    Properties:
+      AlarmActions:
+        - !Ref AlarmsSnsTopic
+      AlarmDescription: !Sub RestApi high latency (${AWS::StackName}).
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: RestApi
+          Value: !Ref RestApi
+      EvaluationPeriods: 3
+      InsufficientDataActions:
+        - !Ref AlarmsSnsTopic
+      MetricName: Latency
+      Namespace: AWS/ApiGateway
+      OKActions:
+        - !Ref AlarmsSnsTopic
+      Period: 60
+      Statistic: Average
+      Threshold: !Ref AlarmApiLatencyThreshold
+      TreatMissingData: notBreaching
+
+  CloudFrontDistributionHighRequestsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Condition: AlarmsEnabledCondition
+    Properties:
+      AlarmActions:
+        - !Ref AlarmsSnsTopic
+      AlarmDescription: !Sub CloudFront high requests (${AWS::StackName}).
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: DistributionId
+          Value: !Ref CloudFrontDistribution
+        - Name: Region
+          Value: Global
+      EvaluationPeriods: 3
+      InsufficientDataActions:
+        - !Ref AlarmsSnsTopic
+      MetricName: Requests
+      Namespace: AWS/CloudFront
+      OKActions:
+        - !Ref AlarmsSnsTopic
+      Period: 60
+      Statistic: Sum
+      Threshold: !Ref AlarmHighRequestsThreshold
+      TreatMissingData: notBreaching
+      Unit: Count
+
+  CloudFrontDistribution4xxErrorsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Condition: AlarmsEnabledCondition
+    Properties:
+      AlarmActions:
+        - !Ref AlarmsSnsTopic
+      AlarmDescription: !Sub CloudFront 4xx errors (${AWS::StackName}).
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: DistributionId
+          Value: !Ref CloudFrontDistribution
+        - Name: Region
+          Value: Global
+      EvaluationPeriods: 3
+      InsufficientDataActions:
+        - !Ref AlarmsSnsTopic
+      MetricName: 4xxErrorRate
+      Namespace: AWS/CloudFront
+      OKActions:
+        - !Ref AlarmsSnsTopic
+      Period: 60
+      Statistic: Average
+      Threshold: !Ref AlarmHigh4xxErrorRateThreshold
+      TreatMissingData: notBreaching
+
+  CloudFrontDistribution5xxErrorsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Condition: AlarmsEnabledCondition
+    Properties:
+      AlarmActions:
+        - !Ref AlarmsSnsTopic
+      AlarmDescription: !Sub CloudFront 5xx errors (${AWS::StackName}).
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: DistributionId
+          Value: !Ref CloudFrontDistribution
+        - Name: Region
+          Value: Global
+      EvaluationPeriods: 3
+      InsufficientDataActions:
+        - !Ref AlarmsSnsTopic
+      MetricName: 5xxErrorRate
+      Namespace: AWS/CloudFront
+      OKActions:
+        - !Ref AlarmsSnsTopic
+      Period: 60
+      Statistic: Average
+      Threshold: !Ref AlarmHigh5xxErrorRateThreshold
+      TreatMissingData: notBreaching
+
 Outputs:
+
+  AlarmSnsTopic:
+    Condition: AlarmsEnabledCondition
+    Value: !GetAtt AlarmsSnsTopic.TopicName
 
   ApiUrl:
     Value: !Sub https://${CloudFrontDistribution.DomainName}/api/v1

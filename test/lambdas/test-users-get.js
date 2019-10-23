@@ -1,5 +1,6 @@
+import Exception from '@/exceptions/exception';
 import ExceptionHandler from '@/exceptions/handler';
-import ResourceNotFoundException from '@/exceptions/resource-not-found-exception';
+import ResourceNotFoundException from '@/exceptions/resource-not-found';
 import sinon from 'sinon';
 import User from '@/models/user';
 import {DataMapper} from '@aws/dynamodb-data-mapper';
@@ -44,16 +45,16 @@ describe('UsersGet', () => {
 				assert.ok(err instanceof ExceptionHandler);
 				assert.ok(err.errors[0] instanceof ResourceNotFoundException);
 				assert.strictEqual(err.errors[0].status, 404);
-				assert.strictEqual(err.errors[0].title, 'ResourceNotFound');
-				assert.strictEqual(err.errors[0].detail, 'User with id \'6bd52ccb-2e46-4ebd-8432-7c9f691dbafc\' does not exist.');
 			});
 			sinon.assert.calledOnce(get);
 		});
 
 		it('Should throw Exception on any other error.', async () => {
-			get.returns(Promise.reject({message: 'ERROR'}));
+			get.returns(Promise.reject({message: 'error-message'}));
 			await handler(event, {}, (err) => {
 				assert.ok(err instanceof ExceptionHandler);
+				assert.ok(err.errors[0] instanceof Exception);
+				assert.strictEqual(err.errors[0].status, 500);
 			});
 			sinon.assert.calledOnce(get);
 		});

@@ -1,5 +1,5 @@
 import ExceptionHandler from '@/exceptions/handler';
-import ResourceNotFoundException from '@/exceptions/resource-not-found-exception';
+import ResourceNotFoundException from '@/exceptions/resource-not-found';
 import User from '@/models/user';
 import {DataMapper} from '@aws/dynamodb-data-mapper';
 

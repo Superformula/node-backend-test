@@ -47,8 +47,8 @@ describe('User', () => {
 		it('Should transform address.', async () => {
 			const data = {
 				address: {
-					'city': 'Lincoln',
-					'state': 'NE'
+					city: 'Lincoln',
+					state: 'NE'
 				}
 			};
 			user.populate(data);
@@ -59,7 +59,7 @@ describe('User', () => {
 		it('Should create default createdAt and updatedAt.', async () => {
 			momentMock.expects('utc').atLeast(2).returns({
 				toISOString() {
-					return '2019-10-22T03:04:29.000Z'
+					return '2019-10-22T03:04:29.000Z';
 				}
 			});
 			user = new User();
@@ -130,7 +130,7 @@ describe('User', () => {
 		});
 
 		it('Should validate createdAt.', async () => {
-			// await assertInvalid('createdAt', 'invalid', 'Created at must be a valid date');
+			await assertInvalid('createdAt', 'invalid', 'Created at must be a valid date');
 			await assertInvalid('createdAt', undefined, 'Created at can\'t be blank');
 			await assertValid('createdAt', '2019-09-10');
 			await assertValid('createdAt', '2019-10-22T03:04:29.000Z');
@@ -138,7 +138,7 @@ describe('User', () => {
 		});
 
 		it('Should validate updatedAt.', async () => {
-			// await assertInvalid('updatedAt', 'invalid', 'Updated at must be a valid date');
+			await assertInvalid('updatedAt', 'invalid', 'Updated at must be a valid date');
 			await assertInvalid('updatedAt', undefined, 'Updated at can\'t be blank');
 			await assertValid('updatedAt', '2019-09-10');
 			await assertValid('updatedAt', '2019-10-22T03:04:29.000Z');

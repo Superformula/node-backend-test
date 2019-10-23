@@ -57,5 +57,13 @@
   "apidoc": {
     "title": "API Documentation - Superformula Backend Test",
     "sampleUrl": "{{API_URL}}"
+  },
+  "nyc": {
+    "exclude": [
+      "node_modules",
+      "src/plugins",
+      "test",
+      "webpack.config.js"
+    ]
   }
 }

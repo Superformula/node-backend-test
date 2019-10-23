@@ -8,7 +8,8 @@ export default class DatetimeValidator extends Validator {
 	register() {
 		this._validate.extend(this._validate.validators.datetime, {
 			parse(value) {
-				return +moment.utc(value);
+				const date = new Date(value);
+				return (date instanceof Date && !isNaN(date)) ? +moment.utc(value) : value;
 			},
 			format(value, options) {
 				return options.dateOnly ? moment.utc(value).format('YYYY-MM-DD') : moment.utc(value).toISOString();

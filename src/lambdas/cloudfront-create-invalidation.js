@@ -20,7 +20,7 @@ export async function handler(event, context, callback) {
 	try {
 		const paths = event.paths || [];
 		if (paths.length) {
-			const cache = new CloudFront();
+			const cloudFront = new CloudFront();
 			const params = {
 				DistributionId: process.env.DISTRIBUTION_ID,
 				InvalidationBatch: {
@@ -31,7 +31,7 @@ export async function handler(event, context, callback) {
 					}
 				}
 			};
-			return await cache.createInvalidation(params).promise();
+			return await cloudFront.createInvalidation(params).promise();
 		}
 	} catch (err) {
 		console.log(err);

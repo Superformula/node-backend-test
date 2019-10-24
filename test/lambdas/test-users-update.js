@@ -43,7 +43,7 @@ describe('UsersUpdate', () => {
 			update.returns(Promise.resolve(updated));
 			invokeAsync.withArgs({
 				FunctionName: 'test-CloudFrontCreateInvalidation',
-				InvokeArgs: JSON.stringify({paths: ['/api/v1/users', `/api/v1/users/${updated.id}`]})
+				InvokeArgs: JSON.stringify({paths: ['/api/v1/users', '/api/v1/users?*', `/api/v1/users/${updated.id}`]})
 			}).returns({
 				promise: () => {
 					return Promise.resolve();
@@ -108,7 +108,7 @@ describe('UsersUpdate', () => {
 			update.returns(Promise.resolve(user));
 			invokeAsync.withArgs({
 				FunctionName: 'test-CloudFrontCreateInvalidation',
-				InvokeArgs: JSON.stringify({paths: ['/api/v1/users', `/api/v1/users/${user.id}`]})
+				InvokeArgs: JSON.stringify({paths: ['/api/v1/users', '/api/v1/users?*', `/api/v1/users/${user.id}`]})
 			}).returns({
 				promise: () => {
 					return Promise.reject({message: 'error-message'});

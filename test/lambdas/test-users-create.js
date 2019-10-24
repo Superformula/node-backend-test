@@ -27,7 +27,7 @@ describe('UsersCreate', () => {
 			const user = new User({name: 'test'});
 			invokeAsync.withArgs({
 				FunctionName: 'test-CloudFrontCreateInvalidation',
-				InvokeArgs: JSON.stringify({paths: ['/api/v1/users']})
+				InvokeArgs: JSON.stringify({paths: ['/api/v1/users', '/api/v1/users?*']})
 			}).returns({
 				promise: () => {
 					return Promise.resolve();
@@ -69,7 +69,7 @@ describe('UsersCreate', () => {
 		it('Should throw Exception on Lambda.invokeAsync failure.', async () => {
 			invokeAsync.withArgs({
 				FunctionName: 'test-CloudFrontCreateInvalidation',
-				InvokeArgs: JSON.stringify({paths: ['/api/v1/users']})
+				InvokeArgs: JSON.stringify({paths: ['/api/v1/users', '/api/v1/users?*']})
 			}).returns({
 				promise: () => {
 					return Promise.reject({message: 'error-message'});

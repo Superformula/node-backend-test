@@ -7,11 +7,15 @@ const DyanamoDB = require('aws-sdk/clients/dynamodb');
 const Lambda = require('aws-sdk/clients/lambda');
 
 /**
- * @api {delete} /users/:id Delete User
- * @apiName DeleteUser
- * @apiGroup User
+ * @api {delete} /users/:id Delete a User
+ * @apiGroup Users
+ *
+ * @apiExample {curl} Example
+ * curl -X DELETE -H 'x-api-key: API_KEY_HERE' {{API_URL}}/users/bde526c8-9b59-45dc-9551-f8996d091fdc
  *
  * @apiSampleRequest off
+ *
+ * @apiUse Headers
  *
  * @apiParam {String} id User's unique identifier.
  *
@@ -42,7 +46,7 @@ export async function handler(event, context, callback) {
 		const params = {
 			FunctionName: `${process.env.STACK_NAME}-CloudFrontCreateInvalidation`,
 			InvokeArgs: JSON.stringify({
-				paths: ['/api/v1/users', `/api/v1/users/${user.id}`]
+				paths: ['/api/v1/users', '/api/v1/users?*', `/api/v1/users/${user.id}`]
 			})
 		};
 		await lambda.invokeAsync(params).promise();

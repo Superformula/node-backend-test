@@ -8,11 +8,17 @@ const DyanamoDB = require('aws-sdk/clients/dynamodb');
 const Lambda = require('aws-sdk/clients/lambda');
 
 /**
- * @api {patch} /users/:id Update User
- * @apiName UpdateUser
- * @apiGroup User
+ * @api {patch} /users/:id Update a User
+ * @apiGroup Users
+ *
+ * @apiExample {curl} Example
+ * curl -X POST {{API_URL}}/users/bde526c8-9b59-45dc-9551-f8996d091fdc \
+ * -H 'x-api-key: API_KEY_HERE' \
+ * -d '{"body":{"name":"Jane Doe","dob":"1980-04-08","address": {"street": "140 Madison St","city": "Rosemount","state": "MN","zip": "55068"},"description": "Likes waffles."}}'
  *
  * @apiSampleRequest off
+ *
+ * @apiUse Headers
  *
  * @apiParam {String} id User's unique identifier.
  *
@@ -94,7 +100,7 @@ export async function handler(event, context, callback) {
 		const params = {
 			FunctionName: `${process.env.STACK_NAME}-CloudFrontCreateInvalidation`,
 			InvokeArgs: JSON.stringify({
-				paths: ['/api/v1/users', `/api/v1/users/${updated.id}`]
+				paths: ['/api/v1/users', '/api/v1/users?*', `/api/v1/users/${updated.id}`]
 			})
 		};
 		await lambda.invokeAsync(params).promise();

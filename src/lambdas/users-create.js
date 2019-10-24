@@ -6,11 +6,27 @@ const DyanamoDB = require('aws-sdk/clients/dynamodb');
 const Lambda = require('aws-sdk/clients/lambda');
 
 /**
- * @api {post} /users Create User
- * @apiName CreateUser
- * @apiGroup User
+ * @apiDefine Headers
+ *
+ * @apiHeader {String} [x-api-key] ApiGateway API key. Required if stack was created with `ApiKeyRequired` set to "Yes".
+ * @apiHeaderExample {json} Header-Example
+ * {
+ * 	"x-api-key": "API_KEY_HERE"
+ * }
+ */
+
+/**
+ * @api {post} /users Create a User
+ * @apiGroup Users
+ *
+ * @apiExample {curl} Example
+ * curl -X POST {{API_URL}}/users \
+ * -H 'x-api-key: API_KEY_HERE' \
+ * -d '{"body":{"name":"Jane Doe","dob":"1980-04-08","address": {"street": "140 Madison St","city": "Rosemount","state": "MN","zip": "55068"},"description": "Likes waffles."}}'
  *
  * @apiSampleRequest off
+ *
+ * @apiUse Headers
  *
  * @apiParam (Body) {String} name User's name.
  * @apiParam (Body) {String} [dob] User's date of birth.
@@ -78,7 +94,7 @@ export async function handler(event, context, callback) {
 		const params = {
 			FunctionName: `${process.env.STACK_NAME}-CloudFrontCreateInvalidation`,
 			InvokeArgs: JSON.stringify({
-				paths: ['/api/v1/users']
+				paths: ['/api/v1/users', '/api/v1/users?*']
 			})
 		};
 		await lambda.invokeAsync(params).promise();

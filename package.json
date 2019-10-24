@@ -55,6 +55,9 @@
     "webpack-cli": "^3.3.9"
   },
   "apidoc": {
+    "template": {
+      "withCompare": false
+    },
     "title": "API Documentation - Superformula Backend Test",
     "sampleUrl": "{{API_URL}}"
   },

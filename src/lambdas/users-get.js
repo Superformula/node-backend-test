@@ -6,9 +6,13 @@ import {DataMapper} from '@aws/dynamodb-data-mapper';
 const DyanamoDB = require('aws-sdk/clients/dynamodb');
 
 /**
- * @api {get} /users/:id Get User
- * @apiName GetUser
- * @apiGroup User
+ * @api {get} /users/:id Get a User
+ * @apiGroup Users
+ *
+ * @apiExample {curl} Example
+ * curl -X GET -H 'x-api-key: API_KEY_HERE' {{API_URL}}/users/bde526c8-9b59-45dc-9551-f8996d091fdc
+ *
+ * @apiUse Headers
  *
  * @apiParam {String} id User's unique identifier.
  *

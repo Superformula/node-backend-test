@@ -1,106 +1,131 @@
-# Superformula Back-end Developer Test
+# Superformula Cloud-native User API
 
-Be sure to read **all** of this document carefully, and follow the guidelines within.
+A RESTful API that can `create/read/update/delete` user data from a persistence store.
 
-## Context
+## Approach
 
-Build a RESTful API that can `create/read/update/delete` user data from a persistence store.
+**CloudFormation**
 
-### User Model
+* All resource management is done via a CloudFormation template: [superformula-api.template](templates/superformula-api.template).
+* There are three optional features of the API that are enabled via parameters:
+    * API key authentication - When enabled, resources are created to control authentication via ApiGateway API keys.
+    * Alarms - When enabled, an SNS topic and 4 CloudWatch alarms are created.
+    * DynamoDB auto-scaling - When enabled, the database will be configured to auto-scale. 
 
-```
-{
-  "id": "xxx",                  // user ID (must be unique)
-  "name": "backend test",       // user name
-  "dob": "",                    // date of birth
-  "address": "",                // user address
-  "description": "",            // user description
-  "createdAt": ""               // user created date
-  "updatedAt": ""               // user updated date
-}
-```
+**CloudFront**  
 
-### Functionality
+* Both the API and documentation site are delivered through the same CloudFront distribution.
+* The API _requires_ an https connection, where as the documentation site will _redirect_ the user to https automatically.
+* All _GET_ requests are cached. This includes both API and documentation requests.
+* The distribution will forward any querystring parameters onto the API (for _GET_ filtering).
 
-- The API should follow typical RESTful API design pattern.
-- The data should be saved in the DB.
-- Provide proper API documentation.
-- Proper error handling should be used.
+**ApiGateway**
 
-## What We Care About
+* A _v1_ resource is included, for API versioning.
+* The methods (endpoints) are configured to format:
+    * Incoming requests - A JSON object containing a body, method, uri and params.
+    * Outgoing responses - A JSON object configured to meet the [JSON:API](https://jsonapi.org) specification.
+* Response status codes follow [HTTP Status Code Standards](https://www.restapitutorial.com/httpstatuscodes.html).
 
-Use any libraries that you would normally use if this were a real production App. Please note: we're interested in your code & the way you solve the problem, not how well you can use a particular library or feature.
+**Lambda**
 
-_We're interested in your method and how you approach the problem just as much as we're interested in the end result._
+* Each endpoint triggers it's own Lambda function, this is best for separation of concerns.
+* Each function is built via [webpack](https://webpack.js.org/), which is responsible for:
+    * Bundling node packages within the source code.
+    * Triggering [Babel](https://babeljs.io/) in order to transpile and polyfill the source code.
+    * Minifying the source code, when called with the _production_ flag.
+    * Zip archiving the final function source code into separate archives.
+* Custom models are responsible for:
+    * Whitelisting attributes.
+    * Validation constraints for that object. Validation is handled via [validate.js](https://validatejs.org/).
+    * Converting user input into object parameters.
+    * Hold the configuration for dynamodb-data-mapper.
+* Custom exceptions are thrown to simplify HTTP error messages and status codes.
+* All messages are logged to CloudWatch groups.
 
-Here's what you should strive for:
+**DynamoDB**
 
-- Good use of current Node.js & API design best practices.
-- Solid testing approach.
-- Extensible code.
+* A single table is used to store all user data.
+* If enabled, the users table will auto-scale.
+* AWS's [dynamodb-data-mapper](https://github.com/awslabs/dynamodb-data-mapper-js) is used to translate, and query data.
 
-If you have not been specifically asked, you may pick either `Implementation Path: Docker Containers` or `Implementation Path: Cloud-native` requirements below.
+**Documentation**
 
-## Implementation Path: Docker Containers
+* During the build process, documentation is generated via [apiDoc](http://apidocjs.com/).
+* apiDoc is configured to build using placeholder tags: `{{API_URL}}`.
+* The generated documentation is then released to a S3 bucket.
+* During the stack creation process, the documentation files are copied from the release bucket, to a new S3 bucket created by the stack.
+* Also during the stack creation process, the placeholder tags are replaced with the API url specific to that stack.
 
-### Basic Requirements
+**Testing**
 
-  - Use Node.js `LTS` and any framework of your choice.
-  - Use any persistence store. NoSQL DB is preferred.
-  - Write concise and clear commit messages.
-  - Write clear **documentation** on how it has been designed and how to run the code.
+* Unit tests are available for all user-facing functionality.
+* 100% code coverage was the goal, and that goal has been reached.
 
-### Bonus
+## Installation
 
-  - Provide proper unit tests.
-  - Add a read only endpoint to fetch location information based off the user's address (use [NASA](https://api.nasa.gov/api.html) or [Mapbox](https://www.mapbox.com/api-documentation/) APIs)
-  - Use Docker containers.
-  - Utilize Docker Compose.
-  - Setup a CircleCI config to build/test/deploy the service.
-  - Leverage Terraform or other infrastructure management tooling to spin up needed resources.
-  - Providing an online demo is welcomed, but not required.
+There are two approaches to installing this solution; automatic and manual:
 
-### Advanced Requirements
+**Automatic**
 
-These may be used for further challenges. You can freely skip these if you are not asked to do them; feel free to try out if you feel up to it.
+1. Be sure you are signed-in to your [AWS console](https://console.aws.amazon.com).
 
-- Use [hapi](https://hapijs.com/) to build the core feature and use a different framework (such as Express or Loopback) to handle HTTP requests.
-- Provide a complete user auth (authentication/authorization/etc) strategy, such as OAuth.
-- Provide a complete error handling and logging (when/how/etc) strategy.
-- Use a NoSQL DB and build a filter feature that can filter records with some of the attributes such as username. Do not use query languages such as MongoDB Query or Couchbase N1QL.
+2. Click on the Launch Stack button.
+    [![Launch Stack](https://cdn.rawgit.com/buildkite/cloudformation-launch-stack-button-svg/master/launch-stack.svg)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=Superformula&templateURL=https://superformula.s3.amazonaws.com/superformula-api.template)
 
+3. Click the "Next" button.
 
-## Implementation Path: Cloud-native
+4. Configure your stack name and parameters, and click the "Next" button.
 
-### Basic Requirements
+5. Configure your stack options (most people won't need to do anything on this screen), and click the "Next" button.
 
-  - Create each endpoint as an individual AWS Lambda in Node.js
-  - Use any AWS Database-as-a-Service persistence store. DynamoDB is preferred.
-  - Write concise and clear commit messages.
-  - Write clear **documentation** on how it has been designed and how to run the code.
+6. Review the stack settings, Check the acknowledgement box, and click the "Create stack" button.
 
-### Bonus
+**Manual**
 
-  - Use Infrastructure-as-code tooling that can be used to deploy all resources to an AWS account. Examples: CloudFormation / SAM, Terraform, Serverless Framework, etc.
-  - Provide proper unit tests.
-  - Use API Gateway to expose AWS Lambdas
-  - Providing an online demo is welcomed, but not required.
-  - Bundle npm modules into your Lambdas
+1. Be sure you have the following prerequisites installed:
+    * [AWS Command Line Interface](https://aws.amazon.com/cli/)
+    * [NodeJS](https://nodejs.org)
 
-### Advanced Requirements
+2. Clone the repo (or download the project from Github) and install the project dependencies.
+    ```bash
+    git clone git@github.com:cj-ohara/node-backend-test.git
+    cd node-backend-test
+    npm install
+    ```
 
-These may be used for further challenges. You can freely skip these; feel free to try out if you feel up to it.
+3. Sign into your [AWS console](https://console.aws.amazon.com) and navigate to S3.
 
-  - Describe your strategy for Lambda error handling, retries, and DLQs
-  - Describe your cloud-native logging, monitoring, and alarming strategy across all endpoints
-  - Build a filter feature that can filter records with some of the attributes such as username.
+4. You will need to create at least one bucket to release and create a new stack. Be sure that bucket is created in the region you'd like the stack to be created in.
 
-## Q&A
+5. During the `npm install` process, a `.env` file was created, set all values in the .env file to the name of the bucket that was created in the previous step.
 
-> Where should I send back the result when I'm done?
+6. Run the release script.
+    ```bash
+    npm run release
+    ```
 
-Fork this repo and send us a pull request when you think you are done. There is no deadline for this task unless otherwise noted to you directly.
+7. The release script will call the build scripts and generate the API documentation, Lambda functions and CloudFormation templates.
+These files can be found in the `dist/` directory in the root of the project.
 
-> What if I have a question?
+8. In the AWS console, navigate to CloudFormation, select "Create stack", select "Upload a template file", and browse to `dist/templates/superformula-api.template`.
 
-Create a new issue in this repo and we will respond and get back to you quickly.
+9. Click the "Next" button.
+
+10. Configure your stack name and parameters, and click the "Next" button.
+
+11. Configure your stack options (most people won't need to do anything on this screen), and click the "Next" button.
+
+12. Review the stack settings, Check the acknowledgement box, and click the "Create stack" button.
+
+## Running Tests
+
+1. From the root of the project, make sure you have the project's dependencies installed:
+    ```bash
+    npm install
+    ```
+
+2. Run the tests:
+    ```bash
+    npm test
+    ```

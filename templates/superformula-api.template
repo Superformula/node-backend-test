@@ -850,9 +850,10 @@ Resources:
     Properties:
       ApiStages:
         - ApiId: !Ref RestApi
-          Stage: prod
+          Stage: !Ref RestApiStage
     DependsOn:
       - RestApi
+      - RestApiStage
       - RestApiDeployment
 
   RestApiKey:
@@ -864,9 +865,10 @@ Resources:
       GenerateDistinctId: true
       StageKeys:
         - RestApiId: !Ref RestApi
-          StageName: prod
+          StageName: !Ref RestApiStage
     DependsOn:
       - RestApi
+      - RestApiStage
       - RestApiDeployment
 
   RestApiUsagePlanKey:

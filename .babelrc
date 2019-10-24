@@ -8,7 +8,9 @@
   "env": {
     "test": {
       "plugins": [
-        ["babel-plugin-webpack-alias-7"]
+        [
+          "babel-plugin-webpack-alias-7"
+        ]
       ]
     }
   }

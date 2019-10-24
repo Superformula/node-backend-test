@@ -43,17 +43,52 @@ Parameters:
     Default: 10
     MinValue: 0
 
+  AutoScalingEnabled:
+    Type: String
+    Description: Would you like enable auto-scaling for DyanmoDB? Select 'Yes' if so.
+    Default: 'Yes'
+    AllowedValues:
+      - 'Yes'
+      - 'No'
+
+  MinimumReadCapacityUnits:
+    Type: Number
+    Description: Minimum capacity units used for DynamoDB reads. If auto-scaling is not enabled, this value will be used for the table's read capacity units.
+    Default: 5
+    MinValue: 1
+    MaxValue: 40000
+
+  MaximumReadCapacityUnits:
+    Type: Number
+    Description: Maximum capacity units used for DynamoDB reads.
+    Default: 100
+    MinValue: 1
+    MaxValue: 40000
+
+  MinimumWriteCapacityUnits:
+    Type: Number
+    Description: Minimum capacity units used for DynamoDB writes. If auto-scaling is not enabled, this value will be used for the table's read capacity units.
+    Default: 5
+    MinValue: 1
+    MaxValue: 40000
+
+  MaximumWriteCapacityUnits:
+    Type: Number
+    Description: Maximum capacity units used for DynamoDB writes.
+    Default: 100
+    MinValue: 1
+    MaxValue: 40000
+
+
 Metadata:
 
   AWS::CloudFormation::Interface:
     ParameterGroups:
-      -
-        Label:
+      - Label:
           default: Authentication
         Parameters:
           - ApiKeyRequired
-      -
-        Label:
+      - Label:
           default: Alerting
         Parameters:
           - AlarmsEnabled
@@ -61,12 +96,22 @@ Metadata:
           - AlarmHighRequestsThreshold
           - AlarmHigh4xxErrorRateThreshold
           - AlarmHigh5xxErrorRateThreshold
+      - Label:
+          default: DynamoDB
+        Parameters:
+          - AutoScalingEnabled
+          - MinimumReadCapacityUnits
+          - MaximumReadCapacityUnits
+          - MinimumWriteCapacityUnits
+          - MaximumWriteCapacityUnits
 
 Conditions:
 
   RestApiKeyCondition: !Equals [ !Ref ApiKeyRequired, 'Yes' ]
 
   AlarmsEnabledCondition: !Equals [ !Ref AlarmsEnabled, 'Yes' ]
+
+  AutoScalingEnabledCondition: !Equals [ !Ref AutoScalingEnabled, 'Yes' ]
 
 Mappings:
 
@@ -181,8 +226,91 @@ Resources:
         - AttributeName: id
           KeyType: HASH
       ProvisionedThroughput:
-        ReadCapacityUnits: 1
-        WriteCapacityUnits: 1
+        ReadCapacityUnits: !Ref MinimumReadCapacityUnits
+        WriteCapacityUnits: !Ref MinimumWriteCapacityUnits
+
+  AutoScalingManagedPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Condition: AutoScalingEnabledCondition
+    Properties:
+      Path: '/'
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:DescribeTable
+              - dynamodb:UpdateTable
+              - cloudwatch:PutMetricAlarm
+              - cloudwatch:DescribeAlarm
+              - cloudwatch:GetMetricStatistics
+              - cloudwatch:SetAlarmState
+              - cloudwatch:DeleteAlarms
+            Resource: '*'
+
+  AutoScalingRole:
+    Type: AWS::IAM::Role
+    Condition: AutoScalingEnabledCondition
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRole
+            Principal:
+              Service: application-autoscaling.amazonaws.com
+      ManagedPolicyArns:
+        - !Ref AutoScalingManagedPolicy
+
+  UsersTableReadCapacityScalableTarget:
+    Type: AWS::ApplicationAutoScaling::ScalableTarget
+    Condition: AutoScalingEnabledCondition
+    Properties:
+      MaxCapacity: !Ref MaximumReadCapacityUnits
+      MinCapacity: !Ref MinimumReadCapacityUnits
+      ResourceId: !Sub table/${AWS::StackName}-Users
+      RoleARN: !GetAtt AutoScalingRole.Arn
+      ScalableDimension: dynamodb:table:ReadCapacityUnits
+      ServiceNamespace: dynamodb
+
+  UserTableReadScalingPolicy:
+    Type: AWS::ApplicationAutoScaling::ScalingPolicy
+    Condition: AutoScalingEnabledCondition
+    Properties:
+      PolicyName: WriteAutoScalingPolicy
+      PolicyType: TargetTrackingScaling
+      ScalingTargetId: !Ref UsersTableReadCapacityScalableTarget
+      TargetTrackingScalingPolicyConfiguration:
+        TargetValue: 70
+        ScaleInCooldown: 60
+        ScaleOutCooldown: 60
+        PredefinedMetricSpecification:
+          PredefinedMetricType: DynamoDBReadCapacityUtilization
+
+  UsersTableWriteCapacityScalableTarget:
+    Type: AWS::ApplicationAutoScaling::ScalableTarget
+    Condition: AutoScalingEnabledCondition
+    Properties:
+      MaxCapacity: !Ref MaximumWriteCapacityUnits
+      MinCapacity: !Ref MinimumWriteCapacityUnits
+      ResourceId: !Sub table/${AWS::StackName}-Users
+      RoleARN: !GetAtt AutoScalingRole.Arn
+      ScalableDimension: dynamodb:table:WriteCapacityUnits
+      ServiceNamespace: dynamodb
+
+  UserTableWriteScalingPolicy:
+    Type: AWS::ApplicationAutoScaling::ScalingPolicy
+    Condition: AutoScalingEnabledCondition
+    Properties:
+      PolicyName: WriteAutoScalingPolicy
+      PolicyType: TargetTrackingScaling
+      ScalingTargetId: !Ref UsersTableWriteCapacityScalableTarget
+      TargetTrackingScalingPolicyConfiguration:
+        TargetValue: 70
+        ScaleInCooldown: 60
+        ScaleOutCooldown: 60
+        PredefinedMetricSpecification:
+          PredefinedMetricType: DynamoDBWriteCapacityUtilization
 
   ##
   # Lambda Permission Resources
@@ -232,6 +360,7 @@ Resources:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
+        Version: 2012-10-17
         Statement:
           - Effect: Allow
             Action: sts:AssumeRole

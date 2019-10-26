@@ -97,7 +97,7 @@ export async function handler(event, context, callback) {
 				paths: ['/api/v1/users', '/api/v1/users?*']
 			})
 		};
-		await lambda.invokeAsync(params).promise();
+		await lambda.invokeAsync(params).promise().catch(err => console.log(err));
 
 		return user;
 	} catch (err) {

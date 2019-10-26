@@ -38,38 +38,35 @@ export async function handler(event, context, callback) {
 				Bucket: sourceBucket,
 				Prefix: 'docs'
 			};
-			await s3.listObjects(params).promise().then(response => {
-				return Promise.all(response.Contents.map(object => {
-					const params = {
-						Bucket: destinationBucket,
-						CopySource: `${sourceBucket}/${object.Key}`,
-						Key: object.Key.replace('docs/', '')
-					};
-					return s3.copyObject(params).promise();
-				}));
-			}).catch(err => {
-				throw err;
+			const objects = await s3.listObjects(params).promise();
+			const copyObjects = objects.Contents.map(object => {
+				const params = {
+					Bucket: destinationBucket,
+					CopySource: `${sourceBucket}/${object.Key}`,
+					Key: object.Key.replace('docs/', '')
+				};
+				return s3.copyObject(params).promise();
 			});
+			await Promise.all(copyObjects);
 
 			// Rewrite API url in configuration files on destination bucket
-			await Promise.all(rewriteFiles.map(key => {
+			const rewriteObjects = rewriteFiles.map(key => {
 				const params = {
 					Bucket: destinationBucket,
 					Key: key
 				};
-
-				return s3.getObject(params).promise().then(object => {
-					const body = object.Body.toString().replace(new RegExp('{{API_URL}}', 'g'), apiUrl);
-					const params = {
-						Body: Buffer.from(body),
-						Bucket: destinationBucket,
-						Key: key
-					};
-					return s3.putObject(params).promise();
-				});
-			})).catch(err => {
-				throw err;
+				return s3.getObject(params).promise()
+					.then(object => {
+						const body = object.Body.toString().replace(new RegExp('{{API_URL}}', 'g'), apiUrl);
+						const params = {
+							Body: Buffer.from(body),
+							Bucket: destinationBucket,
+							Key: key
+						};
+						return s3.putObject(params).promise();
+					});
 			});
+			await Promise.all(rewriteObjects);
 
 			await response(event, context, cfnResponse.SUCCESS);
 		} catch (err) {

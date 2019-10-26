@@ -14,4 +14,8 @@ export default class ExceptionHandler {
 		errors = errors.filter(exception => exception instanceof Exception);
 		this.errors = errors.length ? errors : [new Exception()];
 	}
+
+	toString() {
+		return JSON.stringify(this.errors);
+	}
 }

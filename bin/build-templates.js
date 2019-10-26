@@ -32,4 +32,5 @@ mkdir(outputPath)
 					return writeFile(`${outputPath}/${file}`, body);
 				});
 		}));
-	});
+	})
+	.catch(err => console.log(err));

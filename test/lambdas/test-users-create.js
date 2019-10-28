@@ -66,7 +66,8 @@ describe('UsersCreate', () => {
 			sinon.assert.notCalled(invokeAsync);
 		});
 
-		it('Should throw Exception on Lambda.invokeAsync failure.', async () => {
+		it('Should return user on Lambda.invokeAsync failure.', async () => {
+			const user = new User({name: 'test'});
 			invokeAsync.withArgs({
 				FunctionName: 'test-CloudFrontCreateInvalidation',
 				InvokeArgs: JSON.stringify({paths: ['/api/v1/users', '/api/v1/users?*']})
@@ -76,12 +77,13 @@ describe('UsersCreate', () => {
 				}
 			});
 			const event = {body: {name: 'test'}};
-			put.returns(Promise.resolve({}));
-			await handler(event, {}, (err) => {
-				assert.ok(err instanceof ExceptionHandler);
+			put.returns(Promise.resolve(user));
+			const response = await handler(event, {}, () => {
 			});
 			sinon.assert.calledOnce(put);
 			sinon.assert.calledOnce(invokeAsync);
+			assert.strictEqual(user.id, response.id);
+			assert.strictEqual(user.name, response.name);
 		});
 	});
 });

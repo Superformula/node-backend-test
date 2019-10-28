@@ -103,24 +103,24 @@ describe('UsersUpdate', () => {
 			sinon.assert.calledOnce(update);
 		});
 
-		it('Should throw Exception for invokeAsync errors.', async () => {
+		it('Should update the user and return user for invokeAsync errors.', async () => {
 			get.returns(Promise.resolve(user));
-			update.returns(Promise.resolve(user));
+			const updated = new User(event.body);
+			update.returns(Promise.resolve(updated));
 			invokeAsync.withArgs({
 				FunctionName: 'test-CloudFrontCreateInvalidation',
-				InvokeArgs: JSON.stringify({paths: ['/api/v1/users', '/api/v1/users?*', `/api/v1/users/${user.id}`]})
+				InvokeArgs: JSON.stringify({paths: ['/api/v1/users', '/api/v1/users?*', `/api/v1/users/${updated.id}`]})
 			}).returns({
 				promise: () => {
 					return Promise.reject({message: 'error-message'});
 				}
 			});
-			await handler(event, {}, (err) => {
-				assert.ok(err instanceof ExceptionHandler);
-				assert.ok(err.errors[0] instanceof Exception);
-				assert.strictEqual(err.errors[0].status, 500);
+			const response = await handler(event, {}, () => {
 			});
 			sinon.assert.calledOnce(get);
 			sinon.assert.calledOnce(update);
+			assert.strictEqual(response.id, updated.id);
+			assert.strictEqual(response.name, updated.name);
 		});
 	});
 });

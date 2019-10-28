@@ -85,7 +85,7 @@ describe('UsersDelete', () => {
 			sinon.assert.calledOnce(deleteStub);
 		});
 
-		it('Should throw Exception for invokeAsync errors.', async () => {
+		it('Should delete the user and return empty for invokeAsync errors.', async () => {
 			get.returns(Promise.resolve(user));
 			deleteStub.returns(Promise.resolve(user.id));
 			invokeAsync.withArgs({
@@ -96,13 +96,11 @@ describe('UsersDelete', () => {
 					return Promise.reject({message: 'error-message'});
 				}
 			});
-			await handler(event, {}, (err) => {
-				assert.ok(err instanceof ExceptionHandler);
-				assert.ok(err.errors[0] instanceof Exception);
-				assert.strictEqual(err.errors[0].status, 500);
+			const response = await handler(event, {}, () => {
 			});
 			sinon.assert.calledOnce(get);
 			sinon.assert.calledOnce(deleteStub);
+			assert.equal(response, undefined);
 		});
 	});
 });

@@ -41,4 +41,12 @@ describe('ExceptionHandler', () => {
 			assert.strictEqual(handler.errors[2].detail, 'Resource with id \'unknown\' does not exist.');
 		});
 	});
+
+	describe('#toString', () => {
+		it('Should be formatted correctly.', async () => {
+			const results = new ExceptionHandler().toString();
+			const expected = '[{"status":500,"title":"InternalServiceError","detail":"An unknown error occurred."}]';
+			assert.strictEqual(expected, results);
+		});
+	});
 });

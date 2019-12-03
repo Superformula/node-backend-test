@@ -46,6 +46,31 @@ functions:
           method: post
           cors: true
           authorizer: aws_iam
+  read:
+    handler: read.main
+    events:
+      - http:
+          path: users/{id}
+          method: get
+          cors: true
+          authorizer: aws_iam
+  update:
+    handler: update.main
+    events:
+      - http:
+          path: users/{id}
+          method: put
+          cors: true
+          authorizer: aws_iam
+  delete:
+    handler: delete.main
+    events:
+      - http:
+          path: users/{id}
+          method: delete
+          cors: true
+          authorizer: aws_iam
+
 
 resources:
   # API Gateway Errors

@@ -1,16 +1,10 @@
-import * as dynamoDbLib from "./libs/dynamodb-lib";
 import { success, failure } from "./libs/response-lib";
+import User from './model/user';
 
 export async function main(event, context) {
-  const params = {
-    TableName: process.env.tableName,
-    Key: {
-      id: event.pathParameters.id
-    }
-  };
-
+  let user = new User();
   try {
-    await dynamoDbLib.call("delete", params);
+    await user.delete(event.pathParameters.id);
     return success({ status: true });
   } catch (e) {
     console.error("Exception thrown: ", e.stack);

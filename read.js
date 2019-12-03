@@ -1,16 +1,10 @@
-import * as dynamoDbLib from "./libs/dynamodb-lib";
 import { success, failure } from "./libs/response-lib";
+import User from './model/user';
 
 export async function main(event, context) {
-  const params = {
-    TableName: process.env.tableName,
-    Key: {
-      id: event.pathParameters.id
-    }
-  };
-
+  let user = new User();
   try {
-    const result = await dynamoDbLib.call("get", params);
+    const result = await user.read(event.pathParameters.id);
     if (result.Item) {
       return success(result.Item);
     } else {

@@ -1,24 +1,13 @@
-import uuid from "uuid";
-import * as dynamoDbLib from "./libs/dynamodb-lib";
 import { success, failure } from "./libs/response-lib";
+import User from './model/user';
 
 export async function main(event, context) {
   const data = JSON.parse(event.body);
-  const params = {
-    TableName: process.env.tableName,
-    Item: {
-      id: uuid.v1(),
-      name: data.name,
-      dob: data.dob,
-      address: data.address,
-      description: data.description,
-      createdAt : Date.now()
-    }
-  };
 
+  let user = new User();
   try {
-    await dynamoDbLib.call("put", params);
-    return success(params.Item);
+    await user.create(data);
+    return success();
   } catch (e) {
     console.error("Exception thrown: ", e.stack);
     return failure({ status: false });

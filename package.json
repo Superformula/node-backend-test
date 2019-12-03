@@ -1,0 +1,19 @@
+{
+  "name": "backend-test",
+  "version": "1.0.0",
+  "description": "Superformula Cloud Native Backent Test",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GrahamEvans31/node-backend-test.git"
+  },
+  "author": "Graham Evans",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GrahamEvans31/node-backend-test/issues"
+  },
+  "homepage": "https://github.com/GrahamEvans31/node-backend-test#readme"
+}

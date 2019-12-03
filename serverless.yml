@@ -1,0 +1,13 @@
+service: node-backend-test
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+
+# you can overwrite defaults here
+  stage: dev
+  region: us-east-1
+
+functions:
+  hello:
+    handler: handler.hello

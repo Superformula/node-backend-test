@@ -24,6 +24,8 @@
     "serverless-offline": "^5.12.1"
   },
   "dependencies": {
-    "uuid": "^3.3.3"
+    "http-status-codes": "^1.4.0",
+    "uuid": "^3.3.3",
+    "validate.js": "^0.13.1"
   }
 }

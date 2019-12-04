@@ -1,6 +1,8 @@
 import uuid from "uuid";
 import * as dynamoDbLib from "../libs/dynamodb-lib";
 
+const SERVER_ERROR = { message : "Internal Server Error." };
+
 export default class User {
   async create(user) {
     const params = {
@@ -9,13 +11,23 @@ export default class User {
         id: uuid.v1(),
         name: user.name,
         dob: user.dob,
-        address: user.address,
+        streetAddress: user.address.streetAddress,
+        streetAddress2: user.address.streetAddress2 || null,
+        city: user.address.city,
+        state: user.address.state,
+        country: user.address.country,
+        postal: user.address.postal,
         description: user.description,
         createdAt : Date.now()
       }
     };
 
-    await dynamoDbLib.call("put", params);
+    try {
+      await dynamoDbLib.call("put", params);
+    } catch (e) {
+      console.error("Failed to create: " + JSON.stringify(user), "Message: " + e.message, "Stack: " +e.stack);
+      throw SERVER_ERROR;
+    }
   }
 
   async read(id) {
@@ -26,7 +38,13 @@ export default class User {
       }
     };
 
-    return await dynamoDbLib.call("get", params);
+    try {
+      const result = await dynamoDbLib.call("get", params);
+      return result;
+    } catch (e) {
+      console.error("Failed to read: ID[" + id + "]", "Message: " + e.message, "Stack: " + e.stack);
+      throw SERVER_ERROR;
+    }
   }
 
   async update(id, user) {
@@ -35,22 +53,44 @@ export default class User {
       Key: {
         id: id
       },
-      UpdateExpression: "SET #name = :name, dob = :dob, address = :address, description = :description, updatedAt = :updatedAt",
+      UpdateExpression: "SET " +
+        "#name = :name, " +
+        "dob = :dob, " +
+        "streetAddress = :streetAddress, " +
+        "streetAddress2 = :streetAddress2, " +
+        "city = :city, " +
+        "#state = :state, " +
+        "country = :country, " +
+        "postal = :postal, " +
+        "description = :description, " +
+        "updatedAt = :updatedAt",
       ExpressionAttributeValues: {
-        ":name": user.name || null,
-        ":dob": user.dob || null,
-        ":address": user.address || null,
-        ":description": user.description || null,
+        ":name": user.name,
+        ":dob": user.dob,
+        ":streetAddress": user.address.streetAddress,
+        ":streetAddress2": user.address.streetAddress2 || null,
+        ":city": user.address.city,
+        ":state": user.address.state,
+        ":country": user.address.country,
+        ":postal": user.address.postal,
+        ":description": user.description,
         ":updatedAt": Date.now()
       },
+      // Reserved Words
       ExpressionAttributeNames: {
-          "#name": "name"
+          "#name": "name",
+          "#state": "state"
       },
       ReturnValues: "ALL_NEW"
     };
 
-    const result = await dynamoDbLib.call("update", params);
-    return result.Attributes;
+    try {
+      const result = await dynamoDbLib.call("update", params);
+      return result.Attributes;
+    } catch (e) {
+      console.error("Failed to update: ID[" + id + "] " + JSON.stringify(user), "Message: " + e.message, "Stack: " + e.stack);
+      throw SERVER_ERROR;
+    }
   }
 
   async delete(id) {
@@ -61,6 +101,12 @@ export default class User {
       }
     };
 
-    await dynamoDbLib.call("delete", params);
+    try {
+      const result = await dynamoDbLib.call("delete", params);
+      return result;
+    } catch (e) {
+      console.error("Failed to delete: ID[" + id + "]", "Message: " + e.message, "Stack: " + e.stack);
+      throw SERVER_ERROR;
+    }
   }
 }

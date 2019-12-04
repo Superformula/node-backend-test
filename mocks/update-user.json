@@ -1,6 +1,6 @@
 {
-  "body": "{\"name\":\"Graham Evans\",\"dob\":\"12\/25\/1987\",\"address\":\"5298 Alta Link Rd, Whistler BC, V0N 1B5, Canada\",\"description\":\"This is an updated test user\"}",
+  "body": "{\"name\":\"Graham Evans1\",\"dob\": \"1988-03-18\",\"address\": {\"streetAddress\": \"2017 Morris Rd\",\"streetAddress2\": \"\",\"city\": \"Airdriee\",\"state\": \"AlBerta\",\"postal\": \"T4A 1V8\",\"country\": \"Canadaa\"},\"description\": \"This is a test users\"}",
   "pathParameters": {
-    "id": "bd668dc0-15ff-11ea-84fd-015737431dcd"
+    "id": "f18f46e0-16d7-11ea-8260-1541765a4531"
   }
 }

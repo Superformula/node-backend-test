@@ -5,6 +5,9 @@ import HttpStatus from 'http-status-codes';
 import { userValidationCriteria, UUID_V1 } from './validators/user';
 import validate from 'validate.js';
 
+/**
+ * Update API Lambda for User model.
+ */
 export async function main(event, context) {
   try {
     if (!('pathParameters' in event)) {

@@ -2,12 +2,23 @@ import uuid from "uuid";
 
 const SERVER_ERROR = "Internal Server Error.";
 
+/**
+ * User model for encapsulating User CRUD and Filter operations
+ */
 export default class User {
 
+  /**
+   * Dependency Injection for unit testability
+   * @param {function} dynamoDbLib Function to call DynamoDB.
+   */
   constructor(dynamoDbLib) {
     this.dynamoDbLib = dynamoDbLib;
   }
 
+  /**
+   * Create a user.
+   * @param {obj} user User object containing user information.
+   */
   async create(user) {
     const params = {
       TableName: process.env.tableName,
@@ -28,12 +39,17 @@ export default class User {
 
     try {
       await this.dynamoDbLib.call("put", params);
+      return params.Item;
     } catch (e) {
       console.error("Failed to create: " + JSON.stringify(user), "Message: " + e.message, "Stack: " + e.stack);
       throw new Error(SERVER_ERROR);
     }
   }
 
+  /**
+   * Read a user by ID.
+   * @param {string} id UUID for user.
+   */
   async read(id) {
     const params = {
       TableName: process.env.tableName,
@@ -51,6 +67,11 @@ export default class User {
     }
   }
 
+  /**
+   * Update a user by ID.
+   * @param {string} id UUID for user.
+   * @param {obj} user User object containing user information.
+   */
   async update(id, user) {
     const params = {
       TableName: process.env.tableName,
@@ -97,6 +118,10 @@ export default class User {
     }
   }
 
+  /**
+   * Read a user by ID.
+   * @param {string} id UUID for user.
+   */
   async delete(id) {
     const params = {
       TableName: process.env.tableName,
@@ -113,6 +138,10 @@ export default class User {
     }
   }
 
+  /**
+   * Query for users with same name.
+   * @param {string} name Name to query for list of users with same name.
+   */
   async filter(name) {
     const params = {
       TableName: process.env.tableName,

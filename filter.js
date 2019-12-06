@@ -3,6 +3,9 @@ import * as dynamoDbLib from "./libs/dynamodb-lib";
 import User from './model/user';
 import HttpStatus from 'http-status-codes';
 
+/**
+ * Filter API Lambda for User model.
+ */
 export async function main(event, context) {
   try {
     if (!('pathParameters' in event)) {

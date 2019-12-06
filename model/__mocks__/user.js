@@ -5,7 +5,7 @@ export default class User {
     if (user.name === "EXCEPTION") {
       throw "Internal Server Error";
     }
-    return Promise.resolve();
+    return Promise.resolve(user);
   }
 
   async read(id) {

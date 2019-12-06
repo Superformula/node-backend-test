@@ -18,11 +18,13 @@
   "homepage": "https://github.com/GrahamEvans31/node-backend-test#readme",
   "devDependencies": {
     "aws-sdk": "^2.582.0",
+    "eslint": "^6.7.2",
     "rewiremock": "^3.13.9",
     "serverless": "^1.58.0",
     "serverless-bundle": "^1.2.5",
     "serverless-dotenv-plugin": "^2.1.1",
-    "serverless-offline": "^5.12.1"
+    "serverless-offline": "^5.12.1",
+    "serverless-openapi-documentation": "^0.4.0"
   },
   "dependencies": {
     "http-status-codes": "^1.4.0",

@@ -5,6 +5,9 @@ import HttpStatus from 'http-status-codes';
 import { userValidationCriteria } from './validators/user';
 import validate from 'validate.js';
 
+/**
+ * Create API Lambda for User model.
+ */
 export async function main(event, context) {
   try {
     const data = JSON.parse(event.body);
@@ -16,8 +19,8 @@ export async function main(event, context) {
 
     let user = new User(dynamoDbLib);
     try {
-      await user.create(data);
-      return success(HttpStatus.CREATED, {});
+      const result = await user.create(data);
+      return success(HttpStatus.CREATED, result);
     } catch (e) {
       return failure(HttpStatus.INTERNAL_SERVER_ERROR, {});
     }

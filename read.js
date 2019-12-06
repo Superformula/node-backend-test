@@ -4,6 +4,9 @@ import User from './model/user';
 import HttpStatus from 'http-status-codes';
 import { UUID_V1 } from './validators/user';
 
+/**
+ * Read API Lambda for User model.
+ */
 export async function main(event, context) {
   try {
     if (!('pathParameters' in event)) {

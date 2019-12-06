@@ -8,6 +8,7 @@ plugins:
   - serverless-bundle
   - serverless-offline
   - serverless-dotenv-plugin
+  - serverless-openapi-documentation
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -17,6 +18,54 @@ custom:
     prod: 1
     default: 1
   tableThroughput: ${self:custom.tableThroughputs.${self:custom.stage}, self:custom.tableThroughputs.default}
+  documentation:
+    models:
+      - name: ErrorResponse
+        description: This is an error
+        contentType: application/json
+        schema:
+          $schema: http://json-schema.org/draft-04/schema#
+          properties:
+            error:
+              type: object
+              properties:
+                statusCode:
+                  type: integer
+                headers:
+                  type: object
+                body:
+                  type: object
+      - name: Response
+        description: PUT Document response model (external reference example)
+        contentType: application/json
+        schema:
+          $schema: http://json-schema.org/draft-04/schema#
+          properties:
+            response:
+              type: object
+              properties:
+                statusCode:
+                  type: integer
+                headers:
+                  type: object
+                body:
+                  type: object
+
+      - name: Request
+        description: PUT Document request model (inline example)
+        contentType: application/json
+        schema:
+          $schema: http://json-schema.org/draft-04/schema#
+          properties:
+            request:
+              type: object
+              properties:
+                statusCode:
+                  type: integer
+                headers:
+                  type: object
+                body:
+                  type: object
 provider:
   name: aws
   runtime: nodejs10.x
@@ -46,6 +95,34 @@ functions:
           method: post
           cors: true
           authorizer: aws_iam
+          documentation:
+            summary: Create User
+            description: Creating a user in DynamoDB database.
+            requestBody:
+              description: A user information object
+            requestModels:
+              application/json: Request
+            methodResponses:
+              - statusCode: 201
+                responseBody:
+                  description: User was successfully created
+                responseModels:
+                  application/json: Response
+              - statusCode: 400
+                responseBody:
+                  description: Request is missing values or invalid values
+                responseModels:
+                  application/json: ErrorResponse
+              - statusCode: 422
+                responseBody:
+                  description: Unable to process body content
+                responseModels:
+                  application/json: ErrorResponse
+              - statusCode: 500
+                responseBody:
+                  description: Internal server error
+                responseModels:
+                  application/json: ErrorResponse
   read:
     handler: read.main
     events:
@@ -54,6 +131,35 @@ functions:
           method: get
           cors: true
           authorizer: aws_iam
+          documentation:
+            summary: Read User
+            description: Reading a user in DynamoDB database.
+            pathParams:
+              - id: user ID
+                description: The ID of user to look up
+                schema:
+                  type: string
+            methodResponses:
+              - statusCode: 200
+                responseBody:
+                  description: User found
+                responseModels:
+                  application/json: Response
+              - statusCode: 404
+                responseBody:
+                  description: User was not found
+                responseModels:
+                  application/json: ErrorResponse
+              - statusCode: 422
+                responseBody:
+                  description: ID is missing or invalid
+                responseModels:
+                  application/json: ErrorResponse
+              - statusCode: 500
+                responseBody:
+                  description: Internal server error
+                responseModels:
+                  application/json: ErrorResponse
   update:
     handler: update.main
     events:
@@ -62,6 +168,44 @@ functions:
           method: put
           cors: true
           authorizer: aws_iam
+          documentation:
+            summary: Update User
+            description: Updating a user in DynamoDB database.
+            requestBody:
+              description: A user information object
+            pathParams:
+              - id: user ID
+                description: The ID of user to look up
+                schema:
+                  type: string
+            requestModels:
+              application/json: Request
+            methodResponses:
+              - statusCode: 200
+                responseBody:
+                  description: User was successfully updated
+                responseModels:
+                  application/json: Response
+              - statusCode: 400
+                responseBody:
+                  description: Request is missing values or invalid values
+                responseModels:
+                  application/json: ErrorResponse
+              - statusCode: 404
+                responseBody:
+                  description: User was not found
+                responseModels:
+                  application/json: ErrorResponse
+              - statusCode: 422
+                responseBody:
+                  description: Unable to process body content
+                responseModels:
+                  application/json: ErrorResponse
+              - statusCode: 500
+                responseBody:
+                  description: Internal server error
+                responseModels:
+                  application/json: ErrorResponse
   delete:
     handler: delete.main
     events:
@@ -70,6 +214,35 @@ functions:
           method: delete
           cors: true
           authorizer: aws_iam
+          documentation:
+            summary: Delete User
+            description: Deleting a user in DynamoDB database.
+            pathParams:
+              - id: user ID
+                description: The ID of user to delete
+                schema:
+                  type: string
+            methodResponses:
+              - statusCode: 204
+                responseBody:
+                  description: User deleted
+                responseModels:
+                  application/json: Response
+              - statusCode: 404
+                responseBody:
+                  description: User was not found
+                responseModels:
+                  application/json: ErrorResponse
+              - statusCode: 422
+                responseBody:
+                  description: ID is missing or invalid
+                responseModels:
+                  application/json: ErrorResponse
+              - statusCode: 500
+                responseBody:
+                  description: Internal server error
+                responseModels:
+                  application/json: ErrorResponse
   filter:
     handler: filter.main
     events:
@@ -78,6 +251,30 @@ functions:
           method: get
           cors: true
           authorizer: aws_iam
+          documentation:
+            summary: Filter User
+            description: Filter a user in DynamoDB database by name.
+            pathParams:
+              - name: User name
+                description: The name of users to look up
+                schema:
+                  type: string
+            methodResponses:
+              - statusCode: 200
+                responseBody:
+                  description: Query executed successfully, results if found empty if not
+                responseModels:
+                  application/json: Response
+              - statusCode: 422
+                responseBody:
+                  description: Name is missing or invalid
+                responseModels:
+                  application/json: ErrorResponse
+              - statusCode: 500
+                responseBody:
+                  description: Internal server error
+                responseModels:
+                  application/json: ErrorResponse
 
 
 resources:

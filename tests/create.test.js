@@ -10,6 +10,7 @@ describe('Create API', () => {
     const response = await create.main(input.event, input.context);
 
     expect(response.statusCode).toBe(HttpStatus.CREATED);
+    expect(JSON.parse(response.body).name).toBe("Graham Evans");
   });
 
   test('422 UNPROCESSABLE_ENTITY - Invalid JSON', async () => {

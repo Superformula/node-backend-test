@@ -1,4 +1,5 @@
 import { success, failure } from "./libs/response-lib";
+import * as dynamoDbLib from "./libs/dynamodb-lib";
 import User from './model/user';
 import HttpStatus from 'http-status-codes';
 import { userValidationCriteria } from './validators/user';
@@ -10,15 +11,15 @@ export async function main(event, context) {
     const errors = validate(data, userValidationCriteria);
 
     if (errors) {
-      return failure(HttpStatus.BAD_REQUEST, {status:false, errors : errors});
+      return failure(HttpStatus.BAD_REQUEST, {status : false, errors : errors});
     }
 
-    let user = new User();
+    let user = new User(dynamoDbLib);
     try {
       await user.create(data);
       return success(HttpStatus.CREATED, {});
     } catch (e) {
-      return failure(HttpStatus.INTERNAL_SERVER_ERROR, { status: false });
+      return failure(HttpStatus.INTERNAL_SERVER_ERROR, { status : false });
     }
   } catch (e) {
     console.info("Invalid request body: " + event.body);

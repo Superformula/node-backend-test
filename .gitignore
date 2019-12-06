@@ -2,6 +2,7 @@
 node_modules
 jspm_packages
 .webpack
+coverage
 
 # Serverless directories
 .serverless

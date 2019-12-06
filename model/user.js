@@ -1,9 +1,13 @@
 import uuid from "uuid";
-import * as dynamoDbLib from "../libs/dynamodb-lib";
 
-const SERVER_ERROR = { message : "Internal Server Error." };
+const SERVER_ERROR = "Internal Server Error.";
 
 export default class User {
+
+  constructor(dynamoDbLib) {
+    this.dynamoDbLib = dynamoDbLib;
+  }
+
   async create(user) {
     const params = {
       TableName: process.env.tableName,
@@ -23,10 +27,10 @@ export default class User {
     };
 
     try {
-      await dynamoDbLib.call("put", params);
+      await this.dynamoDbLib.call("put", params);
     } catch (e) {
       console.error("Failed to create: " + JSON.stringify(user), "Message: " + e.message, "Stack: " +e.stack);
-      throw SERVER_ERROR;
+      throw new Error(SERVER_ERROR);
     }
   }
 
@@ -39,11 +43,11 @@ export default class User {
     };
 
     try {
-      const result = await dynamoDbLib.call("get", params);
-      return result;
+      const result = await this.dynamoDbLib.call("get", params);
+      return result.Item;
     } catch (e) {
       console.error("Failed to read: ID[" + id + "]", "Message: " + e.message, "Stack: " + e.stack);
-      throw SERVER_ERROR;
+      throw new Error(SERVER_ERROR);
     }
   }
 
@@ -85,11 +89,11 @@ export default class User {
     };
 
     try {
-      const result = await dynamoDbLib.call("update", params);
+      const result = await this.dynamoDbLib.call("update", params);
       return result.Attributes;
     } catch (e) {
       console.error("Failed to update: ID[" + id + "] " + JSON.stringify(user), "Message: " + e.message, "Stack: " + e.stack);
-      throw SERVER_ERROR;
+      throw new Error(SERVER_ERROR);
     }
   }
 
@@ -102,11 +106,10 @@ export default class User {
     };
 
     try {
-      const result = await dynamoDbLib.call("delete", params);
-      return result;
+      await this.dynamoDbLib.call("delete", params);
     } catch (e) {
       console.error("Failed to delete: ID[" + id + "]", "Message: " + e.message, "Stack: " + e.stack);
-      throw SERVER_ERROR;
+      throw new Error(SERVER_ERROR);
     }
   }
 }

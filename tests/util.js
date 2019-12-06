@@ -49,6 +49,12 @@ export const generateRequest = (type) => {
       };
       return {event : event, context : context};
       break;
+    case 'filter':
+      event.pathParameters = {
+        name: 'Graham Evans'
+      };
+      return {event : event, context : context};
+      break;
     default:
       break;
   }

@@ -2,22 +2,22 @@ import { success, failure } from "./libs/response-lib";
 import * as dynamoDbLib from "./libs/dynamodb-lib";
 import User from './model/user';
 import HttpStatus from 'http-status-codes';
-import { userValidationCriteria } from './validators/user';
-import validate from 'validate.js';
 
 export async function main(event, context) {
   try {
-    const data = JSON.parse(event.body);
-    const errors = validate(data, userValidationCriteria);
+    if (!('pathParameters' in event)) {
+      return failure(HttpStatus.UNPROCESSABLE_ENTITY, {error : "Name Path Parameter required."});
+    }
+    const name = event.pathParameters.name;
 
-    if (errors) {
-      return failure(HttpStatus.BAD_REQUEST, {errors : errors});
+    if (!name) {
+      return failure(HttpStatus.UNPROCESSABLE_ENTITY, {error : "Name Path Parameter required."});
     }
 
     let user = new User(dynamoDbLib);
     try {
-      await user.create(data);
-      return success(HttpStatus.CREATED, {});
+      const result = await user.filter(name);
+      return success(HttpStatus.OK, result);
     } catch (e) {
       return failure(HttpStatus.INTERNAL_SERVER_ERROR, {});
     }

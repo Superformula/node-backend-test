@@ -54,4 +54,17 @@ describe('User Model', () => {
     await expect(user.delete("id")).rejects.toThrow('Internal Server Error.');
     expect(dynamoDbLib.call).toBeCalledTimes(1);
   });
+
+  test('Filter Success', async () => {
+      dynamoDbLib.call = jest.fn(() => {return {Items : []}});
+      const user = new User(dynamoDbLib);
+      await expect(user.filter("Graham Evans")).resolves.not.toThrow();
+      expect(dynamoDbLib.call).toBeCalledTimes(1);
+  });
+  test('Filter Fail', async () => {
+    dynamoDbLib.call = jest.fn(() => {throw "Internal Error"});
+    const user = new User(dynamoDbLib);
+    await expect(user.filter("Graham Evans")).rejects.toThrow('Internal Server Error.');
+    expect(dynamoDbLib.call).toBeCalledTimes(1);
+  });
 });

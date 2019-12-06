@@ -29,7 +29,7 @@ export default class User {
     try {
       await this.dynamoDbLib.call("put", params);
     } catch (e) {
-      console.error("Failed to create: " + JSON.stringify(user), "Message: " + e.message, "Stack: " +e.stack);
+      console.error("Failed to create: " + JSON.stringify(user), "Message: " + e.message, "Stack: " + e.stack);
       throw new Error(SERVER_ERROR);
     }
   }
@@ -109,6 +109,28 @@ export default class User {
       await this.dynamoDbLib.call("delete", params);
     } catch (e) {
       console.error("Failed to delete: ID[" + id + "]", "Message: " + e.message, "Stack: " + e.stack);
+      throw new Error(SERVER_ERROR);
+    }
+  }
+
+  async filter(name) {
+    const params = {
+      TableName: process.env.tableName,
+      IndexName: "username",
+      KeyConditionExpression: "#name = :name",
+      ExpressionAttributeNames: {
+          "#name": "name"
+      },
+      ExpressionAttributeValues: {
+          ":name": name
+      },
+    };
+
+    try {
+      const result = await this.dynamoDbLib.call("query", params);
+      return result.Items;
+    } catch (e) {
+      console.error("Failed to query: Name[" + name + "]", "Message: " + e.message, "Stack: " + e.stack);
       throw new Error(SERVER_ERROR);
     }
   }

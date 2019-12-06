@@ -70,6 +70,14 @@ functions:
           method: delete
           cors: true
           authorizer: aws_iam
+  filter:
+    handler: filter.main
+    events:
+      - http:
+          path: users/
+          method: get
+          cors: true
+          authorizer: aws_iam
 
 
 resources:

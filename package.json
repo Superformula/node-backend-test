@@ -9,6 +9,10 @@
     "aws-cdk": "^1.19.0"
   },
   "dependencies": {
-    "@aws-cdk/core": "^1.19.0"
+    "@aws-cdk/core": "^1.19.0",
+    "@aws-cdk/aws-apigateway": "^1.19.0",
+    "@aws-cdk/aws-dynamodb": "^1.19.0",
+    "@aws-cdk/aws-lambda": "^1.19.0",
+    "@aws-cdk/aws-sqs": "^1.19.0"
   }
 }

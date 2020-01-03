@@ -1,0 +1,10 @@
+{
+    "name": "lambda-crud-layer",
+    "version": "1.0.0",
+    "dependencies": {
+        "@dazn/lambda-powertools-logger": "^1.15.2",
+        "clean-deep": "^3.2.0",
+        "clone": "^2.1.2",
+        "lodash.merge": "^4.6.2"
+    }
+}
